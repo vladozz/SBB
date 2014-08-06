@@ -27,7 +27,8 @@ create table board (
     station_id int unsigned not null,
     foreign key (station_id)
         references station (id),
-    dep_time datetime
+	arrive_time datetime,
+    departure_time datetime
 )  engine=InnoDB;
 
 create table ticket (
@@ -35,10 +36,13 @@ create table ticket (
     passenger_id int unsigned not null,
     foreign key (passenger_id)
         references passenger (id),
-    board_id int unsigned not null,
-    foreign key (board_id)
+    departure_station int unsigned not null,
+    foreign key (departure_station)
         references board (id),
-    dep_date date not null
+	arrive_station int unsigned not null,
+    foreign key (arrive_station)
+        references board (id),
+    departure_date date not null
 )  engine=InnoDB;
 
 
