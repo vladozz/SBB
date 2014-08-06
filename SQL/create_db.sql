@@ -1,4 +1,3 @@
-drop database sbb;
 create database sbb;
 use sbb;
 create table train (
@@ -16,7 +15,7 @@ create table passenger (
     id int unsigned auto_increment primary key,
     fname char(30) not null,
     lname char(30),
-    birthday date not null
+    birthdate date not null
 )  engine=InnoDB;
 
 create table board (
