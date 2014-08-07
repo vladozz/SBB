@@ -15,7 +15,7 @@ public class Passenger {
     private String firstName;
     @Column(name="last_name")
     private String lastName;
-    @Column(name="birth_date")
+    @Column(name="birthdate")
     private Date birthDate;
 
     public Passenger() {
