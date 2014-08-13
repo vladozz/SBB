@@ -1,51 +1,76 @@
 drop database if exists sbb;
 create database sbb;
 use sbb;
+
 create table train (
-    id int unsigned not null primary KEY,
-    places_qty smallint unsigned not null
+    id int primary KEY,
+    places_qty smallint
 )  engine=InnoDB;
 
+create table path (
+	id int primary key,
+	title varchar(50)
+) engine = InnoDB;
+
 create table station (
-    id int unsigned auto_increment primary key,
+    id int auto_increment primary key,
     title varchar(50) not null,
-    time_zone tinyint
+    time_zone char(9)
+)  engine=InnoDB;
+
+create table path_station (
+	id int auto_increment primary key,
+	path_id int,
+	station_id int,
+	next_station_id int,
+    foreign key (path_id) references path (id),
+	foreign key (station_id) references station (id),
+	foreign key (next_station_id) references station (id)
 )  engine=InnoDB;
 
 create table passenger (
-    id int unsigned auto_increment primary key,
-    first_name varchar(30) not null,
-    last_name varchar(30),
-    birthdate date not null
+    id int auto_increment primary key,
+    first_name varchar(50) not null,
+    last_name varchar(50),
+    birthdate date,
+	unique key (first_name, last_name, birthdate)
 )  engine=InnoDB;
 
 create table board (
-    id int unsigned not null primary KEY,
-    train_id int unsigned not null,
-    foreign key (train_id)
-        references train (id),
-    station_id int unsigned not null,
-    foreign key (station_id)
-        references station (id),
-	arrive_time datetime,
-    departure_time datetime
+    id int AUTO_INCREMENT primary KEY,
+	train_id int,
+	station_id int,
+	path_id int,
+	arrive_time timestamp,
+    departure_time timestamp,
+	foreign key (train_id) references train (id),
+	foreign key (station_id) references station (id),
+	foreign key (path_id) references path (id)
 )  engine=InnoDB;
 
 create table ticket (
-    id int unsigned not null primary KEY,
-    passenger_id int unsigned not null,
-    foreign key (passenger_id)
-        references passenger (id),
-    departure_station int unsigned not null,
-    foreign key (departure_station)
-        references board (id),
-	arrive_station int unsigned not null,
-    foreign key (arrive_station)
-        references board (id),
-    departure_date date not null
+    id int AUTO_INCREMENT primary KEY,
+    passenger_id int,
+    departure int,
+	arrive int,
+    foreign key (passenger_id) references passenger (id),
+	foreign key (departure) references board (id),
+    foreign key (arrive) references board (id)
 )  engine=InnoDB;
 
+create table role
+(
+	id int auto_increment primary key,
+	title varchar(10)
+) engine=InnoDB;
 
+create table user (
+	id int AUTO_INCREMENT primary KEY,
+	login varchar(30),
+	pswd varchar(30),
+	role_id int,
+	foreign key (role_id) references role (id)
+) engine=InnoDB;
 
 
 

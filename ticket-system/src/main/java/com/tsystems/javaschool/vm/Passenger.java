@@ -1,22 +1,26 @@
 package com.tsystems.javaschool.vm;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="passenger")
 public class Passenger {
     @Id
     private int id;
+
     @Column(name="first_name")
     private String firstName;
+
     @Column(name="last_name")
     private String lastName;
+
     @Column(name="birthdate")
     private Date birthDate;
+
+    @OneToMany(mappedBy = "passenger")
+    private List<Ticket> tickets;
 
     public Passenger() {
     }
@@ -52,6 +56,14 @@ public class Passenger {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
     }
 
     @Override

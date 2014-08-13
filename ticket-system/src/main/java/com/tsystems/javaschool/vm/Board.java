@@ -8,16 +8,24 @@ import java.util.Date;
 public class Board {
     @Id
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "train_id")
+    private Train train;
+
+    @ManyToOne
+    @JoinColumn(name = "station_id")
+    private Station station;
+
+    @ManyToOne
+    @JoinColumn(name = "path_id")
+    private Path path;
+
     @Column(name = "arrive_time")
     private Date arriveTime;
+
     @Column(name = "departure_time")
     private Date departureTime;
-    @OneToOne
-    @JoinColumn (name = "train_id")
-    private Train train;
-    @OneToOne
-    @JoinColumn (name = "station_id")
-    private Station station;
 
     public Board() {
     }
@@ -28,22 +36,6 @@ public class Board {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Date getArriveTime() {
-        return arriveTime;
-    }
-
-    public void setArriveTime(Date arriveTime) {
-        this.arriveTime = arriveTime;
-    }
-
-    public Date getDepartureTime() {
-        return departureTime;
-    }
-
-    public void setDepartureTime(Date departureTime) {
-        this.departureTime = departureTime;
     }
 
     public Train getTrain() {
@@ -62,14 +54,39 @@ public class Board {
         this.station = station;
     }
 
+    public Path getPath() {
+        return path;
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
+    }
+
+    public Date getArriveTime() {
+        return arriveTime;
+    }
+
+    public void setArriveTime(Date arriveTime) {
+        this.arriveTime = arriveTime;
+    }
+
+    public Date getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
+    }
+
     @Override
     public String toString() {
         return "Board{" +
                 "id=" + id +
-                ", arriveTime=" + arriveTime +
-                ", departureTime=" + departureTime +
                 ", train=" + train +
                 ", station=" + station +
+                ", path=" + path +
+                ", arriveTime=" + arriveTime +
+                ", departureTime=" + departureTime +
                 '}';
     }
 }
