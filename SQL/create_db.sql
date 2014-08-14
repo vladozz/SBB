@@ -8,7 +8,7 @@ create table train (
 )  engine=InnoDB;
 
 create table path (
-	id int primary key,
+	id int auto_increment primary key,
 	title varchar(50)
 ) engine = InnoDB;
 
@@ -20,12 +20,13 @@ create table station (
 
 create table path_station (
 	id int auto_increment primary key,
+	#seq_order int,
 	path_id int,
 	station_id int,
-	next_station_id int,
+	#next_station_id int,
     foreign key (path_id) references path (id),
-	foreign key (station_id) references station (id),
-	foreign key (next_station_id) references station (id)
+	foreign key (station_id) references station (id)
+	#,foreign key (next_station_id) references station (id)
 )  engine=InnoDB;
 
 create table passenger (
@@ -71,6 +72,4 @@ create table user (
 	role_id int,
 	foreign key (role_id) references role (id)
 ) engine=InnoDB;
-
-
 
