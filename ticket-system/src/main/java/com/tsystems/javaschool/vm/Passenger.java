@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="passenger")
+@Table(name="passenger",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name", "birthdate"}))
 public class Passenger {
     @Id
     private int id;
@@ -19,10 +20,18 @@ public class Passenger {
     @Column(name="birthdate")
     private Date birthDate;
 
+
+
     @OneToMany(mappedBy = "passenger")
     private List<Ticket> tickets;
 
     public Passenger() {
+    }
+
+    public Passenger(String firstName, String lastName, Date birthDate) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
     }
 
     public int getId() {

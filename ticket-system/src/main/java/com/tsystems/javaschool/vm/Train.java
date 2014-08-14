@@ -16,6 +16,11 @@ public class Train {
     public Train() {
     }
 
+    public Train(int id, short placesQty) {
+        this.id = id;
+        this.placesQty = placesQty;
+    }
+
     public int getId() {
         return id;
     }

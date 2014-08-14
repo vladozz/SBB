@@ -35,4 +35,13 @@ public class Hasher {
     public static long getRandomLong() {
         return ((long) (Math.random() * Long.MAX_VALUE));
     }
+
+    public static int [] reverseArray(int[] array) {
+        for (int i = 0; i < array.length / 2; i++) {
+            int tmp = array[array.length - 1 - i];
+            array[array.length - 1 - i] = array[i];
+            array[i] = tmp;
+        }
+        return array;
+    }
 }

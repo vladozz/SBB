@@ -1,0 +1,8 @@
+SPB-Adler
+SPb - Kiev
+Moscow - Minsk
+Moscow - Adler
+Adler - SPB
+Kiev - SPB
+Minsk - Moscow
+Adler - Moscow

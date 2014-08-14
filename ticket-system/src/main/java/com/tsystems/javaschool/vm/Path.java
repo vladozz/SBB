@@ -1,13 +1,17 @@
 package com.tsystems.javaschool.vm;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "path")
-public class Path {
+public class Path implements Serializable{
     @Id
-    private int id;
+    @GeneratedValue
+    private Integer id;
+    @Column(name = "title")
+    private String title;
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name = "path_station",
@@ -26,6 +30,14 @@ public class Path {
         this.id = id;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public List<Station> getStations() {
         return stations;
     }
@@ -38,7 +50,7 @@ public class Path {
     public String toString() {
         return "Path{" +
                 "id=" + id +
-                ", stations=" + stations +
+                ", title='" + title + '\'' +
                 '}';
     }
 }
