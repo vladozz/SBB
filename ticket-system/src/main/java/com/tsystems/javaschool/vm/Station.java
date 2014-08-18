@@ -3,6 +3,7 @@ package com.tsystems.javaschool.vm;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.TimeZone;
 
 @Entity
 @Table(name = "station")
@@ -14,23 +15,23 @@ public class Station implements Serializable {
     private String title;
 
 
-    @Column(name = "time_zone")
-    private String timeZone;
-
-
-
-    public String getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        this.timeZone = timeZone;
-    }
-
-
-
 //    @Column(name = "time_zone")
-//    private  TimeZone timeZone;
+//    private String timeZone;
+
+
+
+//    public String getTimeZone() {
+//        return timeZone;
+//    }
+//
+//    public void setTimeZone(String timeZone) {
+//        this.timeZone = timeZone;
+//    }
+
+
+
+    @Column(name = "time_zone")
+    private TimeZone timeZone;
 
     @ManyToMany(mappedBy = "stations")
     private List<Path> paths;
@@ -42,7 +43,7 @@ public class Station implements Serializable {
         this.title = title;
     }
 
-    public Station(String title, String timeZone) {
+    public Station(String title, TimeZone timeZone) {
         this.title = title;
         this.timeZone = timeZone;
     }
@@ -71,13 +72,13 @@ public class Station implements Serializable {
         this.paths = paths;
     }
 
-//    public String getTimeZone() {
-//        return timeZone.getID();
-//    }
-//
-//    public void setTimeZone(String timeZone) {
-//        this.timeZone = TimeZone.getTimeZone(timeZone);
-//    }
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
+    }
 
 
     @Override

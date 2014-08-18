@@ -1,33 +1,42 @@
 package com.tsystems.javaschool.vm;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
 @Table(name = "board")
 public class Board {
     @Id
+    @GeneratedValue
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "train_id")
-    private Train train;
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
 
     @ManyToOne
     @JoinColumn(name = "station_id")
     private Station station;
 
-    @ManyToOne
-    @JoinColumn(name = "path_id")
-    private Path path;
-
     @Column(name = "arrive_time")
-    private Date arriveTime;
+    @Type(type="timestamp")
+    private Timestamp arriveTime;
 
     @Column(name = "departure_time")
-    private Date departureTime;
+    @Type(type="timestamp")
+    private Timestamp departureTime;
 
     public Board() {
+    }
+
+    public Board(Trip trip, Station station, Timestamp arriveTime, Timestamp departureTime) {
+        this.trip = trip;
+        this.station = station;
+        this.arriveTime = arriveTime;
+        this.departureTime = departureTime;
     }
 
     public int getId() {
@@ -38,12 +47,12 @@ public class Board {
         this.id = id;
     }
 
-    public Train getTrain() {
-        return train;
+    public Trip getTrip() {
+        return trip;
     }
 
-    public void setTrain(Train train) {
-        this.train = train;
+    public void setTrip(Trip trip) {
+        this.trip = trip;
     }
 
     public Station getStation() {
@@ -54,19 +63,11 @@ public class Board {
         this.station = station;
     }
 
-    public Path getPath() {
-        return path;
-    }
-
-    public void setPath(Path path) {
-        this.path = path;
-    }
-
     public Date getArriveTime() {
         return arriveTime;
     }
 
-    public void setArriveTime(Date arriveTime) {
+    public void setArriveTime(Timestamp arriveTime) {
         this.arriveTime = arriveTime;
     }
 
@@ -74,7 +75,7 @@ public class Board {
         return departureTime;
     }
 
-    public void setDepartureTime(Date departureTime) {
+    public void setDepartureTime(Timestamp departureTime) {
         this.departureTime = departureTime;
     }
 
@@ -82,9 +83,8 @@ public class Board {
     public String toString() {
         return "Board{" +
                 "id=" + id +
-                ", train=" + train +
+                ", trip=" + trip +
                 ", station=" + station +
-                ", path=" + path +
                 ", arriveTime=" + arriveTime +
                 ", departureTime=" + departureTime +
                 '}';

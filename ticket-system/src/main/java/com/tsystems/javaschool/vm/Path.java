@@ -8,7 +8,6 @@ import java.util.List;
 @Table(name = "path")
 public class Path implements Serializable{
     @Id
-    @GeneratedValue
     private Integer id;
     @Column(name = "title")
     private String title;
@@ -18,6 +17,9 @@ public class Path implements Serializable{
             joinColumns = {@JoinColumn(name = "path_id")},
             inverseJoinColumns = {@JoinColumn(name = "station_id")})
     private List<Station> stations;
+
+    @OneToMany(mappedBy = "path")
+    List<Trip> trips;
 
     public Path() {
     }
@@ -44,6 +46,10 @@ public class Path implements Serializable{
 
     public void setStations(List<Station> stations) {
         this.stations = stations;
+    }
+
+    public List<Trip> getTrips() {
+        return trips;
     }
 
     @Override

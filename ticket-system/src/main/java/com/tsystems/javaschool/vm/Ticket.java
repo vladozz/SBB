@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Table(name = "ticket")
 public class Ticket {
     @Id
+    @GeneratedValue
     private int id;
 
     @ManyToOne

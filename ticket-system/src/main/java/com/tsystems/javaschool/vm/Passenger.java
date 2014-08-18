@@ -9,6 +9,7 @@ import java.util.List;
         uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name", "birthdate"}))
 public class Passenger {
     @Id
+    @GeneratedValue
     private int id;
 
     @Column(name="first_name")

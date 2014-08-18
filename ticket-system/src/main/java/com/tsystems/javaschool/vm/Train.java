@@ -1,9 +1,7 @@
 package com.tsystems.javaschool.vm;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "train")
@@ -13,7 +11,11 @@ public class Train {
     @Column(name = "places_qty")
     private short placesQty;
 
+    @OneToMany(mappedBy = "train")
+    List<Trip> trips;
+
     public Train() {
+
     }
 
     public Train(int id, short placesQty) {
@@ -35,6 +37,10 @@ public class Train {
 
     public void setPlacesQty(short placesQty) {
         this.placesQty = placesQty;
+    }
+
+    public List<Trip> getTrips() {
+        return trips;
     }
 
     @Override
