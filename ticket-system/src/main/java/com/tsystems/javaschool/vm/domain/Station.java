@@ -10,22 +10,6 @@ public class Station extends SBBEntity {
     @Column(name = "title")
     private String title;
 
-
-//    @Column(name = "time_zone")
-//    private String timeZone;
-
-
-
-//    public String getTimeZone() {
-//        return timeZone;
-//    }
-//
-//    public void setTimeZone(String timeZone) {
-//        this.timeZone = timeZone;
-//    }
-
-
-
     @Column(name = "time_zone")
     private TimeZone timeZone;
 

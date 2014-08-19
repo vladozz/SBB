@@ -17,8 +17,6 @@ public class Passenger extends SBBEntity {
     @Column(name="birthdate")
     private Date birthDate;
 
-
-
     @OneToMany(mappedBy = "passenger")
     private List<Ticket> tickets;
 

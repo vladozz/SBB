@@ -92,12 +92,12 @@ public class DBManager implements Closeable {
 
     /**
      * Создание и объекта Train и добавление его в БД
-     * @param id
+     * @param number
      * @param placesQty
      * @return созданный объект
      */
-    public Train addTrain(int id, int placesQty) {
-        Train newTrain = new Train(id, (short) placesQty);
+    public Train addTrain(String number, int placesQty) {
+        Train newTrain = new Train(number,(short) placesQty);
         persist(newTrain);
         return newTrain;
     }
