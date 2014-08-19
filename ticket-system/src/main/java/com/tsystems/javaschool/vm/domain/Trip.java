@@ -5,9 +5,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "trip")
 public class Trip extends SBBEntity{
-    @Id
-    @GeneratedValue
-    private Integer id;
     @ManyToOne
     @JoinColumn(name = "path_id")
     private Path path;
@@ -21,16 +18,6 @@ public class Trip extends SBBEntity{
     public Trip(Path path, Train train) {
         this.path = path;
         this.train = train;
-    }
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Path getPath() {

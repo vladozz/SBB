@@ -5,10 +5,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "ticket")
 public class Ticket extends SBBEntity{
-    @Id
-    @GeneratedValue
-    private Integer id;
-
     @ManyToOne
     @JoinColumn (name = "passenger_id")
     private Passenger passenger;
@@ -22,16 +18,6 @@ public class Ticket extends SBBEntity{
     private Board departure;
 
     public Ticket() {}
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Passenger getPassenger() {
         return passenger;

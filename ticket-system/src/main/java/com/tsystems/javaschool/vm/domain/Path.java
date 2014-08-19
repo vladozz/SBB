@@ -5,9 +5,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "path")
-public class Path extends SBBEntity{
-    @Id
-    private Integer id;
+public class Path extends SBBEntity {
+        private Integer id;
     @Column(name = "title")
     private String title;
 
@@ -18,19 +17,9 @@ public class Path extends SBBEntity{
     private List<Station> stations;
 
     @OneToMany(mappedBy = "path")
-    List<Trip> trips;
+    private List<Trip> trips;
 
     public Path() {
-    }
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getTitle() {

@@ -4,6 +4,7 @@ use sbb;
 
 create table train (
     id int primary KEY,
+	num varchar(50),
     places_qty smallint
 )  engine=InnoDB;
 
@@ -15,18 +16,15 @@ create table path (
 create table station (
     id int auto_increment primary key,
     title varchar(50) not null,
-    time_zone char(9)
+    time_zone varchar(50)
 )  engine=InnoDB;
 
 create table path_station (
 	id int auto_increment primary key,
-	#seq_order int,
 	path_id int,
 	station_id int,
-	#next_station_id int,
     foreign key (path_id) references path (id),
 	foreign key (station_id) references station (id)
-	#,foreign key (next_station_id) references station (id)
 )  engine=InnoDB;
 
 create table passenger (
@@ -47,14 +45,12 @@ create table trip (
 
 create table board (
     id int AUTO_INCREMENT primary KEY,
-	train_id int,
+	trip_id int,
 	station_id int,
-	path_id int,
 	arrive_time timestamp,
     departure_time timestamp,
-	foreign key (train_id) references train (id),
-	foreign key (station_id) references station (id),
-	foreign key (path_id) references path (id)
+	foreign key (trip_id) references trip (id),
+	foreign key (station_id) references station (id)
 )  engine=InnoDB;
 
 create table ticket (

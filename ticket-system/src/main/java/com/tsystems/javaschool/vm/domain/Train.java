@@ -6,8 +6,8 @@ import java.util.List;
 @Entity
 @Table(name = "train")
 public class Train extends SBBEntity {
-    @Id
-    private Integer id;
+    @Column(name = "num")
+    private String number;
     @Column(name = "places_qty")
     private short placesQty;
 
@@ -18,19 +18,17 @@ public class Train extends SBBEntity {
 
     }
 
-    public Train(int id, short placesQty) {
-        this.id = id;
+    public Train(String number, short placesQty) {
+        this.number = number;
         this.placesQty = placesQty;
     }
 
-    @Override
-    public Integer getId() {
-        return id;
+    public String getNumber() {
+        return number;
     }
 
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public short getPlacesQty() {
@@ -48,7 +46,7 @@ public class Train extends SBBEntity {
     @Override
     public String toString() {
         return "Train{" +
-                "id=" + id +
+                "number='" + number + '\'' +
                 ", placesQty=" + placesQty +
                 '}';
     }

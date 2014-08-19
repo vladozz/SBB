@@ -7,9 +7,6 @@ import java.util.TimeZone;
 @Entity
 @Table(name = "station")
 public class Station extends SBBEntity {
-    @Id
-    @GeneratedValue
-    private Integer id;
     @Column(name = "title")
     private String title;
 
@@ -45,16 +42,6 @@ public class Station extends SBBEntity {
     public Station(String title, TimeZone timeZone) {
         this.title = title;
         this.timeZone = timeZone;
-    }
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getTitle() {

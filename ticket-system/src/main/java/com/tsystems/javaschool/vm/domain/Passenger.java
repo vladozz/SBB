@@ -8,10 +8,6 @@ import java.util.List;
 @Table(name="passenger",
         uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name", "birthdate"}))
 public class Passenger extends SBBEntity {
-    @Id
-    @GeneratedValue
-    private Integer id;
-
     @Column(name="first_name")
     private String firstName;
 
@@ -34,17 +30,6 @@ public class Passenger extends SBBEntity {
         this.lastName = lastName;
         this.birthDate = birthDate;
     }
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
 
     public String getFirstName() {
         return firstName;

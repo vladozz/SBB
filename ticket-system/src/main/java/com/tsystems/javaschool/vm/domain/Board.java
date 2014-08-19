@@ -9,9 +9,7 @@ import java.util.Date;
 @Entity
 @Table(name = "board")
 public class Board extends SBBEntity {
-    @Id
-    @GeneratedValue
-    private Integer id;
+
 
     @ManyToOne
     @JoinColumn(name = "trip_id")
@@ -38,17 +36,6 @@ public class Board extends SBBEntity {
         this.arriveTime = arriveTime;
         this.departureTime = departureTime;
     }
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
 
     public Trip getTrip() {
         return trip;
