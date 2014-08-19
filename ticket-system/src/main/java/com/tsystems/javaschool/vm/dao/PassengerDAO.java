@@ -1,6 +1,7 @@
 package com.tsystems.javaschool.vm.dao;
 
 import com.tsystems.javaschool.vm.domain.Passenger;
+import com.tsystems.javaschool.vm.domain.Trip;
 
 import javax.persistence.Query;
 import java.util.Date;
@@ -20,5 +21,12 @@ public class PassengerDAO extends CommonDAO<Passenger> {
         } else {
             return passenger.get(0);
         }
+    }
+
+    public List<Passenger> getPassengersOfTrip(Trip trip) {
+        String queryString = "SELECT DISTINCT p FROM Passenger p INNER JOIN p.tickets t WHERE t.arrive.trip = :trip";
+        Query query = em.createQuery(queryString);
+        query.setParameter("trip", trip);
+        return query.getResultList();
     }
 }

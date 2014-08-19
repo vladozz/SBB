@@ -1,6 +1,6 @@
 package com.tsystems.javaschool.vm.dao;
 
-import com.tsystems.javaschool.vm.domain.Path;
+
 import com.tsystems.javaschool.vm.domain.Train;
 
 import javax.persistence.Query;

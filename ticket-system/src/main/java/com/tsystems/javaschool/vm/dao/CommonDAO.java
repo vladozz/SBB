@@ -22,6 +22,10 @@ public class CommonDAO<E extends SBBEntity>{
         return em.getTransaction();
     }
 
+    public Query createQuery(String queryString) {
+        return em.createQuery(queryString);
+    }
+
     public void create(E entity) {
         em.persist(entity);
     }

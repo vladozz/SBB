@@ -19,6 +19,12 @@ public class Ticket extends SBBEntity{
 
     public Ticket() {}
 
+    public Ticket(Passenger passenger, Board departure, Board arrive) {
+        this.departure = departure;
+        this.passenger = passenger;
+        this.arrive = arrive;
+    }
+
     public Passenger getPassenger() {
         return passenger;
     }
