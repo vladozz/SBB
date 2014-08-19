@@ -1,4 +1,4 @@
-package com.tsystems.javaschool.vm;
+package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -7,10 +7,10 @@ import java.util.List;
 @Entity
 @Table(name="passenger",
         uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name", "birthdate"}))
-public class Passenger {
+public class Passenger extends SBBEntity {
     @Id
     @GeneratedValue
-    private int id;
+    private Integer id;
 
     @Column(name="first_name")
     private String firstName;
@@ -35,14 +35,16 @@ public class Passenger {
         this.birthDate = birthDate;
     }
 
-    public int getId() {
-
+    @Override
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    @Override
+    public void setId(Integer id) {
         this.id = id;
     }
+
 
     public String getFirstName() {
         return firstName;

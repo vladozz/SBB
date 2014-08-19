@@ -1,10 +1,10 @@
-package com.tsystems.javaschool.vm;
+package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "trip")
-public class Trip {
+public class Trip extends SBBEntity{
     @Id
     @GeneratedValue
     private Integer id;
@@ -23,10 +23,12 @@ public class Trip {
         this.train = train;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
 
+    @Override
     public void setId(Integer id) {
         this.id = id;
     }

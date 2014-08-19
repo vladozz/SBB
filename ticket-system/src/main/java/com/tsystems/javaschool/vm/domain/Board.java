@@ -1,4 +1,4 @@
-package com.tsystems.javaschool.vm;
+package com.tsystems.javaschool.vm.domain;
 
 import org.hibernate.annotations.Type;
 
@@ -8,10 +8,10 @@ import java.util.Date;
 
 @Entity
 @Table(name = "board")
-public class Board {
+public class Board extends SBBEntity {
     @Id
     @GeneratedValue
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "trip_id")
@@ -22,11 +22,11 @@ public class Board {
     private Station station;
 
     @Column(name = "arrive_time")
-    @Type(type="timestamp")
+    @Type(type = "timestamp")
     private Timestamp arriveTime;
 
     @Column(name = "departure_time")
-    @Type(type="timestamp")
+    @Type(type = "timestamp")
     private Timestamp departureTime;
 
     public Board() {
@@ -39,13 +39,16 @@ public class Board {
         this.departureTime = departureTime;
     }
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    @Override
+    public void setId(Integer id) {
         this.id = id;
     }
+
 
     public Trip getTrip() {
         return trip;
@@ -89,4 +92,5 @@ public class Board {
                 ", departureTime=" + departureTime +
                 '}';
     }
+
 }

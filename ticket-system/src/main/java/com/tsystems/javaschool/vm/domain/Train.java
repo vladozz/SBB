@@ -1,13 +1,13 @@
-package com.tsystems.javaschool.vm;
+package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "train")
-public class Train {
+public class Train extends SBBEntity {
     @Id
-    private int id;
+    private Integer id;
     @Column(name = "places_qty")
     private short placesQty;
 
@@ -23,11 +23,13 @@ public class Train {
         this.placesQty = placesQty;
     }
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    @Override
+    public void setId(Integer id) {
         this.id = id;
     }
 

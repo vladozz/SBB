@@ -1,13 +1,12 @@
-package com.tsystems.javaschool.vm;
+package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 import java.util.TimeZone;
 
 @Entity
 @Table(name = "station")
-public class Station implements Serializable {
+public class Station extends SBBEntity {
     @Id
     @GeneratedValue
     private Integer id;
@@ -48,11 +47,13 @@ public class Station implements Serializable {
         this.timeZone = timeZone;
     }
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    @Override
+    public void setId(Integer id) {
         this.id = id;
     }
 

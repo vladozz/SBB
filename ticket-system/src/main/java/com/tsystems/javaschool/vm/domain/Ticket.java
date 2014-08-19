@@ -1,13 +1,13 @@
-package com.tsystems.javaschool.vm;
+package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "ticket")
-public class Ticket {
+public class Ticket extends SBBEntity{
     @Id
     @GeneratedValue
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn (name = "passenger_id")
@@ -23,11 +23,13 @@ public class Ticket {
 
     public Ticket() {}
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    @Override
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -1,12 +1,11 @@
-package com.tsystems.javaschool.vm;
+package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "path")
-public class Path implements Serializable{
+public class Path extends SBBEntity{
     @Id
     private Integer id;
     @Column(name = "title")
@@ -24,11 +23,13 @@ public class Path implements Serializable{
     public Path() {
     }
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    @Override
+    public void setId(Integer id) {
         this.id = id;
     }
 

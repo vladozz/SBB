@@ -1,6 +1,6 @@
 package com.tsystems.javaschool.vm.sub;
 
-import com.tsystems.javaschool.vm.*;
+import com.tsystems.javaschool.vm.domain.*;
 
 import javax.persistence.*;
 import java.io.Closeable;

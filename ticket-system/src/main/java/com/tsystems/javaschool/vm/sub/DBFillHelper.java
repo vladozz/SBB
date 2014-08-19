@@ -1,7 +1,7 @@
 package com.tsystems.javaschool.vm.sub;
 
-import com.tsystems.javaschool.vm.Path;
-import com.tsystems.javaschool.vm.Station;
+import com.tsystems.javaschool.vm.domain.Path;
+import com.tsystems.javaschool.vm.domain.Station;
 
 import java.io.Closeable;
 import java.io.FileNotFoundException;
