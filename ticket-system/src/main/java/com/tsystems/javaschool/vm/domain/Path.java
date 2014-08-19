@@ -22,6 +22,10 @@ public class Path extends SBBEntity {
     public Path() {
     }
 
+    public Path(String title) {
+        this.title = title;
+    }
+
     public String getTitle() {
         return title;
     }

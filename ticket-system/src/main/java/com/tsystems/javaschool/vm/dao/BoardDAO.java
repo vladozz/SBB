@@ -4,4 +4,5 @@ import com.tsystems.javaschool.vm.domain.Board;
 
 public class BoardDAO extends CommonDAO<Board> {
 
+
 }

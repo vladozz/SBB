@@ -2,30 +2,31 @@ package com.tsystems.javaschool.vm.dao;
 
 import com.tsystems.javaschool.vm.domain.SBBEntity;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.persistence.*;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 public class CommonDAO<E extends SBBEntity>{
-    EntityManagerFactory emf;
-    EntityManager em;
+    Class<E> entityClass;
+    protected EntityManagerFactory emf;
+    protected EntityManager em;
 
     public CommonDAO() {
         emf = Persistence.createEntityManagerFactory("SBBPU");
         em = emf.createEntityManager();
+        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
+        this.entityClass = (Class<E>) genericSuperclass.getActualTypeArguments()[1];
     }
 
-    public EntityManager getEntityManager() {
-        return em;
+    public EntityTransaction getTransaction() {
+        return em.getTransaction();
     }
 
     public void create(E entity) {
         em.persist(entity);
     }
 
-    public E findById(Class<E> entityClass, Integer id) {
+    public E findById(Long id) {
         return em.find(entityClass, id);
     }
 
@@ -37,7 +38,7 @@ public class CommonDAO<E extends SBBEntity>{
         em.remove(entity);
     }
 
-    public List<E> findAll(Class<E> entityClass)
+    public List<E> findAll()
     {
         String queryString = "SELECT o FROM " + entityClass.getCanonicalName() + " o";
         Query query = em.createQuery(queryString);
