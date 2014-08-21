@@ -2,15 +2,27 @@ package com.tsystems.javaschool.vm.service;
 
 import com.tsystems.javaschool.vm.dao.PathDAO;
 import com.tsystems.javaschool.vm.dao.StationDAO;
+import com.tsystems.javaschool.vm.dao.TrainDAO;
+import com.tsystems.javaschool.vm.dao.TripDAO;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
+import com.tsystems.javaschool.vm.domain.Train;
+import com.tsystems.javaschool.vm.domain.Trip;
 
 import javax.persistence.EntityTransaction;
 import java.util.List;
+import java.util.TimeZone;
 
-public class pathService {
-    PathDAO pathDAO = new PathDAO();
-    StationDAO stationDAO = new StationDAO();
+public class PathService {
+    private PathDAO pathDAO;
+    private StationDAO stationDAO;
+    private TrainDAO trainDAO;
+
+    public PathService(PathDAO pathDAO, StationDAO stationDAO, TrainDAO trainDAO) {
+        this.pathDAO = pathDAO;
+        this.stationDAO = stationDAO;
+        this.trainDAO = trainDAO;
+    }
 
     public Path addPath(String title) {
         Path path = new Path(title);
@@ -25,6 +37,36 @@ public class pathService {
             }
         }
         return path;
+    }
+
+    public Station addStation(String title, TimeZone timeZone) {
+        Station station = new Station(title, timeZone);
+        EntityTransaction trx = stationDAO.getTransaction();
+        try {
+            trx.begin();
+            stationDAO.create(station);
+            trx.commit();
+        } finally {
+            if (trx.isActive()) {
+                trx.rollback();
+            }
+        }
+        return station;
+    }
+
+    public Train addTrain(String number, short placesQty) {
+        Train train = new Train(number, placesQty);
+        EntityTransaction trx = trainDAO.getTransaction();
+        try {
+            trx.begin();
+            trainDAO.create(train);
+            trx.commit();
+        } finally {
+            if (trx.isActive()) {
+                trx.rollback();
+            }
+        }
+        return train;
     }
 
     public void addStationToPath(Long pathId, Long stationId) throws Exception {
@@ -59,7 +101,7 @@ public class pathService {
             trx.begin();
             List<Station> stations = path.getStations();
             if (index < 0 || index > stations.size()) {
-                throw new Exception("Illegal index of station: " + "index = " + index
+                throw new RuntimeException("Illegal index of station: " + "index = " + index
                         + "stations.size() = " + stations.size() + "path = " + path + "station = " + station);
                 //TODO: possible change class of exception
             }

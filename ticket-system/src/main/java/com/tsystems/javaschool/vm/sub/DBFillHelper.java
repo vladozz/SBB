@@ -47,73 +47,12 @@ public class DBFillHelper implements Closeable {
         dbManager.addPassenger("Hannibal", "Lektor", new Date());
     }
 
-    public void addPaths() throws FileNotFoundException {
-        List<Path> paths = new ArrayList<Path>();
-        Scanner in = new Scanner(new FileReader("paths.txt"));
 
-        while (in.hasNextLine()) {
-            Path path = new Path();
-            path.setTitle(in.nextLine());
-            paths.add(path);
-        }
-        dbManager.persist(paths);
 
-/*        EntityManager em = dbManager.getEntityManager();
-        EntityTransaction trx = em.getTransaction();
-        try {
-            trx.begin();
-            for (Path path : paths) {
-                em.persist(path);
-            }
-            trx.commit();
-        } finally {
-            if (trx.isActive()) {
-                trx.rollback();
-            }
-        }*/
-    }
 
-    public void addStations() throws FileNotFoundException {
-        List<Station> stations = new ArrayList<Station>();
-        Scanner in = new Scanner(new FileReader("stations.txt"));
 
-        while (in.hasNextLine()) {
-            Station station = new Station();
-            station.setTitle(in.nextLine());
-            stations.add(station);
-        }
 
-        dbManager.persist(stations);
 
-/*        EntityManager em = dbManager.getEntityManager();
-        EntityTransaction trx = em.getTransaction();
-        try {
-            trx.begin();
-            for (Station station : stations) {
-                em.persist(station);
-            }
-            trx.commit();
-        } finally {
-            if (trx.isActive()) {
-                trx.rollback();
-            }
-        }*/
-    }
-
-    public void addTrains() {
-        dbManager.addTrain(11, 60);
-        dbManager.addTrain(12, 120);
-        dbManager.addTrain(13, 120);
-        dbManager.addTrain(14, 60);
-    }
-
-    private void linkPathAndStations() {
-        int [][] array = {{1, 2, 4, 3, 10, 11}, {1, 5, 6, 13, 12},{2, 14, 6, 7}, {4, 2, 4, 3, 10, 11} };
-        for (int i = 0; i < 4; i++) {
-            dbManager.joinStationsToPath(i * 2 + 1, array[i]);
-            dbManager.joinStationsToPath(i * 2 + 2, Hasher.reverseArray(array[i]));
-        }
-    }
 
     @Override
     public void close() throws IOException {

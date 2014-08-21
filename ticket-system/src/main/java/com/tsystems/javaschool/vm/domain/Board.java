@@ -53,7 +53,7 @@ public class Board extends SBBEntity {
         this.station = station;
     }
 
-    public Date getArriveTime() {
+    public Timestamp getArriveTime() {
         return arriveTime;
     }
 
@@ -61,7 +61,7 @@ public class Board extends SBBEntity {
         this.arriveTime = arriveTime;
     }
 
-    public Date getDepartureTime() {
+    public Timestamp getDepartureTime() {
         return departureTime;
     }
 

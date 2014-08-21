@@ -3,10 +3,15 @@ package com.tsystems.javaschool.vm.dao;
 import com.tsystems.javaschool.vm.domain.Ticket;
 import com.tsystems.javaschool.vm.domain.Trip;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
 
 public class TicketDAO extends CommonDAO<Ticket> {
+    public TicketDAO(EntityManager entityManager) {
+        super(entityManager);
+    }
+
     /**
      *
      * @param trip - рейс

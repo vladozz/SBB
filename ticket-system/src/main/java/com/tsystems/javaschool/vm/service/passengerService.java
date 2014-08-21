@@ -1,5 +1,6 @@
 package com.tsystems.javaschool.vm.service;
 
+import com.tsystems.javaschool.vm.dao.PassengerDAO;
 import com.tsystems.javaschool.vm.dao.TicketDAO;
 import com.tsystems.javaschool.vm.domain.*;
 
@@ -8,8 +9,29 @@ import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 
-public class passengerService {
-    TicketDAO ticketDAO = new TicketDAO();
+public class PassengerService {
+    TicketDAO ticketDAO;
+    PassengerDAO passengerDAO;
+
+    public PassengerService(PassengerDAO passengerDAO, TicketDAO ticketDAO) {
+        this.ticketDAO = ticketDAO;
+        this.passengerDAO = passengerDAO;
+    }
+
+    public Passenger addPassenger(String firstName, String lastName, Date birthDate) {
+        Passenger passenger = new Passenger(firstName, lastName, birthDate);
+        EntityTransaction trx = passengerDAO.getTransaction();
+        try {
+            trx.begin();
+            passengerDAO.create(passenger);
+            trx.commit();
+        } finally {
+            if (trx.isActive()) {
+                trx.rollback();
+            }
+        }
+        return passenger;
+    }
 
     /**
      * Метод, возвращащий кол-во доступных для покупки мест на рейс между желаемыми станциями отправления и прибытия
@@ -55,25 +77,22 @@ public class passengerService {
         return false;
     }
 
-    public boolean canBuyTicket(Passenger passenger, Board departure, Board arrive) {
+    public boolean canBuyTicket(Passenger passenger, Board departure, Board arrive) throws Exception {
         final long TEN_MINUTES = 1000L * 60 * 10;
         if (countFreePlacesOfTrip(departure, arrive) <= 0) {
-            return false;
+            throw new Exception("Out of free spaces");
         }
         if (isPassengerOnTrip(passenger, departure.getTrip())) {
-            return false;
+            throw new Exception("Passenger has already bought ticket on this trip");
         }
         if (departure.getDepartureTime().getTime() - (new Date()).getTime() < TEN_MINUTES ) {
-            return false;
+            throw new Exception("Less than ten minutes before train departure");
         }
         return true;
     }
 
     public Ticket buyTicket(Passenger passenger, Board departure, Board arrive) throws Exception {
-        if (!canBuyTicket(passenger, departure, arrive)) {
-            throw new Exception("Can't buy ticket");
-            //TODO: change class of exception
-        } else {
+        if (canBuyTicket(passenger, departure, arrive)) {
             Ticket ticket = new Ticket(passenger, departure, arrive);
             EntityTransaction trx = ticketDAO.getTransaction();
             try {
@@ -88,7 +107,33 @@ public class passengerService {
             }
             return ticket;
         }
+        return null;
+    }
 
+    public Ticket buyTicket(String firstName, String lastName, Date birthDate, Board departure, Board arrive) throws Exception {
+        Passenger passenger = passengerDAO.findByNameAndBirthDate(firstName, lastName, birthDate);
+        if (passenger == null) {
+            passenger = addPassenger(firstName, lastName, birthDate);
+            if (passenger == null) {
+                return null;
+            }
+        }
+        if (canBuyTicket(passenger, departure, arrive)) {
+            Ticket ticket = new Ticket(passenger, departure, arrive);
+            EntityTransaction trx = ticketDAO.getTransaction();
+            try {
+                trx.begin();
+                ticketDAO.create(ticket);
+                trx.commit();
+            } finally {
+                if (trx.isActive()) {
+                    trx.rollback();
+                    return null;
+                }
+            }
+            return ticket;
+        }
+        return null;
     }
 
 }

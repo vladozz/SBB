@@ -7,13 +7,11 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 public class CommonDAO<E extends SBBEntity>{
-    Class<E> entityClass;
-    protected EntityManagerFactory emf;
+    protected Class<E> entityClass;
     protected EntityManager em;
 
-    public CommonDAO() {
-        emf = Persistence.createEntityManagerFactory("SBBPU");
-        em = emf.createEntityManager();
+    public CommonDAO(EntityManager entityManager) {
+        em = entityManager;
         ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
         this.entityClass = (Class<E>) genericSuperclass.getActualTypeArguments()[1];
     }

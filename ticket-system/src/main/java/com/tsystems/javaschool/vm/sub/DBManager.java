@@ -285,23 +285,7 @@ public class DBManager implements Closeable {
      * @param id - id станции в БД
      * @param arr - массив id станций в БД
      */
-    public void joinStationsToPath(int id, int[] arr) {
-        //TODO: refactor this method
-        Path path = em.find(Path.class, id);
-        List<Station> list = path.getStations();
-        if (list == null) {
-            list = new ArrayList<Station>();
-            path.setStations(list);
-        }
-        List<Station> allStations = new ArrayList<>();
-        allStations.add(new Station());
-        allStations.addAll(getAllStations());
-        for (Integer i : arr) {
-            list.add(allStations.get(i));
-        }
 
-        merge(path);
-    }
 
     /**
      * Старый метод, добавляющий станции к маршруту
