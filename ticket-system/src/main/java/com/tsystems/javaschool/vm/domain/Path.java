@@ -6,7 +6,6 @@ import java.util.List;
 @Entity
 @Table(name = "path")
 public class Path extends SBBEntity {
-        private Integer id;
     @Column(name = "title")
     private String title;
 

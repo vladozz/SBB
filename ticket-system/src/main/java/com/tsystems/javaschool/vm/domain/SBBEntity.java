@@ -6,7 +6,8 @@ import javax.persistence.*;
 @Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
 public abstract class SBBEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "table", strategy=GenerationType.TABLE)
+    @TableGenerator(name = "table", allocationSize = 10)
     protected Long id;
 
     public Long getId() {

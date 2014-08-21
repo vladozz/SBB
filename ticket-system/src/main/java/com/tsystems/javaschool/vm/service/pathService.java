@@ -10,6 +10,7 @@ import com.tsystems.javaschool.vm.domain.Train;
 import com.tsystems.javaschool.vm.domain.Trip;
 
 import javax.persistence.EntityTransaction;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -100,6 +101,9 @@ public class PathService {
         try {
             trx.begin();
             List<Station> stations = path.getStations();
+            if (stations == null) {
+                stations = new ArrayList<Station>();
+            }
             if (index < 0 || index > stations.size()) {
                 throw new RuntimeException("Illegal index of station: " + "index = " + index
                         + "stations.size() = " + stations.size() + "path = " + path + "station = " + station);

@@ -4,6 +4,7 @@ import com.tsystems.javaschool.vm.domain.SBBEntity;
 
 import javax.persistence.*;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class CommonDAO<E extends SBBEntity>{
@@ -13,7 +14,15 @@ public class CommonDAO<E extends SBBEntity>{
     public CommonDAO(EntityManager entityManager) {
         em = entityManager;
         ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
-        this.entityClass = (Class<E>) genericSuperclass.getActualTypeArguments()[1];
+        Type type = (genericSuperclass.getActualTypeArguments()[0]);
+        if (type instanceof Class) {
+            System.out.println("(Class<E>) type = " + (Class<E>) type);;
+        } else if (type instanceof ParameterizedType) {
+            System.out.println("(Class<E>) ((ParameterizedType)type).getRawType() = " + (Class<E>) ((ParameterizedType) type).getRawType());;
+        }
+
+        //this.entityClass = (Class<E>) genericSuperclass.getActualTypeArguments()[1];
+        this.entityClass = (Class<E>) type;
     }
 
     public EntityTransaction getTransaction() {

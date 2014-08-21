@@ -13,10 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.TimeZone;
+import java.util.*;
 
 public class SBBServer {
     ServerSocket serverSocket;
@@ -44,6 +41,7 @@ public class SBBServer {
     public static void main(String[] args) throws Exception {
         SBBServer server = new SBBServer();
         server.addPaths();
+        server.addPassengers();
         server.addStations();
         server.addTrains();
         server.linkPathAndStations();
@@ -58,13 +56,23 @@ public class SBBServer {
         }
     }
 
+    public void addPassengers() {
+        passengerService.addPassenger("Vladimir", "Putin", new Date());
+        passengerService.addPassenger("Dmitriy", "Medvedev", new Date());
+        passengerService.addPassenger("German", "Gref", new Date());
+        passengerService.addPassenger("Barak", "Obama", new Date());
+        passengerService.addPassenger("Sid", "Vicious", new Date());
+        passengerService.addPassenger("Ozzy", "Osbourne", new Date());
+        passengerService.addPassenger("Brad", "Pitt", new Date());
+        passengerService.addPassenger("Hannibal", "Lektor", new Date());
+    }
+
     public void addStations() throws FileNotFoundException {
         Scanner in = new Scanner(new FileReader("stations.txt"));
 
         while (in.hasNextLine()) {
             pathService.addStation(in.nextLine(), TimeZone.getDefault());
         }
-
 
     }
 
@@ -79,10 +87,10 @@ public class SBBServer {
         long [][] array = {{1, 2, 4, 3, 10, 11}, {1, 5, 6, 13, 12},{2, 14, 6, 7}, {4, 2, 4, 3, 10, 11} };
         for (long i = 0; i < 4; i++) {
             for (Long s : array[(int) i]) {
-                pathService.addStationToPath( i * 2 + 1, s);
+                pathService.addStationToPath( i + 1, s + 17);
             }
             for (Long s : Hasher.reverseArray(array[(int) i])) {
-                pathService.addStationToPath( i * 2 + 2, s);
+                pathService.addStationToPath( i * 2 + 2, s + 17);
             }
         }
     }
