@@ -5,12 +5,11 @@ import com.tsystems.javaschool.vm.domain.*;
 import com.tsystems.javaschool.vm.dto.BoardStationDTO;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 public class BoardService {
@@ -150,12 +149,60 @@ public class BoardService {
         return boardTripDTOList;
     }
 
-//    public void getDefTrips(String arriveStation, String departureStation, Timestamp departureTime, Timestamp arriveTime) {
-//        String queryString = "SELECT t FROM Board b.trip WHERE ";
-//        Query query = boardDAO.createQuery(queryString);
-//        query.setParameter("stationTitle", stationTitle);
-//        query.setParameter("before", before);
-//        query.setParameter("after", after);
-//        return query.getResultList();
-//    }
+    public List<PairBoard> getDefTrips(String departureStation, String arriveStation, Timestamp departureAfter, Timestamp arriveBefore) {
+        String queryString = "SELECT b FROM Board b " +
+                "WHERE b.station = :arriveStation and " +
+                "b.arriveTime < :arriveBefore and b.arriveTime > :departureAfter";
+        Query query = boardDAO.createQuery(queryString);
+        query.setParameter("arriveStation", arriveStation);
+        query.setParameter("departureAfter", departureAfter);
+        query.setParameter("arriveBefore", arriveBefore);
+        List<Board> boardsArrive = query.getResultList();
+        queryString = "SELECT b FROM Board b " +
+                "WHERE b.trip = t and b.station = :departureStation" +
+                " and b.departureTime > :departureAfter and b.departureTime < :arriveBefore ";
+        query = boardDAO.createQuery(queryString);
+        query.setParameter("departureStation", departureStation);
+        query.setParameter("departureAfter", departureAfter);
+        query.setParameter("arriveBefore", arriveBefore);
+        List<Board> boardsDeparture = query.getResultList();
+        List<PairBoard> pairBoards = new ArrayList<>();
+        for (Board ba : boardsArrive) {
+            for (Board bd : boardsDeparture) {
+                if (ba.getTrip().equals(bd.getTrip())) {
+                    pairBoards.add(new PairBoard(bd, ba));
+                    break;
+                }
+            }
+        }
+
+        return pairBoards;
+    }
+
+    @Deprecated
+    public List<Trip> getDefTripsOld(String departureStation, String arriveStation, Timestamp departureAfter, Timestamp arriveBefore) {
+        String queryString = "SELECT t FROM Trip t, Board b " +
+                "WHERE b.trip = t and b.station = :arriveStation and " +
+                "b.arriveTime < :arriveBefore and b.arriveTime > :departureAfter";
+        Query query = boardDAO.createQuery(queryString);
+        query.setParameter("arriveStation", arriveStation);
+        query.setParameter("arriveBefore", arriveBefore);
+        List<Trip> tripsBefore = query.getResultList();
+        queryString = "SELECT t FROM Trip t, Board b " +
+                "WHERE b.trip = t and b.station = :departureStation" +
+                " and b.departureTime > :departureAfter and b.departureTime < :arriveBefore ";
+        query = boardDAO.createQuery(queryString);
+        query.setParameter("departureStation", departureStation);
+        query.setParameter("departureAfter", departureAfter);
+        List<Trip> tripsAfter = query.getResultList();
+        Set<Trip> tripSet = new HashSet<>();
+        tripSet.addAll(tripsBefore);
+        List<Trip> trips = new ArrayList<>();
+        for (Trip t : tripsAfter) {
+            if (tripSet.add(t)) {
+                trips.add(t);
+            }
+        }
+        return trips;
+    }
 }

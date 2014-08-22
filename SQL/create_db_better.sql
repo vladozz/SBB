@@ -1,34 +1,35 @@
-drop database if exists sbb;
+#drop database if exists sbb;
 create database sbb;
 use sbb;
 
 create table train (
-    id int primary KEY,
+    id bigint not null auto_increment primary KEY,
 	num varchar(50),
     places_qty smallint
 )  engine=InnoDB;
 
 create table path (
-	id int auto_increment primary key,
+	id bigint not null auto_increment primary key,
 	title varchar(50)
 ) engine = InnoDB;
 
 create table station (
-    id int auto_increment primary key,
+    id bigint not null auto_increment primary key,
     title varchar(50) not null,
     time_zone varchar(50)
 )  engine=InnoDB;
 
 create table path_station (
-	id int auto_increment primary key,
-	path_id int,
-	station_id int,
+	id bigint not null auto_increment primary key,
+	path_id bigint,
+	station_id bigint,
+	stand_time int,
     foreign key (path_id) references path (id),
 	foreign key (station_id) references station (id)
 )  engine=InnoDB;
 
 create table passenger (
-    id int auto_increment primary key,
+    id bigint not null auto_increment primary key,
     first_name varchar(50) not null,
     last_name varchar(50),
     birthdate date,
@@ -36,17 +37,17 @@ create table passenger (
 )  engine=InnoDB;
 
 create table trip (
-	id int AUTO_INCREMENT primary KEY,
-	path_id int,
-	train_id int,
+	id bigint not null auto_increment primary KEY,
+	path_id bigint,
+	train_id bigint,
 	foreign key (train_id) references train (id),
 	foreign key (path_id) references path (id)
 )   engine=InnoDB;
 
 create table board (
-    id int AUTO_INCREMENT primary KEY,
-	trip_id int,
-	station_id int,
+    id bigint not null auto_increment primary KEY,
+	trip_id bigint,
+	station_id bigint,
 	arrive_time timestamp,
     departure_time timestamp,
 	foreign key (trip_id) references trip (id),
@@ -54,10 +55,10 @@ create table board (
 )  engine=InnoDB;
 
 create table ticket (
-    id int AUTO_INCREMENT primary KEY,
-    passenger_id int,
-    departure int,
-	arrive int,
+    id bigint not null auto_increment primary KEY,
+    passenger_id bigint,
+    departure bigint,
+	arrive bigint,
     foreign key (passenger_id) references passenger (id),
 	foreign key (departure) references board (id),
     foreign key (arrive) references board (id)
@@ -66,14 +67,34 @@ create table ticket (
 create table role
 (
 	id int auto_increment primary key,
-	title varchar(10)
+	title varchar(30)
 ) engine=InnoDB;
 
 create table user (
 	id int AUTO_INCREMENT primary KEY,
 	login varchar(30),
-	pswd varchar(30),
+	pswd varchar(80),
 	role_id int,
-	foreign key (role_id) references role (id)
+	foreign key (role_id) references role (id),
+	unique key (login)
 ) engine=InnoDB;
 
+create table hibernate_sequences (
+	sequence_next_hi_value bigint,
+	sequence_name varchar(50)
+) engine = InnoDB;
+#delete from board where id > 0
+select * from board;
+#select trip_id, title from board, station where station.id = station_id
+#update path_station set stand_time = 10 where id > 0
+#update train set places_qty = 4 where id = 32
+
+#use sbb;
+#insert into role set title = "admin";
+#select * from role;
+#insert into user set login = "admin", pswd = "21232F297A57A5A743894A0E4A801FC3", role_id = 1 
+
+select trip.id from trip, board, station 
+where trip.id = trip_id and 
+(board.arrive_time > 0 and board.station_id = station.id and station.title = "Moscow") and 
+(board.departure_time < 10 and board.station_id = station.id and station.title = "Adler");

@@ -1,6 +1,7 @@
 package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "trip")
@@ -11,6 +12,9 @@ public class Trip extends SBBEntity{
     @ManyToOne
     @JoinColumn(name = "train_id")
     private Train train;
+
+    @OneToMany(mappedBy = "trip")
+    private List<Board> boardList;
 
     public Trip() {
     }
@@ -34,6 +38,32 @@ public class Trip extends SBBEntity{
 
     public void setTrain(Train train) {
         this.train = train;
+    }
+
+    public List<Board> getBoardList() {
+        return boardList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Trip)) return false;
+        if (!super.equals(o)) return false;
+
+        Trip trip = (Trip) o;
+
+        if (!path.equals(trip.path)) return false;
+        if (!train.equals(trip.train)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + path.hashCode();
+        result = 31 * result + train.hashCode();
+        return result;
     }
 
     @Override

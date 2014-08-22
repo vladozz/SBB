@@ -44,6 +44,28 @@ public class Train extends SBBEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Train)) return false;
+        if (!super.equals(o)) return false;
+
+        Train train = (Train) o;
+
+        if (!number.equals(train.number)) return false;
+        if (!placesQty.equals(train.placesQty)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + number.hashCode();
+        result = 31 * result + placesQty.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Train{" +
                 "number='" + number + '\'' +

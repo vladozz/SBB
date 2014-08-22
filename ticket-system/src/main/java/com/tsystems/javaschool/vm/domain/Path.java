@@ -1,6 +1,7 @@
 package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -46,6 +47,26 @@ public class Path extends SBBEntity {
 
     public List<Trip> getTrips() {
         return trips;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Path)) return false;
+        if (!super.equals(o)) return false;
+
+        Path path = (Path) o;
+
+        if (!title.equals(path.title)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + title.hashCode();
+        return result;
     }
 
     @Override

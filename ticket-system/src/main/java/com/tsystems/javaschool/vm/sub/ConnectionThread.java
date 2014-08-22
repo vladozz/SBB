@@ -1,10 +1,7 @@
 package com.tsystems.javaschool.vm.sub;
 
 
-import com.tsystems.javaschool.vm.domain.Board;
-import com.tsystems.javaschool.vm.domain.Passenger;
-import com.tsystems.javaschool.vm.domain.Station;
-import com.tsystems.javaschool.vm.domain.Train;
+import com.tsystems.javaschool.vm.domain.*;
 import com.tsystems.javaschool.vm.dto.*;
 import com.tsystems.javaschool.vm.protocol.ClientCommand;
 import com.tsystems.javaschool.vm.protocol.ManagerCommand;
@@ -61,7 +58,6 @@ public class ConnectionThread implements Runnable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        //TODO: реализация
     }
 
     private void enterClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
@@ -76,7 +72,7 @@ public class ConnectionThread implements Runnable {
                     buyTicket(in, out);
                     break;
                 case GetDefTrips:
-//                    getDefTrips(in, out);
+                    getDefTrips(in, out);
                     break;
                 default:
                     break;
@@ -84,14 +80,26 @@ public class ConnectionThread implements Runnable {
         }
     }
 
-//    private void getDefTrips(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
-//        Object o = in.readObject();
-//        if (o instanceof DefTripDTO) {
-//            server.getBoardService().getDefTrips()
-//        } else {
-//            out.writeObject(ServerResponse.InvalidInput);
-//        }
-//    }
+    private void getDefTrips(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+        Object o = in.readObject();
+        if (o instanceof DefTripDTO) {
+            DefTripDTO defTripDTO = ((DefTripDTO) o);
+            List<PairBoard> pairBoards = server.getBoardService().getDefTrips(defTripDTO.getDepartureStation(),
+                    defTripDTO.getArriveStation(), defTripDTO.getDepartureTime(), defTripDTO.getArriveTime());
+            List<ReqDefTripDTO> reqDefTripDTOList = new ArrayList<>();
+            for (PairBoard pairBoard : pairBoards) {
+                Trip trip = pairBoard.getArrive().getTrip();
+                ReqDefTripDTO reqDefTripDTO = new ReqDefTripDTO(trip.getId(),
+                        trip.getTrain().getNumber(), trip.getPath().getTitle(),
+                        pairBoard.getDeparture().getId(), pairBoard.getDeparture().getStation().getTitle(), pairBoard.getDeparture().getDepartureTime(),
+                        pairBoard.getArrive().getId(), pairBoard.getArrive().getStation().getTitle(), pairBoard.getArrive().getArriveTime());
+                reqDefTripDTOList.add(reqDefTripDTO);
+            }
+            out.writeObject(reqDefTripDTOList);
+        } else {
+            out.writeObject(ServerResponse.InvalidInput);
+        }
+    }
 
     private void buyTicket(ObjectInputStream in, ObjectOutputStream out) {
         //TODO: реализация
