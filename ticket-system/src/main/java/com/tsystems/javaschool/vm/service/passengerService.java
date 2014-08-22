@@ -1,24 +1,31 @@
 package com.tsystems.javaschool.vm.service;
 
+import com.tsystems.javaschool.vm.dao.BoardDAO;
 import com.tsystems.javaschool.vm.dao.PassengerDAO;
+import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.dao.TicketDAO;
 import com.tsystems.javaschool.vm.domain.*;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class PassengerService {
-    TicketDAO ticketDAO;
-    PassengerDAO passengerDAO;
+    private TicketDAO ticketDAO;
+    private PassengerDAO passengerDAO;
+    private StationDAO stationDAO;
+    private BoardDAO boardDAO;
 
-    public PassengerService(PassengerDAO passengerDAO, TicketDAO ticketDAO) {
+    public PassengerService(PassengerDAO passengerDAO, TicketDAO ticketDAO, BoardDAO boardDAO, StationDAO stationDAO){
         this.ticketDAO = ticketDAO;
         this.passengerDAO = passengerDAO;
+        this.stationDAO = stationDAO;
+        this.boardDAO = boardDAO;
     }
 
-    public Passenger addPassenger(String firstName, String lastName, Date birthDate) {
+    public Passenger addPassenger(String firstName, String lastName, Calendar birthDate) {
         Passenger passenger = new Passenger(firstName, lastName, birthDate);
         EntityTransaction trx = passengerDAO.getTransaction();
         try {
@@ -41,9 +48,7 @@ public class PassengerService {
      */
     public int countFreePlacesOfTrip(Board departure, Board arrive) {
         Trip trip = departure.getTrip();
-        Path path = trip.getPath();
-        //TODO: поменять код, чтобы станции брались из расписания, а не маршрута
-        List<Station> stations = path.getStations();
+        List<Station> stations = stationDAO.getFromBoardByTrip(trip);
         List<Ticket> tickets = ticketDAO.getTicketsOfTrip(trip);
 
         int begin = stations.indexOf(departure.getStation());
@@ -92,32 +97,6 @@ public class PassengerService {
     }
 
     public Ticket buyTicket(Passenger passenger, Board departure, Board arrive) throws Exception {
-        if (canBuyTicket(passenger, departure, arrive)) {
-            Ticket ticket = new Ticket(passenger, departure, arrive);
-            EntityTransaction trx = ticketDAO.getTransaction();
-            try {
-                trx.begin();
-                ticketDAO.create(ticket);
-                trx.commit();
-            } finally {
-                if (trx.isActive()) {
-                    trx.rollback();
-                    return null;
-                }
-            }
-            return ticket;
-        }
-        return null;
-    }
-
-    public Ticket buyTicket(String firstName, String lastName, Date birthDate, Board departure, Board arrive) throws Exception {
-        Passenger passenger = passengerDAO.findByNameAndBirthDate(firstName, lastName, birthDate);
-        if (passenger == null) {
-            passenger = addPassenger(firstName, lastName, birthDate);
-            if (passenger == null) {
-                return null;
-            }
-        }
         if (canBuyTicket(passenger, departure, arrive)) {
             Ticket ticket = new Ticket(passenger, departure, arrive);
             EntityTransaction trx = ticketDAO.getTransaction();

@@ -1,6 +1,7 @@
 package com.tsystems.javaschool.vm.dao;
 
 import com.tsystems.javaschool.vm.domain.Station;
+import com.tsystems.javaschool.vm.domain.Trip;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -23,6 +24,13 @@ public class StationDAO extends CommonDAO<Station> {
         String queryString = "SELECT s FROM Station s WHERE LOWER(s.timeZone) = :timeZone";
         Query query = em.createQuery(queryString);
         query.setParameter("timeZone", timeZone);
+        return query.getResultList();
+    }
+
+    public List<Station> getFromBoardByTrip(Trip trip) {
+        String queryString = "SELECT b.station FROM Board b WHERE b.trip = :trip";
+        Query query = em.createQuery(queryString);
+        query.setParameter("trip", trip);
         return query.getResultList();
     }
 }

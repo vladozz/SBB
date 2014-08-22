@@ -5,7 +5,9 @@ import com.tsystems.javaschool.vm.domain.Trip;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class PassengerDAO extends CommonDAO<Passenger> {
@@ -13,7 +15,7 @@ public class PassengerDAO extends CommonDAO<Passenger> {
         super(entityManager);
     }
 
-    public Passenger findByNameAndBirthDate(String firstName, String lastName, Date birthDate) {
+    public Passenger findByNameAndBirthDate(String firstName, String lastName, Calendar birthDate) {
         String queryString = "SELECT p FROM Passenger p WHERE LOWER(p.firstName) = :firstName AND " +
                 "LOWER(p.lastName) = :lastName AND p.birthDate = :birthDate";
         Query query = em.createQuery(queryString);

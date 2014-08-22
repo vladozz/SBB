@@ -9,6 +9,7 @@ public class Path extends SBBEntity {
     @Column(name = "title")
     private String title;
 
+
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name = "path_station",
             joinColumns = {@JoinColumn(name = "path_id")},
@@ -17,6 +18,8 @@ public class Path extends SBBEntity {
 
     @OneToMany(mappedBy = "path")
     private List<Trip> trips;
+
+
 
     public Path() {
     }

@@ -18,7 +18,7 @@ public class Hasher {
         return code.toString();
     }
 
-    public static String md5(String text) throws NoSuchAlgorithmException {
+    public static String md5(String text) {
         StringBuilder code = new StringBuilder(); //the hash code
         try {
             byte[] digest = MessageDigest.getInstance("md5").digest(text.getBytes());
@@ -32,9 +32,7 @@ public class Hasher {
         return null;
     }
 
-    public static long getRandomLong() {
-        return ((long) (Math.random() * Long.MAX_VALUE));
-    }
+
 
     public static long [] reverseArray(long[] array) {
         for (int i = 0; i < array.length / 2; i++) {

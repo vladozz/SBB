@@ -15,13 +15,6 @@ public class CommonDAO<E extends SBBEntity>{
         em = entityManager;
         ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
         Type type = (genericSuperclass.getActualTypeArguments()[0]);
-        if (type instanceof Class) {
-            System.out.println("(Class<E>) type = " + (Class<E>) type);;
-        } else if (type instanceof ParameterizedType) {
-            System.out.println("(Class<E>) ((ParameterizedType)type).getRawType() = " + (Class<E>) ((ParameterizedType) type).getRawType());;
-        }
-
-        //this.entityClass = (Class<E>) genericSuperclass.getActualTypeArguments()[1];
         this.entityClass = (Class<E>) type;
     }
 

@@ -1,6 +1,7 @@
 package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class Passenger extends SBBEntity {
     private String lastName;
 
     @Column(name="birthdate")
-    private Date birthDate;
+    private Calendar birthDate;
 
     @OneToMany(mappedBy = "passenger")
     private List<Ticket> tickets;
@@ -23,7 +24,7 @@ public class Passenger extends SBBEntity {
     public Passenger() {
     }
 
-    public Passenger(String firstName, String lastName, Date birthDate) {
+    public Passenger(String firstName, String lastName, Calendar birthDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
@@ -45,11 +46,11 @@ public class Passenger extends SBBEntity {
         this.lastName = lastName;
     }
 
-    public Date getBirthDate() {
+    public Calendar getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(Calendar birthDate) {
         this.birthDate = birthDate;
     }
 

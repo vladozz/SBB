@@ -3,7 +3,7 @@ package com.tsystems.javaschool.vm.dto;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class BoardDTO implements Serializable {
+public class BoardStationDTO implements Serializable {
     private static final long serialVersionUID = -7055087988191590355L;
     private long tripNumber;
     private String pathTitle;
@@ -11,10 +11,10 @@ public class BoardDTO implements Serializable {
     private int standTime;
     private Timestamp departureTime;
 
-    public BoardDTO() {
+    public BoardStationDTO() {
     }
 
-    public BoardDTO(long tripNumber, String pathTitle, Timestamp arriveTime, int standTime, Timestamp departureTime) {
+    public BoardStationDTO(long tripNumber, String pathTitle, Timestamp arriveTime, int standTime, Timestamp departureTime) {
         this.tripNumber = tripNumber;
         this.pathTitle = pathTitle;
         this.arriveTime = arriveTime;
@@ -60,5 +60,16 @@ public class BoardDTO implements Serializable {
 
     public void setDepartureTime(Timestamp departureTime) {
         this.departureTime = departureTime;
+    }
+
+    @Override
+    public String toString() {
+        return "BoardDTO{" +
+                "tripNumber=" + tripNumber +
+                ", pathTitle='" + pathTitle + '\'' +
+                ", arriveTime=" + arriveTime +
+                ", standTime=" + standTime +
+                ", departureTime=" + departureTime +
+                '}';
     }
 }

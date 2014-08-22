@@ -2,7 +2,8 @@ package com.tsystems.javaschool.vm.service;
 
 import com.tsystems.javaschool.vm.dao.*;
 import com.tsystems.javaschool.vm.domain.*;
-import com.tsystems.javaschool.vm.dto.BoardDTO;
+import com.tsystems.javaschool.vm.dto.BoardStationDTO;
+import com.tsystems.javaschool.vm.dto.BoardTripDTO;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
@@ -13,15 +14,28 @@ import java.util.List;
 
 
 public class BoardService {
-    BoardDAO boardDAO;
-    TripDAO tripDAO;
+    private BoardDAO boardDAO;
+    private TripDAO tripDAO;
+    private PathDAO pathDAO;
+    private TrainDAO trainDAO;
+
+    public BoardService(BoardDAO boardDAO, TripDAO tripDAO, PathDAO pathDAO, TrainDAO trainDAO) {
+        this.boardDAO = boardDAO;
+        this.tripDAO = tripDAO;
+        this.pathDAO = pathDAO;
+        this.trainDAO = trainDAO;
+    }
 
     public BoardService(BoardDAO boardDAO, TripDAO tripDAO) {
         this.boardDAO = boardDAO;
         this.tripDAO = tripDAO;
     }
 
-
+    public Trip addTrip(Long pathID, Long trainID) {
+        Path path = pathDAO.findById(pathID);
+        Train train = trainDAO.findById(trainID);
+        return addTrip(path, train);
+    }
     public Trip addTrip(Path path, Train train) {
         Trip trip = new Trip(path, train);
         EntityTransaction trx = tripDAO.getTransaction();
@@ -88,23 +102,41 @@ public class BoardService {
         return query.getResultList();
     }
 
-    public List<BoardDTO> getBoardForStationForToday(Station station) {
+    public List<BoardStationDTO> getBoardForStationForToday(Station station) {
         final long DAY = 1000L * 60 * 60 * 24;
         Timestamp after = new Timestamp(new Date().getTime());
         after.setHours(0);
         after.setMinutes(0);
         after.setSeconds(0);
         Timestamp before = new Timestamp(after.getTime() + DAY);
-        List<BoardDTO> boardDTOList = new ArrayList<BoardDTO>();
+        List<BoardStationDTO> boardStationDTOList = new ArrayList<BoardStationDTO>();
         for (Board b : getBoardForStation(station, before, after)) {
-            BoardDTO boardDTO = new BoardDTO();
-            boardDTO.setTripNumber(b.getTrip().getId());
-            boardDTO.setPathTitle(b.getTrip().getPath().getTitle());
-            boardDTO.setArriveTime(b.getArriveTime());
-            boardDTO.setDepartureTime(b.getDepartureTime());
-            boardDTO.setStandTime((int)(b.getArriveTime().getTime() - b.getArriveTime().getTime()));
-            boardDTOList.add(boardDTO);
+            BoardStationDTO boardStationDTO = new BoardStationDTO();
+            boardStationDTO.setTripNumber(b.getTrip().getId());
+            boardStationDTO.setPathTitle(b.getTrip().getPath().getTitle());
+            boardStationDTO.setArriveTime(b.getArriveTime());
+            boardStationDTO.setDepartureTime(b.getDepartureTime());
+            boardStationDTO.setStandTime((int)(b.getDepartureTime().getTime() - b.getArriveTime().getTime()) / 60000);
+            boardStationDTOList.add(boardStationDTO);
         }
-        return boardDTOList;
+        return boardStationDTOList;
+    }
+
+    public List<BoardTripDTO> getBoardForTrip(Long tripId) {
+        Trip trip = tripDAO.findById(tripId);
+        String queryString = "SELECT b FROM Board b WHERE b.trip = :trip";
+        Query query = boardDAO.createQuery(queryString);
+        query.setParameter("trip", trip);
+        List<BoardTripDTO> boardTripDTOList = new ArrayList<>();
+        for (Board b : (List<Board>) query.getResultList()) {
+            BoardTripDTO boardTripDTO = new BoardTripDTO();
+            boardTripDTO.setTripNumber(b.getTrip().getId());
+            boardTripDTO.setStationTitle(b.getStation().getTitle());
+            boardTripDTO.setArriveTime(b.getArriveTime());
+            boardTripDTO.setDepartureTime(b.getDepartureTime());
+            boardTripDTO.setStandTime((int)(b.getDepartureTime().getTime() - b.getArriveTime().getTime()) / 60000);
+            boardTripDTOList.add(boardTripDTO);
+        }
+        return boardTripDTOList;
     }
 }

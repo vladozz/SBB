@@ -1,26 +1,35 @@
 package com.tsystems.javaschool.vm.sub;
 
+import com.tsystems.javaschool.vm.client.StartForm;
+import com.tsystems.javaschool.vm.client.StartLoginForm;
 import com.tsystems.javaschool.vm.dao.*;
 import com.tsystems.javaschool.vm.domain.*;
+import com.tsystems.javaschool.vm.dto.BoardTripDTO;
 import com.tsystems.javaschool.vm.service.BoardService;
 import com.tsystems.javaschool.vm.service.PassengerService;
 import com.tsystems.javaschool.vm.service.PathService;
+import com.tsystems.javaschool.vm.service.UserService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.List;
 
 public class SBBServer {
     ServerSocket serverSocket;
+    Map<Long, String> sessions;
 
     BoardService boardService;
     PassengerService passengerService;
     PathService pathService;
+    UserService userService;
 
     public SBBServer() {
         EntityManager em = Persistence.createEntityManagerFactory("SBBPU").createEntityManager();
@@ -32,19 +41,17 @@ public class SBBServer {
         TrainDAO trainDAO = new TrainDAO(em);
         TripDAO tripDAO = new TripDAO(em);
         TicketDAO ticketDAO = new TicketDAO(em);
+        UserDAO userDAO = new UserDAO(em);
 
-        boardService = new BoardService(boardDAO, tripDAO);
-        passengerService = new PassengerService(passengerDAO, ticketDAO);
+        boardService = new BoardService(boardDAO, tripDAO, pathDAO, trainDAO);
+        passengerService = new PassengerService(passengerDAO, ticketDAO, boardDAO, stationDAO);
         pathService = new PathService(pathDAO, stationDAO, trainDAO);
+        userService = new UserService(userDAO);
     }
 
     public static void main(String[] args) throws Exception {
         SBBServer server = new SBBServer();
-        server.addPaths();
-        server.addPassengers();
-        server.addStations();
-        server.addTrains();
-        server.linkPathAndStations();
+        server.start();
 
     }
 
@@ -57,14 +64,14 @@ public class SBBServer {
     }
 
     public void addPassengers() {
-        passengerService.addPassenger("Vladimir", "Putin", new Date());
-        passengerService.addPassenger("Dmitriy", "Medvedev", new Date());
-        passengerService.addPassenger("German", "Gref", new Date());
-        passengerService.addPassenger("Barak", "Obama", new Date());
-        passengerService.addPassenger("Sid", "Vicious", new Date());
-        passengerService.addPassenger("Ozzy", "Osbourne", new Date());
-        passengerService.addPassenger("Brad", "Pitt", new Date());
-        passengerService.addPassenger("Hannibal", "Lektor", new Date());
+        passengerService.addPassenger("Vladimir", "Putin", new GregorianCalendar(2014, Calendar.AUGUST, 21));
+        passengerService.addPassenger("Dmitriy", "Medvedev", new GregorianCalendar(2014, Calendar.AUGUST, 21));
+        passengerService.addPassenger("German", "Gref", new GregorianCalendar(2014, Calendar.AUGUST, 21));
+        passengerService.addPassenger("Barak", "Obama", new GregorianCalendar(2014, Calendar.AUGUST, 21));
+        passengerService.addPassenger("Sid", "Vicious", new GregorianCalendar(2014, Calendar.AUGUST, 21));
+        passengerService.addPassenger("Ozzy", "Osbourne", new GregorianCalendar(2014, Calendar.AUGUST, 21));
+        passengerService.addPassenger("Brad", "Pitt", new GregorianCalendar(2014, Calendar.AUGUST, 21));
+        passengerService.addPassenger("Hannibal", "Lektor", new GregorianCalendar(2014, Calendar.AUGUST, 21));
     }
 
     public void addStations() throws FileNotFoundException {
@@ -95,6 +102,24 @@ public class SBBServer {
         }
     }
 
+    public void addMiniBoard() {
+        final long HOUR = 1000L * 60 * 60;
+        final long TEN_MINUTES = 1000L * 60 * 10;
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+        Trip trip = boardService.addTrip(1L, 32L);
+        List<Timestamp> departures = new ArrayList<>();
+        List<Timestamp> arrives = new ArrayList<>();
+        for (int i = 0; i < trip.getPath().getStations().size(); i++) {
+            arrives.add(timestamp);
+            timestamp = new Timestamp(timestamp.getTime() + TEN_MINUTES);
+            departures.add(timestamp);
+            timestamp = new Timestamp(timestamp.getTime() + HOUR);
+        }
+        boardService.generateBoardByTrip(trip, arrives, departures);
+    }
+
+
+
     public void start() {
 
 
@@ -103,7 +128,7 @@ public class SBBServer {
             this.serverSocket = serverSocket;
             while (true) {
                 Socket incoming = serverSocket.accept();
-                Runnable r = new ConnectionThread(incoming);
+                Runnable r = new ConnectionThread(incoming, this);
                 Thread t = new Thread(r);
                 t.start();
             }
@@ -121,5 +146,13 @@ public class SBBServer {
                 //TODO: add Logger
             }
         }
+    }
+
+    public void addSession(Long id, String login) {
+        sessions.put(id, login);
+    }
+
+    public boolean containsSession(Long id) {
+        return sessions.containsKey(id);
     }
 }
