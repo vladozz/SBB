@@ -1,20 +1,21 @@
 package com.tsystems.javaschool.vm.sub;
 
+
+import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.domain.Passenger;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.Train;
-import com.tsystems.javaschool.vm.dto.PassengerDTO;
-import com.tsystems.javaschool.vm.dto.StationDTO;
-import com.tsystems.javaschool.vm.dto.TrainDTO;
+import com.tsystems.javaschool.vm.dto.*;
+import com.tsystems.javaschool.vm.protocol.ClientCommand;
 import com.tsystems.javaschool.vm.protocol.ManagerCommand;
 import com.tsystems.javaschool.vm.protocol.StartRequest;
-import com.tsystems.javaschool.vm.dto.LoginDTO;
 import com.tsystems.javaschool.vm.protocol.ServerResponse;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class ConnectionThread implements Runnable {
                 StartRequest startRequest = ((StartRequest) o);
                 switch (startRequest) {
                     case EnterClient:
-
+                        enterClient(in, out);
                         break;
                     case LoginManager:
                         loginManager(in, out);
@@ -52,8 +53,8 @@ public class ConnectionThread implements Runnable {
             } else {
                 out.writeObject(ServerResponse.InvalidCommand);
             }
-            incoming.shutdownOutput();
             out.close();
+            incoming.shutdownOutput();
             incoming.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,11 +64,68 @@ public class ConnectionThread implements Runnable {
         //TODO: реализация
     }
 
+    private void enterClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+        Object o = in.readObject();
+        if (o instanceof ClientCommand) {
+            ClientCommand clientCommand = ((ClientCommand) o);
+            switch (clientCommand) {
+                case GetBoardForStation:
+                    getBoardForStation(in, out);
+                    break;
+                case BuyTicket:
+                    buyTicket(in, out);
+                    break;
+                case GetDefTrips:
+//                    getDefTrips(in, out);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+//    private void getDefTrips(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+//        Object o = in.readObject();
+//        if (o instanceof DefTripDTO) {
+//            server.getBoardService().getDefTrips()
+//        } else {
+//            out.writeObject(ServerResponse.InvalidInput);
+//        }
+//    }
+
+    private void buyTicket(ObjectInputStream in, ObjectOutputStream out) {
+        //TODO: реализация
+    }
+
+    private void getBoardForStation(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+        Object o = in.readObject();
+        Object o2 = in.readObject();
+        Object o3 = in.readObject();
+        if (o instanceof String && o2 instanceof Timestamp && o3 instanceof Timestamp) {
+            String stationTitle = (String) o;
+            Timestamp after = ((Timestamp) o2);
+            Timestamp before = ((Timestamp) o3);
+            List<Board> boardList = server.getBoardService().getBoardForStation(stationTitle, after, before);
+            List<BoardStationDTO> boardStationDTOs = new ArrayList<>();
+            for (Board b : boardList) {
+                BoardStationDTO boardStationDTO = new BoardStationDTO(b.getTrip().getId(),
+                        b.getTrip().getPath().getTitle(),
+                        b.getTrip().getTrain().getNumber(),
+                        b.getArriveTime(),
+                        (int)(b.getDepartureTime().getTime() - b.getArriveTime().getTime()) / 60000,
+                        b.getDepartureTime());
+                boardStationDTOs.add(boardStationDTO);
+            }
+            out.writeObject(boardStationDTOs);
+        } else {
+            out.writeObject(ServerResponse.InvalidInput);
+        }
+    }
+
     public void sessionManager(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
-        Object o;
         Long sessionID = in.readLong();
         if (server.containsSession(sessionID)) {
-            o = in.readObject();
+            Object o = in.readObject();
             if (o instanceof ManagerCommand) {
                 ManagerCommand mc = ((ManagerCommand) o);
                 switch (mc) {
@@ -79,7 +137,13 @@ public class ConnectionThread implements Runnable {
                         break;
                     case GetPassengersOfTrip:
                         getPassengersOfTrip(in, out);
-                    //TODO:
+                        break;
+                    case GetAllTrains:
+                        getAllTrains(in, out);
+                        break;
+                    //TODO: add my logic
+                    default:
+                        break;
                 }
             } else {
                 out.writeObject(ServerResponse.InvalidCommand);
@@ -87,6 +151,16 @@ public class ConnectionThread implements Runnable {
         } else {
             out.writeObject(ServerResponse.InvalidSession);
         }
+    }
+
+    private void getAllTrains(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+        List<Train> trains = server.getPathService().getAllTrains();
+        List<TrainDTO> trainDTOs = new ArrayList<>();
+        for (Train t : trains) {
+            TrainDTO trainDTO = new TrainDTO(t.getNumber(), t.getPlacesQty());
+            trainDTOs.add(trainDTO);
+        }
+        out.writeObject(trainDTOs);
     }
 
     private void getPassengersOfTrip(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {

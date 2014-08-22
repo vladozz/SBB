@@ -7,6 +7,7 @@ public class BoardStationDTO implements Serializable {
     private static final long serialVersionUID = -7055087988191590355L;
     private long tripNumber;
     private String pathTitle;
+    private String trainNumber;
     private Timestamp arriveTime;
     private int standTime;
     private Timestamp departureTime;
@@ -14,9 +15,10 @@ public class BoardStationDTO implements Serializable {
     public BoardStationDTO() {
     }
 
-    public BoardStationDTO(long tripNumber, String pathTitle, Timestamp arriveTime, int standTime, Timestamp departureTime) {
+    public BoardStationDTO(long tripNumber, String pathTitle, String trainNumber, Timestamp arriveTime, int standTime, Timestamp departureTime) {
         this.tripNumber = tripNumber;
         this.pathTitle = pathTitle;
+        this.trainNumber = trainNumber;
         this.arriveTime = arriveTime;
         this.standTime = standTime;
         this.departureTime = departureTime;
@@ -36,6 +38,14 @@ public class BoardStationDTO implements Serializable {
 
     public void setPathTitle(String pathTitle) {
         this.pathTitle = pathTitle;
+    }
+
+    public String getTrainNumber() {
+        return trainNumber;
+    }
+
+    public void setTrainNumber(String trainNumber) {
+        this.trainNumber = trainNumber;
     }
 
     public Timestamp getArriveTime() {

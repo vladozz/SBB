@@ -163,5 +163,9 @@ public class PathService {
             }
         }
     }
+
+    public List<Train> getAllTrains() {
+        return trainDAO.findAll();
+    }
 }
 
