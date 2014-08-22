@@ -1,24 +1,13 @@
-package com.tsystems.javaschool.vm.domain;
+package com.tsystems.javaschool.vm.dto;
 
-import javax.persistence.*;
-import java.util.List;
+import java.io.Serializable;
+import java.util.TimeZone;
 
-@Entity
-@Table(name = "train")
-public class Train extends SBBEntity {
-    @Column(name = "num")
+public class TrainDTO implements Serializable {
     private String number;
-    @Column(name = "places_qty")
     private Short placesQty;
 
-    @OneToMany(mappedBy = "train")
-    List<Trip> trips;
-
-    public Train() {
-
-    }
-
-    public Train(String number, short placesQty) {
+    public TrainDTO(String number, Short placesQty) {
         this.number = number;
         this.placesQty = placesQty;
     }
@@ -39,15 +28,12 @@ public class Train extends SBBEntity {
         this.placesQty = placesQty;
     }
 
-    public List<Trip> getTrips() {
-        return trips;
-    }
-
     @Override
     public String toString() {
-        return "Train{" +
+        return "TrainDTO{" +
                 "number='" + number + '\'' +
                 ", placesQty=" + placesQty +
                 '}';
     }
 }
+

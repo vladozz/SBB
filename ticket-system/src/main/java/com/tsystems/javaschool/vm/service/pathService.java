@@ -50,6 +50,7 @@ public class PathService {
         } finally {
             if (trx.isActive()) {
                 trx.rollback();
+                return null;
             }
         }
         return station;

@@ -1,7 +1,7 @@
 package com.tsystems.javaschool.vm.client;
 
 import com.tsystems.javaschool.vm.dto.LoginDTO;
-import com.tsystems.javaschool.vm.protocol.Command;
+import com.tsystems.javaschool.vm.protocol.StartRequest;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -24,7 +24,7 @@ public class LoginButtonAction implements ActionListener {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(Command.LoginManager);
+            objectOutputStream.writeObject(StartRequest.LoginManager);
             objectOutputStream.writeObject(loginDTO);
             socket.shutdownOutput();
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());

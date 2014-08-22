@@ -4,6 +4,7 @@ import com.tsystems.javaschool.vm.domain.Passenger;
 import com.tsystems.javaschool.vm.domain.Trip;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.util.Calendar;
 import java.util.Date;

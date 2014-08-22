@@ -1,13 +1,9 @@
 package com.tsystems.javaschool.vm.service;
 
-import com.tsystems.javaschool.vm.dao.BoardDAO;
-import com.tsystems.javaschool.vm.dao.PassengerDAO;
-import com.tsystems.javaschool.vm.dao.StationDAO;
-import com.tsystems.javaschool.vm.dao.TicketDAO;
+import com.tsystems.javaschool.vm.dao.*;
 import com.tsystems.javaschool.vm.domain.*;
 
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -17,12 +13,14 @@ public class PassengerService {
     private PassengerDAO passengerDAO;
     private StationDAO stationDAO;
     private BoardDAO boardDAO;
+    private TripDAO tripDAO;
 
-    public PassengerService(PassengerDAO passengerDAO, TicketDAO ticketDAO, BoardDAO boardDAO, StationDAO stationDAO){
+    public PassengerService(PassengerDAO passengerDAO, TicketDAO ticketDAO, BoardDAO boardDAO, StationDAO stationDAO, TripDAO tripDAO){
         this.ticketDAO = ticketDAO;
         this.passengerDAO = passengerDAO;
         this.stationDAO = stationDAO;
         this.boardDAO = boardDAO;
+        this.tripDAO = tripDAO;
     }
 
     public Passenger addPassenger(String firstName, String lastName, Calendar birthDate) {
@@ -113,6 +111,14 @@ public class PassengerService {
             return ticket;
         }
         return null;
+    }
+
+    public List<Passenger> getPassengersOfTripById(Long tripId) {
+        Trip trip = tripDAO.findById(tripId);
+        if (trip == null) {
+            return null;
+        }
+        return passengerDAO.getPassengersOfTrip(trip);
     }
 
 }

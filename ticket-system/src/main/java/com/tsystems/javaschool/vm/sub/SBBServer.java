@@ -23,13 +23,13 @@ import java.util.*;
 import java.util.List;
 
 public class SBBServer {
-    ServerSocket serverSocket;
-    Map<Long, String> sessions;
+    private ServerSocket serverSocket;
+    private Map<Long, String> sessions;
 
-    BoardService boardService;
-    PassengerService passengerService;
-    PathService pathService;
-    UserService userService;
+    private BoardService boardService;
+    private PassengerService passengerService;
+    private PathService pathService;
+    private UserService userService;
 
     public SBBServer() {
         EntityManager em = Persistence.createEntityManagerFactory("SBBPU").createEntityManager();
@@ -44,7 +44,7 @@ public class SBBServer {
         UserDAO userDAO = new UserDAO(em);
 
         boardService = new BoardService(boardDAO, tripDAO, pathDAO, trainDAO);
-        passengerService = new PassengerService(passengerDAO, ticketDAO, boardDAO, stationDAO);
+        passengerService = new PassengerService(passengerDAO, ticketDAO, boardDAO, stationDAO, tripDAO);
         pathService = new PathService(pathDAO, stationDAO, trainDAO);
         userService = new UserService(userDAO);
     }
@@ -154,5 +154,21 @@ public class SBBServer {
 
     public boolean containsSession(Long id) {
         return sessions.containsKey(id);
+    }
+
+    public BoardService getBoardService() {
+        return boardService;
+    }
+
+    public PassengerService getPassengerService() {
+        return passengerService;
+    }
+
+    public PathService getPathService() {
+        return pathService;
+    }
+
+    public UserService getUserService() {
+        return userService;
     }
 }
