@@ -24,6 +24,7 @@ import java.util.List;
 
 public class SBBServer {
     private ServerSocket serverSocket;
+    //TODO: reset sessions in time
     private Map<Long, String> sessions;
 
     private BoardService boardService;
@@ -47,9 +48,12 @@ public class SBBServer {
         passengerService = new PassengerService(passengerDAO, ticketDAO, boardDAO, stationDAO, tripDAO);
         pathService = new PathService(pathDAO, stationDAO, trainDAO);
         userService = new UserService(userDAO);
+
+        sessions = new HashMap<>();
     }
 
     public static void main(String[] args) throws Exception {
+        StartForm startForm = new StartForm();
         SBBServer server = new SBBServer();
         server.start();
 

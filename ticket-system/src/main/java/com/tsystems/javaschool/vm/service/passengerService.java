@@ -33,6 +33,7 @@ public class PassengerService {
         } finally {
             if (trx.isActive()) {
                 trx.rollback();
+                return null;
             }
         }
         return passenger;
@@ -94,6 +95,26 @@ public class PassengerService {
         return true;
     }
 
+    public Ticket buyTicket(String firstName, String lastName, Calendar birthDate, Long departureBoardId, Long arriveBoardId) throws Exception {
+        Passenger passenger = passengerDAO.findByNameAndBirthDate(firstName, lastName, birthDate);
+        if (passenger == null) {
+            passenger = addPassenger(firstName, lastName, birthDate);
+            if (passenger == null) {
+                throw new Exception("Error of creating passenger");
+            }
+        }
+        Board departureBoard = boardDAO.findById(departureBoardId);
+        Board arriveBoard = boardDAO.findById(arriveBoardId);
+        if (departureBoard == null) {
+            throw new Exception("Departure BoardId doesn't exist");
+        }
+        if (arriveBoard == null) {
+            throw new Exception("Arrive BoardId doesn't exist");
+        }
+        return buyTicket(passenger, departureBoard, arriveBoard);
+
+    }
+
     public Ticket buyTicket(Passenger passenger, Board departure, Board arrive) throws Exception {
         if (canBuyTicket(passenger, departure, arrive)) {
             Ticket ticket = new Ticket(passenger, departure, arrive);
@@ -112,6 +133,8 @@ public class PassengerService {
         }
         return null;
     }
+
+
 
     public List<Passenger> getPassengersOfTripById(Long tripId) {
         Trip trip = tripDAO.findById(tripId);

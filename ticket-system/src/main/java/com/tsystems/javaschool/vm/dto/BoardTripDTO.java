@@ -5,29 +5,27 @@ import java.sql.Timestamp;
 
 public class BoardTripDTO implements Serializable {
     private static final long serialVersionUID = -4561874501129316650L;
-    private long tripNumber;
+    private Long boardId;
     private String stationTitle;
     private Timestamp arriveTime;
-    private int standTime;
     private Timestamp departureTime;
 
     public BoardTripDTO() {
     }
 
-    public BoardTripDTO(long tripNumber, String stationTitle, Timestamp arriveTime, int standTime, Timestamp departureTime) {
-        this.tripNumber = tripNumber;
+    public BoardTripDTO(Long boardId, String stationTitle, Timestamp arriveTime, Timestamp departureTime) {
+        this.boardId = boardId;
         this.stationTitle = stationTitle;
         this.arriveTime = arriveTime;
-        this.standTime = standTime;
         this.departureTime = departureTime;
     }
 
-    public long getTripNumber() {
-        return tripNumber;
+    public Long getBoardId() {
+        return boardId;
     }
 
-    public void setTripNumber(long tripNumber) {
-        this.tripNumber = tripNumber;
+    public void setBoardId(Long boardId) {
+        this.boardId = boardId;
     }
 
     public String getStationTitle() {
@@ -46,14 +44,6 @@ public class BoardTripDTO implements Serializable {
         this.arriveTime = arriveTime;
     }
 
-    public int getStandTime() {
-        return standTime;
-    }
-
-    public void setStandTime(int standTime) {
-        this.standTime = standTime;
-    }
-
     public Timestamp getDepartureTime() {
         return departureTime;
     }
@@ -65,10 +55,9 @@ public class BoardTripDTO implements Serializable {
     @Override
     public String toString() {
         return "BoardDTO{" +
-                "tripNumber=" + tripNumber +
+                "boardId=" + boardId +
                 ", stationTitle='" + stationTitle + '\'' +
                 ", arriveTime=" + arriveTime +
-                ", standTime=" + standTime +
                 ", departureTime=" + departureTime +
                 '}';
     }

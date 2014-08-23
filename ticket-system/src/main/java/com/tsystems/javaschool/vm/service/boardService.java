@@ -131,22 +131,15 @@ public class BoardService {
         return boardStationDTOList;
     }
 
-    public List<BoardTripDTO> getBoardForTrip(Long tripId) {
+    public List<Board> getBoardForTrip(Long tripId) {
         Trip trip = tripDAO.findById(tripId);
+        if (trip == null) {
+            return null;
+        }
         String queryString = "SELECT b FROM Board b WHERE b.trip = :trip";
         Query query = boardDAO.createQuery(queryString);
         query.setParameter("trip", trip);
-        List<BoardTripDTO> boardTripDTOList = new ArrayList<>();
-        for (Board b : (List<Board>) query.getResultList()) {
-            BoardTripDTO boardTripDTO = new BoardTripDTO();
-            boardTripDTO.setTripNumber(b.getTrip().getId());
-            boardTripDTO.setStationTitle(b.getStation().getTitle());
-            boardTripDTO.setArriveTime(b.getArriveTime());
-            boardTripDTO.setDepartureTime(b.getDepartureTime());
-            boardTripDTO.setStandTime((int)(b.getDepartureTime().getTime() - b.getArriveTime().getTime()) / 60000);
-            boardTripDTOList.add(boardTripDTO);
-        }
-        return boardTripDTOList;
+        return query.getResultList();
     }
 
     public List<PairBoard> getDefTrips(String departureStation, String arriveStation, Timestamp departureAfter, Timestamp arriveBefore) {

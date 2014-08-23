@@ -31,6 +31,8 @@ public class CommonDAO<E extends SBBEntity>{
     }
 
     public E findById(Long id) {
+        System.out.println("id = " + id);
+        System.out.println("entityClass = " + entityClass);
         return em.find(entityClass, id);
     }
 
