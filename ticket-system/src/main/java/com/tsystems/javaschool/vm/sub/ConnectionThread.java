@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -126,26 +127,31 @@ public class ConnectionThread implements Runnable {
     }
 
     private void getBoardForStation(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+        final long DAY = 1000L * 60 * 60 * 24;
         Object o = in.readObject();
         Object o2 = in.readObject();
-        Object o3 = in.readObject();
-        if (o instanceof String && o2 instanceof Timestamp && o3 instanceof Timestamp) {
+
+        if (o instanceof String && o2 instanceof Timestamp) {
             String stationTitle = (String) o;
-            Timestamp after = ((Timestamp) o2);
-            Timestamp before = ((Timestamp) o3);
-            List<Board> boardList = server.getBoardService().getBoardForStation(stationTitle, after, before);
-            List<BoardStationDTO> boardStationDTOs = new ArrayList<>();
-            for (Board b : boardList) {
-                BoardStationDTO boardStationDTO = new BoardStationDTO(b.getTrip().getId(),
-                        b.getTrip().getPath().getTitle(),
-                        b.getTrip().getTrain().getNumber(),
-                        b.getArriveTime(),
-                        (int)(b.getDepartureTime().getTime() - b.getArriveTime().getTime()) / 60000,
-                        b.getDepartureTime());
-                boardStationDTOs.add(boardStationDTO);
+            Timestamp date = ((Timestamp) o2);
+            Timestamp before = new Timestamp(date.getTime() + DAY);
+            List<Board> boardList = server.getBoardService().getBoardForStation(stationTitle, date, before);
+            if (boardList != null) {
+                List<BoardStationDTO> boardStationDTOs = new ArrayList<>();
+                for (Board b : boardList) {
+                    BoardStationDTO boardStationDTO = new BoardStationDTO(b.getTrip().getId(),
+                            b.getTrip().getPath().getTitle(),
+                            b.getTrip().getTrain().getNumber(),
+                            b.getArriveTime(),
+                            (int) (b.getDepartureTime().getTime() - b.getArriveTime().getTime()) / 60000,
+                            b.getDepartureTime());
+                    boardStationDTOs.add(boardStationDTO);
+                }
+                out.writeObject(ServerResponse.OperationSuccess);
+                out.writeObject(boardStationDTOs);
+            } else {
+                out.writeObject(ServerResponse.InvalidId);
             }
-            out.writeObject(ServerResponse.OperationSuccess);
-            out.writeObject(boardStationDTOs);
         } else {
             out.writeObject(ServerResponse.InvalidInput);
         }

@@ -1,4 +1,6 @@
-package com.tsystems.javaschool.vm.client;
+package com.tsystems.javaschool.vm.client.listeners;
+
+import com.tsystems.javaschool.vm.client.StartForm;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

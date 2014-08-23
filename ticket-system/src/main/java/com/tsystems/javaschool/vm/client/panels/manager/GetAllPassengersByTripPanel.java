@@ -1,18 +1,11 @@
 package com.tsystems.javaschool.vm.client.panels.manager;
 
-import com.tsystems.javaschool.vm.client.Communicator;
 import com.tsystems.javaschool.vm.client.StartForm;
 import com.tsystems.javaschool.vm.client.listeners.GetAllPassengersByTripButtonAction;
-import com.tsystems.javaschool.vm.dto.TrainDTO;
+import com.tsystems.javaschool.vm.client.listeners.GetBoardForStationButtonAction;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.List;
 
 public class GetAllPassengersByTripPanel extends JPanel {
 

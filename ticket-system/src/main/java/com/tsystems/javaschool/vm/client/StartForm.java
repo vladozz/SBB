@@ -1,6 +1,9 @@
 package com.tsystems.javaschool.vm.client;
 
+import com.toedter.calendar.JCalendar;
 import com.tsystems.javaschool.vm.client.listeners.LoginButtonAction;
+import com.tsystems.javaschool.vm.client.listeners.WithoutLoginButtonAction;
+import com.tsystems.javaschool.vm.client.panels.customer.ClientPane;
 import com.tsystems.javaschool.vm.client.panels.manager.*;
 
 import javax.swing.*;
@@ -30,7 +33,7 @@ public class StartForm extends JFrame {
     }
 
     public void initStartFrame() {
-        setSize(300, 300);
+
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5),
                 BorderFactory.createLineBorder(Color.black)));
@@ -48,20 +51,21 @@ public class StartForm extends JFrame {
         panel.add(loginButton);
         panel.add(withoutLogin);
         pack();
+        //setSize(300, 300);
         withoutLogin.addActionListener(new WithoutLoginButtonAction(this));
         loginButton.addActionListener(new LoginButtonAction(loginField, passwordField, this));
         setVisible(true);
     }
 
     public void initClientFrame() {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new CardLayout());
         panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5),
                 BorderFactory.createLineBorder(Color.black)));
         setContentPane(panel);
-        getBoardButton = new JButton("Get Board");
-        panel.add(getBoardButton);
-        //pack();
+        panel.add(new ClientPane(this));
 
+        pack();
+        setSize(600, 300);
         setVisible(true);
     }
 

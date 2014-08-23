@@ -59,6 +59,7 @@ public class GetAllPassengersByTripButtonAction implements ActionListener {
                     };
                     JTable table = new JTable(model);
                     panel.add(table);
+                    panel.repaint();
                     parent.pack();
 
                 } else {

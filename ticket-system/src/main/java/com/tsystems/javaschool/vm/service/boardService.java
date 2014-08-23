@@ -144,7 +144,7 @@ public class BoardService {
 
     public List<PairBoard> getDefTrips(String departureStation, String arriveStation, Timestamp departureAfter, Timestamp arriveBefore) {
         String queryString = "SELECT b FROM Board b " +
-                "WHERE b.station = :arriveStation and " +
+                "WHERE b.station.title = :arriveStation and " +
                 "b.arriveTime < :arriveBefore and b.arriveTime > :departureAfter";
         Query query = boardDAO.createQuery(queryString);
         query.setParameter("arriveStation", arriveStation);
@@ -152,7 +152,7 @@ public class BoardService {
         query.setParameter("arriveBefore", arriveBefore);
         List<Board> boardsArrive = query.getResultList();
         queryString = "SELECT b FROM Board b " +
-                "WHERE b.trip = t and b.station = :departureStation" +
+                "WHERE b.station.title = :departureStation" +
                 " and b.departureTime > :departureAfter and b.departureTime < :arriveBefore ";
         query = boardDAO.createQuery(queryString);
         query.setParameter("departureStation", departureStation);
@@ -168,7 +168,6 @@ public class BoardService {
                 }
             }
         }
-
         return pairBoards;
     }
 

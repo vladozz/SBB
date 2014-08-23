@@ -1,19 +1,18 @@
 package com.tsystems.javaschool.vm.client;
 
 import com.tsystems.javaschool.vm.domain.Train;
-import com.tsystems.javaschool.vm.dto.LoginDTO;
-import com.tsystems.javaschool.vm.dto.PassengerDTO;
-import com.tsystems.javaschool.vm.dto.StationDTO;
-import com.tsystems.javaschool.vm.dto.TrainDTO;
+import com.tsystems.javaschool.vm.dto.*;
 import com.tsystems.javaschool.vm.exception.ConnectionException;
 import com.tsystems.javaschool.vm.exception.InvalidIdException;
 import com.tsystems.javaschool.vm.exception.InvalidLoginOrPasswordException;
+import com.tsystems.javaschool.vm.protocol.ClientCommand;
 import com.tsystems.javaschool.vm.protocol.ManagerCommand;
 import com.tsystems.javaschool.vm.protocol.ServerResponse;
 import com.tsystems.javaschool.vm.protocol.StartRequest;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -203,6 +202,87 @@ public class Communicator {
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
             RuntimeException e2 = new RuntimeException("Type is not List<PassengerDRO>");
+            e2.addSuppressed(e1);
+            throw e2;
+        }
+    }
+
+    public static List<ReqDefTripDTO> getDefTripsAction(String departureStation, String arriveStation, Timestamp departureTime, Timestamp arriveTime) throws IOException, InvalidIdException {
+        DefTripDTO defTripDTO = new DefTripDTO(arriveStation, departureStation, departureTime, arriveTime);
+        System.out.println("defTripDTO = " + defTripDTO);
+        try (Socket socket = new Socket("localhost", 6574)) {
+            OutputStream outputStream = socket.getOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            out.writeObject(StartRequest.EnterClient);
+            out.writeObject(ClientCommand.GetDefTrips);
+            out.writeObject(defTripDTO);
+            out.flush();
+
+            Object o = in.readObject();
+
+            if (o instanceof ServerResponse) {
+                ServerResponse response = ((ServerResponse) o);
+                switch (response) {
+                    case OperationSuccess:
+                        List<ReqDefTripDTO> list = ((List<ReqDefTripDTO>) in.readObject());
+                        socket.close();
+                        return list;
+                    case InvalidId:
+                        throw new InvalidIdException();
+                    case InvalidInput:
+                        throw new RuntimeException("Invalid Input");
+                    case InvalidStartRequest:
+                        throw new RuntimeException("Invalid Start Request");
+                    default:
+                        throw new RuntimeException("Unknown Server Request");
+                }
+            } else {
+                throw new RuntimeException("Unknown Server Request");
+            }
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+            RuntimeException e2 = new RuntimeException("Type is not List<ReqDefTripDTO>");
+            e2.addSuppressed(e1);
+            throw e2;
+        }
+    }
+
+    public static List<BoardStationDTO> getBoardForStationAction(String stationTitle, Timestamp date) throws IOException, InvalidIdException {
+        try(Socket socket = new Socket("localhost", 6574)) {
+            OutputStream outputStream = socket.getOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            out.writeObject(StartRequest.EnterClient);
+            out.writeObject(ClientCommand.GetBoardForStation);
+            out.writeObject(stationTitle);
+            out.writeObject(date);
+            out.flush();
+
+            Object o = in.readObject();
+
+            if (o instanceof ServerResponse) {
+                ServerResponse response = ((ServerResponse) o);
+                switch (response) {
+                    case OperationSuccess:
+                        List<BoardStationDTO> list =((List<BoardStationDTO>) in.readObject());
+                        socket.close();
+                        return list;
+                    case InvalidId:
+                        throw new InvalidIdException();
+                    case InvalidInput:
+                        throw new RuntimeException("Invalid Input");
+                    case InvalidStartRequest:
+                        throw new RuntimeException("Invalid Start Request");
+                    default:
+                        throw new RuntimeException("Unknown Server Request");
+                }
+            } else {
+                throw new RuntimeException("Unknown Server Request");
+            }
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+            RuntimeException e2 = new RuntimeException("Type is not List<BoardStationDTO>");
             e2.addSuppressed(e1);
             throw e2;
         }
