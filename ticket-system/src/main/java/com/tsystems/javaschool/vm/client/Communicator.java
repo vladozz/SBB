@@ -1,5 +1,6 @@
 package com.tsystems.javaschool.vm.client;
 
+import com.tsystems.javaschool.vm.domain.Passenger;
 import com.tsystems.javaschool.vm.domain.Train;
 import com.tsystems.javaschool.vm.dto.*;
 import com.tsystems.javaschool.vm.exception.ConnectionException;
@@ -13,6 +14,7 @@ import com.tsystems.javaschool.vm.protocol.StartRequest;
 import java.io.*;
 import java.net.Socket;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -270,6 +272,52 @@ public class Communicator {
                         return list;
                     case InvalidId:
                         throw new InvalidIdException();
+                    case InvalidInput:
+                        throw new RuntimeException("Invalid Input");
+                    case InvalidStartRequest:
+                        throw new RuntimeException("Invalid Start Request");
+                    default:
+                        throw new RuntimeException("Unknown Server Request");
+                }
+            } else {
+                throw new RuntimeException("Unknown Server Request");
+            }
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+            RuntimeException e2 = new RuntimeException("Type is not List<BoardStationDTO>");
+            e2.addSuppressed(e1);
+            throw e2;
+        }
+    }
+
+    public static TicketDTO buyTicketAction(String firstName, String lastName, Calendar birthDate,
+                                                        Long departureBoardId, 
+                                                        Long arriveBoardId) throws Exception {
+
+        PassengerDTO passengerDTO = new PassengerDTO(firstName, lastName, birthDate);
+        BuyTicketDTO buyTicketDTO = new BuyTicketDTO(passengerDTO, departureBoardId, arriveBoardId);
+        try(Socket socket = new Socket("localhost", 6574)) {
+            OutputStream outputStream = socket.getOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            out.writeObject(StartRequest.EnterClient);
+            out.writeObject(ClientCommand.BuyTicket);
+            out.writeObject(buyTicketDTO);
+            out.flush();
+
+            Object o = in.readObject();
+
+            if (o instanceof ServerResponse) {
+                ServerResponse response = ((ServerResponse) o);
+                switch (response) {
+                    case OperationSuccess:
+                        TicketDTO ticketDTO =((TicketDTO) in.readObject());
+                        socket.close();
+                        return ticketDTO;
+                    case Exception:
+                        throw ((Exception) in.readObject());
+                    case InvalidId:
+                        throw new InvalidIdException("Invalid ID");
                     case InvalidInput:
                         throw new RuntimeException("Invalid Input");
                     case InvalidStartRequest:

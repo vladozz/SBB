@@ -2,6 +2,10 @@ package com.tsystems.javaschool.vm.service;
 
 import com.tsystems.javaschool.vm.dao.*;
 import com.tsystems.javaschool.vm.domain.*;
+import com.tsystems.javaschool.vm.exception.AlreadyOnTripException;
+import com.tsystems.javaschool.vm.exception.InvalidIdException;
+import com.tsystems.javaschool.vm.exception.OutOfFreeSpacesException;
+import com.tsystems.javaschool.vm.exception.TenMinutesException;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -81,41 +85,44 @@ public class PassengerService {
         return false;
     }
 
-    public boolean canBuyTicket(Passenger passenger, Board departure, Board arrive) throws Exception {
+    public boolean canBuyTicket(Passenger passenger, Board departure, Board arrive)
+            throws OutOfFreeSpacesException, AlreadyOnTripException, TenMinutesException {
         final long TEN_MINUTES = 1000L * 60 * 10;
-        if (countFreePlacesOfTrip(departure, arrive) <= 0) {
-            throw new Exception("Out of free spaces");
+        if (departure.getDepartureTime().getTime() - (new Date()).getTime() < TEN_MINUTES ) {
+            throw new TenMinutesException("Less than ten minutes before train departure");
         }
         if (isPassengerOnTrip(passenger, departure.getTrip())) {
-            throw new Exception("Passenger has already bought ticket on this trip");
+            throw new AlreadyOnTripException("Passenger has already bought ticket on this trip");
         }
-        if (departure.getDepartureTime().getTime() - (new Date()).getTime() < TEN_MINUTES ) {
-            throw new Exception("Less than ten minutes before train departure");
+        if (countFreePlacesOfTrip(departure, arrive) <= 0) {
+            throw new OutOfFreeSpacesException("Out of free spaces");
         }
         return true;
     }
 
-    public Ticket buyTicket(String firstName, String lastName, Calendar birthDate, Long departureBoardId, Long arriveBoardId) throws Exception {
+    public Ticket buyTicket(String firstName, String lastName, Calendar birthDate, Long departureBoardId, Long arriveBoardId)
+            throws InvalidIdException, OutOfFreeSpacesException, TenMinutesException, AlreadyOnTripException {
         Passenger passenger = passengerDAO.findByNameAndBirthDate(firstName, lastName, birthDate);
         if (passenger == null) {
             passenger = addPassenger(firstName, lastName, birthDate);
             if (passenger == null) {
-                throw new Exception("Error of creating passenger");
+                //throw new Exception("Error of creating passenger");
             }
         }
         Board departureBoard = boardDAO.findById(departureBoardId);
         Board arriveBoard = boardDAO.findById(arriveBoardId);
         if (departureBoard == null) {
-            throw new Exception("Departure BoardId doesn't exist");
+            throw new InvalidIdException("Departure BoardId doesn't exist");
         }
         if (arriveBoard == null) {
-            throw new Exception("Arrive BoardId doesn't exist");
+            throw new InvalidIdException("Arrive BoardId doesn't exist");
         }
         return buyTicket(passenger, departureBoard, arriveBoard);
 
     }
 
-    public Ticket buyTicket(Passenger passenger, Board departure, Board arrive) throws Exception {
+    public Ticket buyTicket(Passenger passenger, Board departure, Board arrive)
+            throws OutOfFreeSpacesException, TenMinutesException, AlreadyOnTripException {
         if (canBuyTicket(passenger, departure, arrive)) {
             Ticket ticket = new Ticket(passenger, departure, arrive);
             EntityTransaction trx = ticketDAO.getTransaction();

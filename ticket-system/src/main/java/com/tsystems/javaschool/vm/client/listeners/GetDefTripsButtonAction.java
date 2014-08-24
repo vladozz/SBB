@@ -45,53 +45,53 @@ public class GetDefTripsButtonAction implements ActionListener {
 
                 Timestamp departureTime = new Timestamp(calendarAfter.getDate().getTime());
                 Timestamp arriveTime = new Timestamp(calendarBefore.getDate().getTime());
-                System.out.println("deparureTime = " + departureTime);
-                System.out.println("arriveTime = " + arriveTime);
                 final List<ReqDefTripDTO> list =
                         Communicator.getDefTripsAction(departureStation, arriveStation, departureTime, arriveTime);
                 if (list != null) {
                     if (list.size() == 0) {
                         JOptionPane.showMessageDialog(parent, "No trips found.");
-                    }
-                    TableModel model = new AbstractTableModel() {
-                        @Override
-                        public String getColumnName(int column) {
-                            final String[] titles = {"Trip", "Path", "Train", "Departure time", "Arrive Time"};
-                            return titles[column];
-                        }
-
-                        @Override
-                        public int getRowCount() {
-                            return list.size();
-                        }
-
-                        @Override
-                        public int getColumnCount() {
-                            return 5;
-                        }
-
-                        @Override
-                        public Object getValueAt(int rowIndex, int columnIndex) {
-                            ReqDefTripDTO reqDefTripDTO = list.get(rowIndex);
-                            switch (columnIndex) {
-                                case 0:
-                                    return reqDefTripDTO.getTripId();
-                                case 1:
-                                    return reqDefTripDTO.getPathTitle();
-                                case 2:
-                                    return reqDefTripDTO.getTrainNumber();
-                                case 3:
-                                    return reqDefTripDTO.getDepartureTime();
-                                case 4:
-                                    return reqDefTripDTO.getArriveTime();
-                                default:
-                                    break;
+                    } else {
+                        panel.setTripsList(list);
+                        TableModel model = new AbstractTableModel() {
+                            @Override
+                            public String getColumnName(int column) {
+                                final String[] titles = {"Trip", "Path", "Train", "Departure time", "Arrive Time"};
+                                return titles[column];
                             }
-                            return null;
-                        }
-                    };
-                    panel.setModel(model);
 
+                            @Override
+                            public int getRowCount() {
+                                return list.size();
+                            }
+
+                            @Override
+                            public int getColumnCount() {
+                                return 5;
+                            }
+
+                            @Override
+                            public Object getValueAt(int rowIndex, int columnIndex) {
+                                ReqDefTripDTO reqDefTripDTO = list.get(rowIndex);
+                                switch (columnIndex) {
+                                    case 0:
+                                        return reqDefTripDTO.getTripId();
+                                    case 1:
+                                        return reqDefTripDTO.getPathTitle();
+                                    case 2:
+                                        return reqDefTripDTO.getTrainNumber();
+                                    case 3:
+                                        return reqDefTripDTO.getDepartureTime();
+                                    case 4:
+                                        return reqDefTripDTO.getArriveTime();
+                                    default:
+                                        break;
+                                }
+                                return null;
+                            }
+
+                        };
+                        panel.setModel(model);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(parent, "Operation failed!");
                 }

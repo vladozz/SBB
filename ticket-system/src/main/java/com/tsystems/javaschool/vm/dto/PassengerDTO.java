@@ -13,6 +13,9 @@ public class PassengerDTO implements Serializable {
     private String lastName;
     private Calendar birthDate;
 
+    public PassengerDTO() {
+    }
+
     public PassengerDTO(String firstName, String lastName, Calendar birthDate) {
         this.firstName = firstName;
         this.lastName = lastName;

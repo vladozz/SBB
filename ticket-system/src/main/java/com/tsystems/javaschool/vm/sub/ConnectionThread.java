@@ -3,6 +3,10 @@ package com.tsystems.javaschool.vm.sub;
 
 import com.tsystems.javaschool.vm.domain.*;
 import com.tsystems.javaschool.vm.dto.*;
+import com.tsystems.javaschool.vm.exception.AlreadyOnTripException;
+import com.tsystems.javaschool.vm.exception.InvalidIdException;
+import com.tsystems.javaschool.vm.exception.OutOfFreeSpacesException;
+import com.tsystems.javaschool.vm.exception.TenMinutesException;
 import com.tsystems.javaschool.vm.protocol.ClientCommand;
 import com.tsystems.javaschool.vm.protocol.ManagerCommand;
 import com.tsystems.javaschool.vm.protocol.StartRequest;
@@ -112,14 +116,15 @@ public class ConnectionThread implements Runnable {
                         passengerDTO.getBirthDate(), buyTicketDTO.getDepartureBoardId(), buyTicketDTO.getArriveBoardId());
                 if (ticket != null) {
                     //TODO:
-                    //out.writeObject(ServerResponse.OperationSuccess);
-                    //out.writeObject();
+                    TicketDTO ticketDTO = new TicketDTO(ticket.getId());
+                    out.writeObject(ServerResponse.OperationSuccess);
+                    out.writeObject(ticketDTO);
                 } else {
                     out.writeObject(ServerResponse.InvalidId);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                //TODO: make different classes of Exception
+            } catch (InvalidIdException | TenMinutesException | AlreadyOnTripException | OutOfFreeSpacesException e) {
+                out.writeObject(ServerResponse.Exception);
+                out.writeObject(e);
             }
         } else {
             out.writeObject(ServerResponse.InvalidInput);

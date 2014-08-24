@@ -2,7 +2,9 @@ package com.tsystems.javaschool.vm.dto;
 
 import com.tsystems.javaschool.vm.domain.Passenger;
 
-public class BuyTicketDTO {
+import java.io.Serializable;
+
+public class BuyTicketDTO implements Serializable{
     PassengerDTO passengerDTO;
     Long departureBoardId;
     Long arriveBoardId;

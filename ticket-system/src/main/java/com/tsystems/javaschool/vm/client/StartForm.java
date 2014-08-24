@@ -65,7 +65,7 @@ public class StartForm extends JFrame {
         panel.add(new ClientPane(this));
 
         pack();
-        setSize(600, 300);
+        //setSize(1, 300);
         setVisible(true);
     }
 
