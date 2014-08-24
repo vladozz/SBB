@@ -37,36 +37,32 @@ public class GetDefTripsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel("Departure station");
+        jLabel3 = new JLabel("Enter names of required station in the appropriate fields and choose dates between which you wish to find trips. Then click button \"Get trips\". ");
+
+        jLabel4 = new JLabel("If you wish to buy ticket for any trip, select it in the table (by clicking on the appropriate row) and click button \"Buy ticket\".");
         departureStationField = new javax.swing.JTextField("Moscow");
-        get = new javax.swing.JButton();
+        get = new javax.swing.JButton("Get trips");
         jScrollPane2 = new javax.swing.JScrollPane();
         tripsTable = new javax.swing.JTable();
         calendarAfter = new JCalendar(Locale.ENGLISH);
-        jLabel2 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel("Arrive station");
         arriveStationField1 = new javax.swing.JTextField("Adler");
         calendarBefore = new JCalendar(Locale.ENGLISH);
         buyTicketButton = new JButton("Buy ticket");
 
+        calendarBefore.setLocale(Locale.ENGLISH);
+        calendarAfter.setLocale(Locale.ENGLISH);
+
         setPreferredSize(new java.awt.Dimension(1024, 720));
-
-        jLabel1.setText("Enter departure station");
-
-        get.setLabel("Get Station List");
-
 
         tripsTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
-                        {null, null, null, null, null},
+                        /*{null, null, null, null, null},*/
                 },
                 new String [] {"Trip", "Path", "Train", "Departure time", "Arrive Time"}
         ));
         jScrollPane2.setViewportView(tripsTable);
-
-
-
-        jLabel2.setText("Enter arrive station");
-
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -91,13 +87,23 @@ public class GetDefTripsPanel extends javax.swing.JPanel {
                                         .addComponent(get, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(buyTicketButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 748, Short.MAX_VALUE))
+                                .addComponent(jScrollPane2))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 835, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 835, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(75, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(1, 1, 1)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane2)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -113,7 +119,7 @@ public class GetDefTripsPanel extends javax.swing.JPanel {
                                                 .addGap(18, 18, 18)
                                                 .addComponent(get, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(18, 18, 18)
-                                                .addComponent(buyTicketButton, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
+                                                .addComponent(buyTicketButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap())
         );
 
@@ -136,6 +142,8 @@ public class GetDefTripsPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify
+    private JLabel jLabel3;
+    private JLabel jLabel4;
     private javax.swing.JTextField arriveStationField1;
     private JCalendar calendarAfter;
     private JCalendar calendarBefore;

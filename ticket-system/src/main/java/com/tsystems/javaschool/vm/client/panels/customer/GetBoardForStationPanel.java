@@ -26,7 +26,8 @@ public class GetBoardForStationPanel extends javax.swing.JPanel {
         get = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         boardTable = new javax.swing.JTable();
-        jButton1 = new JCalendar(Locale.ENGLISH);
+        jButton1 = new JCalendar();
+        jButton1.setLocale(Locale.ENGLISH);
 
         jLabel1.setText("Enter station name");
 
@@ -35,7 +36,7 @@ public class GetBoardForStationPanel extends javax.swing.JPanel {
 
         boardTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
-                        {null, null, null, null, null, null}
+                        /*{null, null, null, null, null, null}*/
                 },
                 new String [] {
                         "Trip", "Path", "Train", "Arrive", "Stand", "Departure"

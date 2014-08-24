@@ -32,11 +32,12 @@ public class BuyTicketButtonAction implements ActionListener {
         list = panel.getTripsList();
         if (list != null) {
             int i = panel.getTripsTable().getSelectedRow();
+            if (i == -1 && panel.getTripsTable().getRowCount() == 1) {
+                i = 0;
+            }
             if (i > -1) {
-                PassengerDTO passengerDTO = new PassengerDTO();
-
-                //TicketDTO ticketDTO = Communicator.buyTicketAction(,,,list.get(i).getDepartureBoardId(), list.get(i).getArriveBoardId());
                 JFrame frame = new JFrame();
+                frame.setTitle("Buying ticket");
                 frame.add(new PassengerPanel(frame, list.get(i).getDepartureBoardId(), list.get(i).getArriveBoardId()));
                 frame.pack();
                 frame.setVisible(true);

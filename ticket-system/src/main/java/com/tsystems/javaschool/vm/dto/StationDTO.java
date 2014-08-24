@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.TimeZone;
 
 public class StationDTO implements Serializable {
+
+    private static final long serialVersionUID = -1752725050456199931L;
     private String title;
     private TimeZone timeZone;
 

@@ -23,17 +23,26 @@ public class LoginButtonAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        LoginDTO loginDTO = new LoginDTO(loginField.getText(), passwordField.getText());
+        String login = loginField.getText();
+        String password = passwordField.getText();
+        if (login == null || login.equals("")) {
+            JOptionPane.showMessageDialog(parent, "Field \"Login\" is empty!");
+            return;
+        }
+        if (password == null || password.equals("")) {
+            JOptionPane.showMessageDialog(parent, "Field \"Password\" is empty!");
+            return;
+        }
+
+        LoginDTO loginDTO = new LoginDTO(login, password);
         try {
             Long session = Communicator.loginAction(loginDTO);
             parent.setSessionId(session);
-            //JOptionPane.showMessageDialog(parent, "Login success!");
             parent.initManagerFrame();
         } catch (InvalidLoginOrPasswordException e1) {
             JOptionPane.showMessageDialog(parent, "Invalid login or password! Try again");
         } catch (IOException e1) {
-            e1.printStackTrace();
-            JOptionPane.showMessageDialog(parent, "Connection failed: " + e1.getClass() + " " + e1.getMessage());
+            JOptionPane.showMessageDialog(parent, "Cannot connect to server!" + "\n\nConnection failed: " + e1.getClass() + " " + e1.getMessage());
         }
 
     }

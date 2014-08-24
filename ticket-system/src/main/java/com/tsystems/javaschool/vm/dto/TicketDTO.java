@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 public class TicketDTO implements Serializable {
+    private static final long serialVersionUID = -7555989551613177187L;
+
 //    PassengerDTO passengerDTO;
 //    Long tripId;
 //    String departureStation;

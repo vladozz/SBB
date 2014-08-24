@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 public class ReqDefTripDTO implements Serializable {
+
+    private static final long serialVersionUID = -5826721360633584105L;
     private Long tripId;
     private String trainNumber;
     private String pathTitle;

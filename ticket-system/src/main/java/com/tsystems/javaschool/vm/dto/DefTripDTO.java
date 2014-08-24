@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 public class DefTripDTO implements Serializable {
+
+    private static final long serialVersionUID = 6433110031074206463L;
     String arriveStation;
     String departureStation;
     Timestamp departureTime;

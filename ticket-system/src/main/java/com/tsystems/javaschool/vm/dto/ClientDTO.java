@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 public class ClientDTO implements Serializable {
+
+    private static final long serialVersionUID = -1712090205761044974L;
     private String firstName;
     private String lastName;
     private Calendar birthDate;

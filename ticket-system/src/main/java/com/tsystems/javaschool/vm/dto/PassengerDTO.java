@@ -1,14 +1,12 @@
 package com.tsystems.javaschool.vm.dto;
 
-import com.tsystems.javaschool.vm.domain.SBBEntity;
-import com.tsystems.javaschool.vm.domain.Ticket;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.List;
 
 public class PassengerDTO implements Serializable {
+
+    private static final long serialVersionUID = -4620477088385691404L;
+    private Long id;
     private String firstName;
     private String lastName;
     private Calendar birthDate;
@@ -16,10 +14,25 @@ public class PassengerDTO implements Serializable {
     public PassengerDTO() {
     }
 
+    public PassengerDTO(Long id, String firstName, String lastName, Calendar birthDate) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+    }
+
     public PassengerDTO(String firstName, String lastName, Calendar birthDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -48,7 +61,8 @@ public class PassengerDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "Passenger{" +
+        return "PassengerDTO{" +
+                "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", birthDate=" + birthDate +

@@ -4,12 +4,29 @@ import java.io.Serializable;
 import java.util.TimeZone;
 
 public class TrainDTO implements Serializable {
+
+    private static final long serialVersionUID = 3326713079683884452L;
+    private Long id;
     private String number;
     private Short placesQty;
 
     public TrainDTO(String number, Short placesQty) {
         this.number = number;
         this.placesQty = placesQty;
+    }
+
+    public TrainDTO(Long id, String number, Short placesQty) {
+        this.id = id;
+        this.number = number;
+        this.placesQty = placesQty;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNumber() {
@@ -31,7 +48,8 @@ public class TrainDTO implements Serializable {
     @Override
     public String toString() {
         return "TrainDTO{" +
-                "number='" + number + '\'' +
+                "id='" + id + '\'' +
+                ", number='" + number + '\'' +
                 ", placesQty=" + placesQty +
                 '}';
     }

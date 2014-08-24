@@ -197,7 +197,7 @@ public class ConnectionThread implements Runnable {
         List<Train> trains = server.getPathService().getAllTrains();
         List<TrainDTO> trainDTOs = new ArrayList<>();
         for (Train t : trains) {
-            TrainDTO trainDTO = new TrainDTO(t.getNumber(), t.getPlacesQty());
+            TrainDTO trainDTO = new TrainDTO(t.getId(), t.getNumber(), t.getPlacesQty());
             trainDTOs.add(trainDTO);
         }
         out.writeObject(ServerResponse.OperationSuccess);
@@ -212,7 +212,7 @@ public class ConnectionThread implements Runnable {
             if (passengers != null) {
                 List<PassengerDTO> passengerDTOs = new ArrayList<PassengerDTO>();
                 for (Passenger p : passengers) {
-                    PassengerDTO passengerDTO = new PassengerDTO(p.getFirstName(), p.getLastName(), p.getBirthDate());
+                    PassengerDTO passengerDTO = new PassengerDTO(p.getId(), p.getFirstName(), p.getLastName(), p.getBirthDate());
                     passengerDTOs.add(passengerDTO);
                 }
                 out.writeObject(ServerResponse.OperationSuccess);
@@ -272,7 +272,7 @@ public class ConnectionThread implements Runnable {
             Train train = server.getPathService().addTrain(trainDTO.getNumber(), trainDTO.getPlacesQty());
             if (train != null) {
                 out.writeObject(ServerResponse.CreationSuccess);
-                out.writeLong(train.getId());
+                out.writeObject(train.getId());
             } else {
                 out.writeObject(ServerResponse.FailedCreation);
             }

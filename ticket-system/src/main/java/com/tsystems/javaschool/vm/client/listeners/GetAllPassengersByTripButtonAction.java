@@ -11,18 +11,20 @@ import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 public class GetAllPassengersByTripButtonAction implements ActionListener {
     private StartForm parent;
     private JTextField tripIdField;
-    private JPanel panel;
+    private JTable table;
 
-    public GetAllPassengersByTripButtonAction(StartForm parent, JTextField tripIdField, JPanel panel) {
+    public GetAllPassengersByTripButtonAction(StartForm parent, JTextField tripIdField, JTable table) {
         this.parent = parent;
         this.tripIdField = tripIdField;
-        this.panel = panel;
+        this.table = table;
     }
 
     @Override
@@ -37,30 +39,42 @@ public class GetAllPassengersByTripButtonAction implements ActionListener {
                     TableModel model = new AbstractTableModel() {
 
                         @Override
+                        public String getColumnName(int column) {
+                            final String[] columns = {
+                                    "Id", "First name", "Last name", "Date of birth"
+                            };
+                            return columns[column];
+                        }
+
+                        @Override
                         public int getRowCount() {
                             return list.size();
                         }
 
                         @Override
                         public int getColumnCount() {
-                            return 2;
+                            return 4;
                         }
 
                         @Override
                         public Object getValueAt(int rowIndex, int columnIndex) {
-                            if (columnIndex == 0) {
-                                return list.get(rowIndex).getFirstName();
-                            } else if (columnIndex == 1) {
-                                return list.get(rowIndex).getLastName();
-                            } else {
-                                return list.get(rowIndex).getBirthDate();
+                            PassengerDTO passengerDTO = list.get(rowIndex);
+                            switch (columnIndex) {
+                                case 0:
+                                    return passengerDTO.getId();
+                                case 1:
+                                    return passengerDTO.getFirstName();
+                                case 2:
+                                    return passengerDTO.getLastName();
+                                case 3:
+                                    return new SimpleDateFormat("y / M / d").format(passengerDTO.getBirthDate().getTime());
+                                default:
+                                    return null;
                             }
                         }
                     };
-                    JTable table = new JTable(model);
-                    panel.add(table);
-                    panel.repaint();
-                    parent.pack();
+                    table.setModel(model);
+
 
                 } else {
                     JOptionPane.showMessageDialog(parent, "Operation failed!");

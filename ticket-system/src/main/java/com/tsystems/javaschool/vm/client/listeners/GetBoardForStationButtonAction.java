@@ -14,7 +14,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class GetBoardForStationButtonAction implements ActionListener {
     private StartForm parent;
@@ -69,11 +71,11 @@ public class GetBoardForStationButtonAction implements ActionListener {
                                 case 2:
                                     return boardStationDTO.getTrainNumber();
                                 case 3:
-                                    return boardStationDTO.getArriveTime();
+                                    return new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.ENGLISH).format(boardStationDTO.getArriveTime());
                                 case 4:
                                     return boardStationDTO.getStandTime();
                                 case 5:
-                                    return boardStationDTO.getDepartureTime();
+                                    return new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.ENGLISH).format(boardStationDTO.getDepartureTime());
                                 default:
                                     break;
                             }

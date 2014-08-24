@@ -1,8 +1,8 @@
 package com.tsystems.javaschool.vm.client;
 
-import com.toedter.calendar.JCalendar;
 import com.tsystems.javaschool.vm.client.listeners.LoginButtonAction;
 import com.tsystems.javaschool.vm.client.listeners.WithoutLoginButtonAction;
+import com.tsystems.javaschool.vm.client.panels.LoginPanel;
 import com.tsystems.javaschool.vm.client.panels.customer.ClientPane;
 import com.tsystems.javaschool.vm.client.panels.manager.*;
 
@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 public class StartForm extends JFrame {
     private JTextField loginField;
     private JPasswordField passwordField;
-    private JButton withoutLogin;
+    private JButton withoutLoginButton;
     private JButton loginButton;
     private JButton getBoardButton;
     private Long sessionId;
@@ -33,11 +33,11 @@ public class StartForm extends JFrame {
     }
 
     public void initStartFrame() {
-
+        this.setTitle("Login SBB service");
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5),
                 BorderFactory.createLineBorder(Color.black)));
-        setContentPane(panel);
+        setContentPane(new LoginPanel(this));
         JLabel labelLogin = new JLabel("Enter login");
         JLabel labelPassword  = new JLabel("Enter password");
         panel.add(labelLogin);
@@ -47,12 +47,12 @@ public class StartForm extends JFrame {
         panel.add(loginField);
         panel.add(passwordField);
         loginButton  = new JButton("Login");
-        withoutLogin = new JButton("Enter without login");
+        withoutLoginButton = new JButton("Enter without login");
         panel.add(loginButton);
-        panel.add(withoutLogin);
+        panel.add(withoutLoginButton);
         pack();
         //setSize(300, 300);
-        withoutLogin.addActionListener(new WithoutLoginButtonAction(this));
+        withoutLoginButton.addActionListener(new WithoutLoginButtonAction(this));
         loginButton.addActionListener(new LoginButtonAction(loginField, passwordField, this));
         setVisible(true);
     }
@@ -63,13 +63,14 @@ public class StartForm extends JFrame {
                 BorderFactory.createLineBorder(Color.black)));
         setContentPane(panel);
         panel.add(new ClientPane(this));
-
+        this.setTitle("Customer service");
         pack();
-        //setSize(1, 300);
+        setSize(1024, 680);
         setVisible(true);
     }
 
     public void initManagerFrame() {
+        this.setTitle("Manager service");
         managerFrame  = new JPanel();
         setContentPane(managerFrame);
         managerFrame.add(getManagerMenu());

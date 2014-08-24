@@ -5,6 +5,8 @@ import com.tsystems.javaschool.vm.domain.Passenger;
 import java.io.Serializable;
 
 public class BuyTicketDTO implements Serializable{
+
+    private static final long serialVersionUID = 3790160588472980299L;
     PassengerDTO passengerDTO;
     Long departureBoardId;
     Long arriveBoardId;
