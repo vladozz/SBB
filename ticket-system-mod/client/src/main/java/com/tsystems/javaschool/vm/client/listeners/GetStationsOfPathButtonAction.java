@@ -5,6 +5,7 @@ import com.tsystems.javaschool.vm.client.StartForm;
 import com.tsystems.javaschool.vm.client.panels.manager.GetStationsOfPathPanel;
 import com.tsystems.javaschool.vm.dto.StationDTO;
 import com.tsystems.javaschool.vm.exception.InvalidIdException;
+import com.tsystems.javaschool.vm.exception.InvalidSessionException;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -84,6 +85,8 @@ public class GetStationsOfPathButtonAction implements ActionListener {
                 JOptionPane.showMessageDialog(parent, "Connection failed: " + e1.getClass() + " " + e1.getMessage());
             } catch (InvalidIdException e1) {
                 JOptionPane.showMessageDialog(parent, "Station with title \"" + pathTitle + "\" doesn't exist");
+            } catch (InvalidSessionException e1) {
+                JOptionPane.showMessageDialog(parent, "Invalid session! Log in again "+ "\n\n" + e1);
             }
 
         } else {

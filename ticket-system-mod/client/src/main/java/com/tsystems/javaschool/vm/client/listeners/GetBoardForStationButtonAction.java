@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,10 +36,15 @@ public class GetBoardForStationButtonAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String station = stationField.getText();
+        Calendar calendar1 = calendar.getCalendar();
+        calendar1.set(Calendar.HOUR_OF_DAY, 0);
+        calendar1.set(Calendar.MINUTE, 0);
+        calendar1.set(Calendar.SECOND, 0);
+        calendar1.set(Calendar.MILLISECOND, 0);
         if (station != null && !station.equals("")) {
             try {
                 final List<BoardStationDTO> list =
-                        Communicator.getBoardForStationAction(station, new Timestamp(calendar.getDate().getTime()));
+                        Communicator.getBoardForStationAction(station, new Timestamp(calendar1.getTimeInMillis()));
                 if (list != null) {
                     if (list.size() == 0) {
                         JOptionPane.showMessageDialog(parent, "No rows found.");

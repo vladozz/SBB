@@ -23,16 +23,16 @@ public class GetBoardForStationPanel extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         stationField = new javax.swing.JTextField();
-        get = new javax.swing.JButton();
+        get = new javax.swing.JButton("Get Board");
         jScrollPane2 = new javax.swing.JScrollPane();
         boardTable = new javax.swing.JTable();
-        jButton1 = new JCalendar();
-        jButton1.setLocale(Locale.ENGLISH);
+        calendar = new JCalendar();
+        calendar.setLocale(Locale.ENGLISH);
+
 
         jLabel1.setText("Enter station name");
 
-        get.setLabel("Get Station List");
-        get.addActionListener(new GetBoardForStationButtonAction(parent, stationField, jButton1, this));
+        get.addActionListener(new GetBoardForStationButtonAction(parent, stationField, calendar, this));
 
         boardTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -60,7 +60,7 @@ public class GetBoardForStationPanel extends javax.swing.JPanel {
                                                 .addComponent(get))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addContainerGap()
-                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(calendar, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addContainerGap()
                                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -77,7 +77,7 @@ public class GetBoardForStationPanel extends javax.swing.JPanel {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(stationField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(18, 18, 18)
-                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(calendar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(38, 38, 38)
                                                 .addComponent(get))
                                         .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE))
@@ -90,7 +90,7 @@ public class GetBoardForStationPanel extends javax.swing.JPanel {
 
     private javax.swing.JTable boardTable;
     private javax.swing.JButton get;
-    private JCalendar jButton1;
+    private JCalendar calendar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField stationField;

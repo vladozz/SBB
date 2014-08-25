@@ -4,6 +4,7 @@ import com.tsystems.javaschool.vm.dto.*;
 import com.tsystems.javaschool.vm.exception.InvalidIdException;
 import com.tsystems.javaschool.vm.exception.InvalidIndexException;
 import com.tsystems.javaschool.vm.exception.InvalidLoginOrPasswordException;
+import com.tsystems.javaschool.vm.exception.InvalidSessionException;
 import com.tsystems.javaschool.vm.protocol.ClientCommand;
 import com.tsystems.javaschool.vm.protocol.ManagerCommand;
 import com.tsystems.javaschool.vm.protocol.ServerResponse;
@@ -57,7 +58,7 @@ public class Communicator {
         return null;
     }
 
-    public static Long addTrainAction(String number, Short placesQty, Long session) throws IOException {
+    public static Long addTrainAction(String number, Short placesQty, Long session) throws IOException, InvalidSessionException {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(outputStream);
@@ -79,6 +80,8 @@ public class Communicator {
                         return trainID;
                     case FailedCreation:
                         return null;
+                    case InvalidSession:
+                        throw new InvalidSessionException("Session is not actual. Login again");
                     case InvalidInput:
                         throw new RuntimeException("Invalid Input");
                     case InvalidStartRequest:
@@ -95,7 +98,7 @@ public class Communicator {
         return null;
     }
 
-    public static Long addStationAction(String number, TimeZone timeZone, Long session) throws IOException {
+    public static Long addStationAction(String number, TimeZone timeZone, Long session) throws IOException, InvalidSessionException {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(outputStream);
@@ -117,6 +120,8 @@ public class Communicator {
                         return stationID;
                     case FailedCreation:
                         return null;
+                    case InvalidSession:
+                        throw new InvalidSessionException("Session is not actual. Login again");
                     case InvalidInput:
                         throw new RuntimeException("Invalid Input");
                     case InvalidStartRequest:
@@ -133,7 +138,7 @@ public class Communicator {
         return null;
     }
 
-    public static List<TrainDTO> getAllTrainsAction(Long session) throws IOException {
+    public static List<TrainDTO> getAllTrainsAction(Long session) throws IOException, InvalidSessionException {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(outputStream);
@@ -156,6 +161,8 @@ public class Communicator {
                         return null;
                     case InvalidInput:
                         throw new RuntimeException("Invalid Input");
+                    case InvalidSession:
+                        throw new InvalidSessionException("Session is not actual. Login again");
                     case InvalidStartRequest:
                         throw new RuntimeException("Invalid Start Request");
                     default:
@@ -170,7 +177,7 @@ public class Communicator {
         return null;
     }
 
-    public static List<PathDTO> getAllPathsAction(Long session) throws IOException {
+    public static List<PathDTO> getAllPathsAction(Long session) throws IOException, InvalidSessionException {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(outputStream);
@@ -195,6 +202,8 @@ public class Communicator {
                         throw new RuntimeException("Invalid Input");
                     case InvalidStartRequest:
                         throw new RuntimeException("Invalid Start Request");
+                    case InvalidSession:
+                        throw new InvalidSessionException("Session is not actual. Login again");
                     default:
                         throw new RuntimeException("Unknown Server Request");
                 }
@@ -207,7 +216,7 @@ public class Communicator {
         return null;
     }
 
-    public static List<PassengerDTO> getAllPassengersByTripAction(Long tripId, Long session) throws IOException, InvalidIdException {
+    public static List<PassengerDTO> getAllPassengersByTripAction(Long tripId, Long session) throws IOException, InvalidIdException, InvalidSessionException {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(outputStream);
@@ -233,6 +242,8 @@ public class Communicator {
                         throw new RuntimeException("Invalid Input");
                     case InvalidStartRequest:
                         throw new RuntimeException("Invalid Start Request");
+                    case InvalidSession:
+                        throw new InvalidSessionException("Session is not actual. Login again");
                     default:
                         throw new RuntimeException("Unknown Server Request");
                 }
@@ -247,7 +258,7 @@ public class Communicator {
         }
     }
 
-    public static List<StationDTO> getStationsOfPathAction(String pathTitle, Long session) throws IOException, InvalidIdException {
+    public static List<StationDTO> getStationsOfPathAction(String pathTitle, Long session) throws IOException, InvalidIdException, InvalidSessionException {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(outputStream);
@@ -271,6 +282,9 @@ public class Communicator {
                         throw new InvalidIdException();
                     case InvalidInput:
                         throw new RuntimeException("Invalid Input");
+
+                    case InvalidSession:
+                        throw new InvalidSessionException("Session is not actual. Login again");
                     case InvalidStartRequest:
                         throw new RuntimeException("Invalid Start Request");
                     default:
@@ -415,7 +429,7 @@ public class Communicator {
     }
 
     public static boolean insertStationIntoPath(String pathTitle, String stationToBeAddedTitle,
-                                                         int index, Long sessionId) throws IOException, InvalidIndexException {
+                                                         int index, Long sessionId) throws IOException, InvalidIndexException, InvalidSessionException {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(outputStream);
@@ -442,6 +456,8 @@ public class Communicator {
                         throw ((InvalidIndexException) in.readObject());
                     case InvalidInput:
                         throw new RuntimeException("Invalid Input");
+                    case InvalidSession:
+                        throw new InvalidSessionException("Session is not actual. Login again");
                     case InvalidStartRequest:
                         throw new RuntimeException("Invalid Start Request");
                     default:
@@ -457,7 +473,7 @@ public class Communicator {
     }
 
     public static boolean removeStationFromPath(String pathTitle, int index,
-                                                Long sessionId) throws IOException, InvalidIndexException {
+                                                Long sessionId) throws IOException, InvalidIndexException, InvalidSessionException {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(outputStream);
@@ -483,6 +499,8 @@ public class Communicator {
                         throw ((InvalidIndexException) in.readObject());
                     case InvalidInput:
                         throw new RuntimeException("Invalid Input");
+                    case InvalidSession:
+                        throw new InvalidSessionException("Session is not actual. Login again");
                     case InvalidStartRequest:
                         throw new RuntimeException("Invalid Start Request");
                     default:

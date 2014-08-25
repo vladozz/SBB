@@ -4,6 +4,7 @@ import com.tsystems.javaschool.vm.client.Communicator;
 import com.tsystems.javaschool.vm.client.StartForm;
 import com.tsystems.javaschool.vm.dto.PassengerDTO;
 import com.tsystems.javaschool.vm.exception.InvalidIdException;
+import com.tsystems.javaschool.vm.exception.InvalidSessionException;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -84,6 +85,8 @@ public class GetAllPassengersByTripButtonAction implements ActionListener {
                 JOptionPane.showMessageDialog(parent, "Connection failed: " + e1.getClass() + " " + e1.getMessage());
             } catch (InvalidIdException e1) {
                 JOptionPane.showMessageDialog(parent, "Trip number " + idString + " doesn't exist");
+            } catch (InvalidSessionException e1) {
+                JOptionPane.showMessageDialog(parent, "Invalid session! Log in again "+ "\n\n" + e1);
             }
 
         } else {

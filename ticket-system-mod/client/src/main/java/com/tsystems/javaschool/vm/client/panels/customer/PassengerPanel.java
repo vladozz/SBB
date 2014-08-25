@@ -53,7 +53,7 @@ public class PassengerPanel extends JPanel {
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 Calendar birthDate = calendar.getCalendar();
-                birthDate.set(Calendar.HOUR, 0);
+                birthDate.set(Calendar.HOUR_OF_DAY, 0);
                 birthDate.set(Calendar.MINUTE, 0);
                 birthDate.set(Calendar.SECOND, 0);
                 birthDate.set(Calendar.MILLISECOND, 0);

@@ -54,7 +54,9 @@ public class SBBServer {
     public static void main(String[] args) {
         SBBServer server = new SBBServer();
         server.start();
-
+//        server.addMiniBoard(4, 130, new Date (new Date().getTime() + 1000*86400));
+//        server.addMiniBoard(7, 34, new Date (new Date().getTime() + 1000*36400));
+//        server.addMiniBoard(4, 35, new Date (new Date().getTime()));
     }
 
     public void addPaths() throws FileNotFoundException {
@@ -104,11 +106,11 @@ public class SBBServer {
         }
     }
 
-    public void addMiniBoard() {
+    public void addMiniBoard(long pathID, long trainID, Date time ) {
         final long HOUR = 1000L * 60 * 60;
         final long TEN_MINUTES = 1000L * 60 * 10;
-        Timestamp timestamp = new Timestamp(new Date().getTime());
-        Trip trip = boardService.addTrip(1L, 32L);
+        Timestamp timestamp = new Timestamp(time.getTime());
+        Trip trip = boardService.addTrip(pathID, trainID);
         List<Timestamp> departures = new ArrayList<>();
         List<Timestamp> arrives = new ArrayList<>();
         for (int i = 0; i < trip.getPath().getStations().size(); i++) {
@@ -132,6 +134,7 @@ public class SBBServer {
         int port = 6574;
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             this.serverSocket = serverSocket;
+            System.out.println("Server started");
             while (true) {
                 Socket incoming = serverSocket.accept();
                 Runnable r = new ConnectionThread(incoming, this);
@@ -139,6 +142,7 @@ public class SBBServer {
                 t.start();
             }
         } catch (Exception e) {
+            System.out.println("Error of opening ServerSocket! Port number:" +  port  + "  " + e);
             logger.error("Error of opening ServerSocket! Port number:" +  port  + "  " + e);
         }
     }

@@ -3,6 +3,7 @@ package com.tsystems.javaschool.vm.client.panels.manager;
 import com.tsystems.javaschool.vm.client.Communicator;
 import com.tsystems.javaschool.vm.client.StartForm;
 import com.tsystems.javaschool.vm.dto.TrainDTO;
+import com.tsystems.javaschool.vm.exception.InvalidSessionException;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -109,6 +110,8 @@ public class GetAllTrainsPanel extends JPanel {
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(parent, "Connection failed: " + e.getClass() + " " + e.getMessage());
+        } catch (InvalidSessionException e1) {
+        JOptionPane.showMessageDialog(parent, "Invalid session! Log in again "+ "\n\n" + e1);
         }
     }
 

@@ -4,6 +4,7 @@ import com.tsystems.javaschool.vm.client.Communicator;
 import com.tsystems.javaschool.vm.client.StartForm;
 import com.tsystems.javaschool.vm.client.panels.manager.GetStationsOfPathPanel;
 import com.tsystems.javaschool.vm.exception.InvalidIndexException;
+import com.tsystems.javaschool.vm.exception.InvalidSessionException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -44,6 +45,8 @@ public class RemoveStationFromPathButtonAction implements ActionListener {
                         JOptionPane.showMessageDialog(parent, "Connection failed: " + e1.getClass() + " " + e1.getMessage());
                     } catch (InvalidIndexException e1) {
                         JOptionPane.showMessageDialog(parent, "Invalid input data");
+                    } catch (InvalidSessionException e1) {
+                        JOptionPane.showMessageDialog(parent, "Invalid session! Log in again "+ "\n\n" + e1);
                     }
             } else {
                 JOptionPane.showMessageDialog(parent, "Path might not be empty. Enter path title and press button \"Get stations\" before this operation!");

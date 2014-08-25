@@ -2,6 +2,7 @@ package com.tsystems.javaschool.vm.client.listeners;
 
 import com.tsystems.javaschool.vm.client.Communicator;
 import com.tsystems.javaschool.vm.client.StartForm;
+import com.tsystems.javaschool.vm.exception.InvalidSessionException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -40,6 +41,8 @@ public class AddStationButtonAction implements ActionListener {
                     JOptionPane.showMessageDialog(parent, "Time Zone field has illegal format");
                 } catch (IOException e1) {
                     JOptionPane.showMessageDialog(parent, "Connection failed: " + e1.getClass() + " " + e1.getMessage());
+                } catch (InvalidSessionException e1) {
+                    JOptionPane.showMessageDialog(parent, "Invalid session! Log in again "+ "\n\n" + e1);
                 }
             } else {
                 JOptionPane.showMessageDialog(parent, "Time Zone field might not be empty");

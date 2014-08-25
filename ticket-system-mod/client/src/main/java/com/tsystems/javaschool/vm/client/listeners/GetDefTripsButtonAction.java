@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 
 public class GetDefTripsButtonAction implements ActionListener {
@@ -38,12 +39,22 @@ public class GetDefTripsButtonAction implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String arriveStation = arriveStationField.getText();
         String departureStation = departureStationField.getText();
+        Calendar calendarAfter = this.calendarAfter.getCalendar();
+        calendarAfter.set(Calendar.HOUR_OF_DAY, 0);
+        calendarAfter.set(Calendar.MINUTE, 0);
+        calendarAfter.set(Calendar.SECOND, 0);
+        calendarAfter.set(Calendar.MILLISECOND, 0);
+        Calendar calendarBefore = this.calendarBefore.getCalendar();
+        calendarBefore.set(Calendar.HOUR_OF_DAY, 0);
+        calendarBefore.set(Calendar.MINUTE, 0);
+        calendarBefore.set(Calendar.SECOND, 0);
+        calendarBefore.set(Calendar.MILLISECOND, 0);
         if (arriveStation != null && !arriveStation.equals("")
                 && departureStation != null && !departureStation.equals("")) {
             try {
 
-                Timestamp departureTime = new Timestamp(calendarAfter.getDate().getTime());
-                Timestamp arriveTime = new Timestamp(calendarBefore.getDate().getTime());
+                Timestamp departureTime = new Timestamp(calendarAfter.getTimeInMillis());
+                Timestamp arriveTime = new Timestamp(calendarBefore.getTimeInMillis() + 86400000);
                 final List<ReqDefTripDTO> list =
                         Communicator.getDefTripsAction(departureStation, arriveStation, departureTime, arriveTime);
                 if (list != null) {
