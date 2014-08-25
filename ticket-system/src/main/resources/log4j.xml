@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+
+
+
+  <appender name="LOG-FILE-APPENDER" class="org.apache.log4j.FileAppender">
+    <param name="file" value="app.log"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{ISO8601} [%5p] %c %m at %l%n"/>
+    </layout>
+  </appender>
+  
+  <appender name="LOG-FILE-DOMAIN-APPENDER" class="org.apache.log4j.FileAppender">
+    <param name="file" value="app-domain.log"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{ISO8601} [%5p] %c %m at %l%n"/>
+    </layout>
+  </appender>
+
+
+
+  <root>
+    <priority value="INFO"/>
+    <appender-ref ref="LOG-FILE-APPENDER"/>
+  </root>
+    <root>
+        <priority value="INFO"/>
+        <appender-ref ref="LOG-FILE-DOMAIN-APPENDER"/>
+    </root>
+
+</log4j:configuration>

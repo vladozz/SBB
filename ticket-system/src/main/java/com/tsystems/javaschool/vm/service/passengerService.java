@@ -6,6 +6,7 @@ import com.tsystems.javaschool.vm.exception.AlreadyOnTripException;
 import com.tsystems.javaschool.vm.exception.InvalidIdException;
 import com.tsystems.javaschool.vm.exception.OutOfFreeSpacesException;
 import com.tsystems.javaschool.vm.exception.TenMinutesException;
+import org.apache.log4j.Logger;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 public class PassengerService {
+    private static Logger logger = Logger.getLogger(PassengerService.class);
     private TicketDAO ticketDAO;
     private PassengerDAO passengerDAO;
     private StationDAO stationDAO;
@@ -106,7 +108,9 @@ public class PassengerService {
         if (passenger == null) {
             passenger = addPassenger(firstName, lastName, birthDate);
             if (passenger == null) {
-                //throw new Exception("Error of creating passenger");
+                logger.warn("Unable to create passenger:" + " firstName = " + firstName +
+                        " lastName = " + lastName + " birthDate = " + birthDate);
+                return null;
             }
         }
         Board departureBoard = boardDAO.findById(departureBoardId);

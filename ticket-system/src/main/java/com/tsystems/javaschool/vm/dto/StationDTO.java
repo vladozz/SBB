@@ -6,12 +6,27 @@ import java.util.TimeZone;
 public class StationDTO implements Serializable {
 
     private static final long serialVersionUID = -1752725050456199931L;
+    private Long id;
     private String title;
     private TimeZone timeZone;
 
     public StationDTO(String title, TimeZone timeZone) {
         this.title = title;
         this.timeZone = timeZone;
+    }
+
+    public StationDTO(Long id, String title, TimeZone timeZone) {
+        this.id = id;
+        this.title = title;
+        this.timeZone = timeZone;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public TimeZone getTimeZone() {
@@ -34,7 +49,8 @@ public class StationDTO implements Serializable {
     @Override
     public String toString() {
         return "StationDTO{" +
-                "title='" + title + '\'' +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", timeZone=" + timeZone +
                 '}';
     }

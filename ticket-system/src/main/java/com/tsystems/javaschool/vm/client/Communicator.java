@@ -1,10 +1,12 @@
 package com.tsystems.javaschool.vm.client;
 
 import com.tsystems.javaschool.vm.domain.Passenger;
+import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Train;
 import com.tsystems.javaschool.vm.dto.*;
 import com.tsystems.javaschool.vm.exception.ConnectionException;
 import com.tsystems.javaschool.vm.exception.InvalidIdException;
+import com.tsystems.javaschool.vm.exception.InvalidIndexException;
 import com.tsystems.javaschool.vm.exception.InvalidLoginOrPasswordException;
 import com.tsystems.javaschool.vm.protocol.ClientCommand;
 import com.tsystems.javaschool.vm.protocol.ManagerCommand;
@@ -169,6 +171,43 @@ public class Communicator {
         return null;
     }
 
+    public static List<PathDTO> getAllPathsAction(Long session) throws IOException {
+        try(Socket socket = new Socket("localhost", 6574)) {
+            OutputStream outputStream = socket.getOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            out.writeObject(StartRequest.SessionManager);
+            out.writeLong(session);
+            out.writeObject(ManagerCommand.GetAllPaths);
+            out.flush();
+
+            Object o = in.readObject();
+
+            if (o instanceof ServerResponse) {
+                ServerResponse response = ((ServerResponse) o);
+                switch (response) {
+                    case OperationSuccess:
+                        List<PathDTO> list =((List<PathDTO>) in.readObject());
+                        socket.close();
+                        return list;
+                    case FailedOperation:
+                        return null;
+                    case InvalidInput:
+                        throw new RuntimeException("Invalid Input");
+                    case InvalidStartRequest:
+                        throw new RuntimeException("Invalid Start Request");
+                    default:
+                        throw new RuntimeException("Unknown Server Request");
+                }
+            } else {
+                throw new RuntimeException("Unknown Server Request");
+            }
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        return null;
+    }
+
     public static List<PassengerDTO> getAllPassengersByTripAction(Long tripId, Long session) throws IOException, InvalidIdException {
         try(Socket socket = new Socket("localhost", 6574)) {
             OutputStream outputStream = socket.getOutputStream();
@@ -204,6 +243,46 @@ public class Communicator {
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
             RuntimeException e2 = new RuntimeException("Type is not List<PassengerDRO>");
+            e2.addSuppressed(e1);
+            throw e2;
+        }
+    }
+
+    public static List<StationDTO> getStationsOfPathAction(String pathTitle, Long session) throws IOException, InvalidIdException {
+        try(Socket socket = new Socket("localhost", 6574)) {
+            OutputStream outputStream = socket.getOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            out.writeObject(StartRequest.SessionManager);
+            out.writeLong(session);
+            out.writeObject(ManagerCommand.GetStationsOfPath);
+            out.writeObject(pathTitle);
+            out.flush();
+
+            Object o = in.readObject();
+
+            if (o instanceof ServerResponse) {
+                ServerResponse response = ((ServerResponse) o);
+                switch (response) {
+                    case OperationSuccess:
+                        List<StationDTO> list =((List<StationDTO>) in.readObject());
+                        socket.close();
+                        return list;
+                    case InvalidId:
+                        throw new InvalidIdException();
+                    case InvalidInput:
+                        throw new RuntimeException("Invalid Input");
+                    case InvalidStartRequest:
+                        throw new RuntimeException("Invalid Start Request");
+                    default:
+                        throw new RuntimeException("Unknown Server Request");
+                }
+            } else {
+                throw new RuntimeException("Unknown Server Request");
+            }
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+            RuntimeException e2 = new RuntimeException("Type is not List<StationDTO>");
             e2.addSuppressed(e1);
             throw e2;
         }
@@ -334,5 +413,88 @@ public class Communicator {
             e2.addSuppressed(e1);
             throw e2;
         }
+    }
+
+    public static boolean insertStationIntoPath(String pathTitle, String stationToBeAddedTitle,
+                                                         int index, Long sessionId) throws IOException, InvalidIndexException {
+        try(Socket socket = new Socket("localhost", 6574)) {
+            OutputStream outputStream = socket.getOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            out.writeObject(StartRequest.SessionManager);
+            out.writeLong(sessionId);
+            out.writeObject(ManagerCommand.InsertStationIntoPath);
+            out.writeObject(pathTitle);
+            out.writeObject(stationToBeAddedTitle);
+            out.writeObject(Integer.valueOf(index));
+            out.flush();
+
+            Object o = in.readObject();
+
+            if (o instanceof ServerResponse) {
+                ServerResponse response = ((ServerResponse) o);
+                switch (response) {
+                    case OperationSuccess:
+
+                        return true;
+                    case FailedOperation:
+                        return false;
+                    case Exception:
+                        throw ((InvalidIndexException) in.readObject());
+                    case InvalidInput:
+                        throw new RuntimeException("Invalid Input");
+                    case InvalidStartRequest:
+                        throw new RuntimeException("Invalid Start Request");
+                    default:
+                        throw new RuntimeException("Unknown Server Request");
+                }
+            } else {
+                throw new RuntimeException("Unknown Server Request");
+            }
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean removeStationFromPath(String pathTitle, int index,
+                                                Long sessionId) throws IOException, InvalidIndexException {
+        try(Socket socket = new Socket("localhost", 6574)) {
+            OutputStream outputStream = socket.getOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            out.writeObject(StartRequest.SessionManager);
+            out.writeLong(sessionId);
+            out.writeObject(ManagerCommand.RemoveStationFromPath);
+            out.writeObject(pathTitle);
+            out.writeObject(Integer.valueOf(index));
+            out.flush();
+
+            Object o = in.readObject();
+
+            if (o instanceof ServerResponse) {
+                ServerResponse response = ((ServerResponse) o);
+                switch (response) {
+                    case OperationSuccess:
+
+                        return true;
+                    case FailedOperation:
+                        return false;
+                    case Exception:
+                        throw ((InvalidIndexException) in.readObject());
+                    case InvalidInput:
+                        throw new RuntimeException("Invalid Input");
+                    case InvalidStartRequest:
+                        throw new RuntimeException("Invalid Start Request");
+                    default:
+                        throw new RuntimeException("Unknown Server Request");
+                }
+            } else {
+                throw new RuntimeException("Unknown Server Request");
+            }
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        return false;
     }
 }

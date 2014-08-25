@@ -13,11 +13,16 @@ public class StationDAO extends CommonDAO<Station> {
         super(entityManager);
     }
 
-    public List<Station> findByName(String title) {
+    public Station findByTitle(String title) {
         String queryString = "SELECT s FROM Station s WHERE LOWER(s.title) = :title";
         Query query = em.createQuery(queryString);
         query.setParameter("title", title.toLowerCase());
-        return query.getResultList();
+        List<Station> stations = query.getResultList();
+        if (stations.size() == 0) {
+            return null;
+        } else {
+            return stations.get(0);
+        }
     }
 
     public List<Station> findByGMT(TimeZone timeZone) {

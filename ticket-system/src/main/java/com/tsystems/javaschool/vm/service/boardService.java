@@ -4,6 +4,7 @@ import com.tsystems.javaschool.vm.dao.*;
 import com.tsystems.javaschool.vm.domain.*;
 import com.tsystems.javaschool.vm.dto.BoardStationDTO;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
+import com.tsystems.javaschool.vm.exception.DifferentArrayException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -36,6 +37,9 @@ public class BoardService {
         return addTrip(path, train);
     }
     public Trip addTrip(Path path, Train train) {
+        if (path == null || train == null) {
+            return null;
+        }
         Trip trip = new Trip(path, train);
         EntityTransaction trx = tripDAO.getTransaction();
         try {
@@ -57,11 +61,16 @@ public class BoardService {
      * @param departures список времен отправления
      * @return список созданных строчек расписания
      */
-    public List<Board> generateBoardByTrip(Trip trip, List<Timestamp> arrives, List<Timestamp> departures) {
+    public List<Board> generateBoardByTrip(Trip trip, List<Timestamp> arrives, List<Timestamp> departures) throws DifferentArrayException {
+        if (trip == null) {
+            return null;
+        }
         List<Board> board = new ArrayList<Board>();
         List<Station> stations = trip.getPath().getStations();
         if (stations.size() != arrives.size() || stations.size() != departures.size()) {
-            //TODO: throw MyException: different sizes of arrays
+            throw new DifferentArrayException("stations.size() = " + stations.size() +
+                    " arrives.size() = " + arrives.size() + " departures.size() = " + departures.size());
+
         }
         int n = stations.size();
         for (int i = 0; i < n; i++) {
@@ -109,26 +118,6 @@ public class BoardService {
         query.setParameter("before", before);
         query.setParameter("after", after);
         return query.getResultList();
-    }
-
-    public List<BoardStationDTO> getBoardForStationForToday(Station station) {
-        final long DAY = 1000L * 60 * 60 * 24;
-        Timestamp after = new Timestamp(new Date().getTime());
-        after.setHours(0);
-        after.setMinutes(0);
-        after.setSeconds(0);
-        Timestamp before = new Timestamp(after.getTime() + DAY);
-        List<BoardStationDTO> boardStationDTOList = new ArrayList<BoardStationDTO>();
-        for (Board b : getBoardForStation(station, before, after)) {
-            BoardStationDTO boardStationDTO = new BoardStationDTO();
-            boardStationDTO.setTripNumber(b.getTrip().getId());
-            boardStationDTO.setPathTitle(b.getTrip().getPath().getTitle());
-            boardStationDTO.setArriveTime(b.getArriveTime());
-            boardStationDTO.setDepartureTime(b.getDepartureTime());
-            boardStationDTO.setStandTime((int)(b.getDepartureTime().getTime() - b.getArriveTime().getTime()) / 60000);
-            boardStationDTOList.add(boardStationDTO);
-        }
-        return boardStationDTOList;
     }
 
     public List<Board> getBoardForTrip(Long tripId) {

@@ -1,14 +1,16 @@
 package com.tsystems.javaschool.vm.sub;
 
 import com.tsystems.javaschool.vm.client.StartForm;
-import com.tsystems.javaschool.vm.client.StartLoginForm;
+
 import com.tsystems.javaschool.vm.dao.*;
 import com.tsystems.javaschool.vm.domain.*;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
+import com.tsystems.javaschool.vm.exception.DifferentArrayException;
 import com.tsystems.javaschool.vm.service.BoardService;
 import com.tsystems.javaschool.vm.service.PassengerService;
 import com.tsystems.javaschool.vm.service.PathService;
 import com.tsystems.javaschool.vm.service.UserService;
+import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -23,6 +25,7 @@ import java.util.*;
 import java.util.List;
 
 public class SBBServer {
+    private static Logger logger = Logger.getLogger(SBBServer.class);
     private ServerSocket serverSocket;
     //TODO: reset sessions in time
     private Map<Long, String> sessions;
@@ -52,7 +55,7 @@ public class SBBServer {
         sessions = new HashMap<>();
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         StartForm startForm = new StartForm();
         SBBServer server = new SBBServer();
         server.start();
@@ -119,7 +122,11 @@ public class SBBServer {
             departures.add(timestamp);
             timestamp = new Timestamp(timestamp.getTime() + HOUR);
         }
-        boardService.generateBoardByTrip(trip, arrives, departures);
+        try {
+            boardService.generateBoardByTrip(trip, arrives, departures);
+        } catch (DifferentArrayException e) {
+            logger.warn("Program exception! " , e);
+        }
     }
 
 
@@ -136,9 +143,8 @@ public class SBBServer {
                 Thread t = new Thread(r);
                 t.start();
             }
-        } catch (IOException e) {
-            //TODO: change to Logger
-            System.out.println(e.getClass() + " " + e.getMessage() + ". Port number: " + port);
+        } catch (Exception e) {
+            logger.error("Error of opening ServerSocket! Port number:" +  port  + "  " + e);
         }
     }
 
@@ -147,12 +153,13 @@ public class SBBServer {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                //TODO: add Logger
+                logger.error("Error of closing ServerSocket! ", e);
             }
         }
     }
 
     public void addSession(Long id, String login) {
+
         sessions.put(id, login);
     }
 

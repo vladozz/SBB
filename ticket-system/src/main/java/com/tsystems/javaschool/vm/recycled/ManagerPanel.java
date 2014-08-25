@@ -1,4 +1,4 @@
-package com.tsystems.javaschool.vm.client.panels.manager;
+package com.tsystems.javaschool.vm.recycled;
 
 import javax.swing.*;
 import java.awt.*;

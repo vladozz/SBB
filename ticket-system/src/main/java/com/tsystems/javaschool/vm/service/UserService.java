@@ -19,8 +19,6 @@ public class UserService {
         User user = userDAO.findByLogin(login);
         if (user != null) {
             String hash = Hasher.md5(password).substring(0, 16).toUpperCase();
-            System.out.println("hash = " + hash);
-            System.out.println("user.getPassword() = " + user.getPassword());
             if (hash.equals(user.getPassword())) {
                 Map.Entry<Long, String> entry = new AbstractMap.SimpleEntry<Long, String>(getRandomLong(), login);
                 return entry;

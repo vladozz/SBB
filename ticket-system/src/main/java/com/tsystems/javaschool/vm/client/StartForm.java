@@ -5,6 +5,7 @@ import com.tsystems.javaschool.vm.client.listeners.WithoutLoginButtonAction;
 import com.tsystems.javaschool.vm.client.panels.LoginPanel;
 import com.tsystems.javaschool.vm.client.panels.customer.ClientPane;
 import com.tsystems.javaschool.vm.client.panels.manager.*;
+import com.tsystems.javaschool.vm.recycled.ManagerPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -70,10 +71,12 @@ public class StartForm extends JFrame {
     }
 
     public void initManagerFrame() {
+        JPanel panel = new JPanel(new CardLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                BorderFactory.createLineBorder(Color.black)));
+        setContentPane(panel);
+        panel.add(new ManagerPane(this));
         this.setTitle("Manager service");
-        managerFrame  = new JPanel();
-        setContentPane(managerFrame);
-        managerFrame.add(getManagerMenu());
         pack();
         setVisible(true);
     }

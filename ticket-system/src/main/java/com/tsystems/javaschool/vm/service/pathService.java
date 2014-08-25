@@ -3,11 +3,11 @@ package com.tsystems.javaschool.vm.service;
 import com.tsystems.javaschool.vm.dao.PathDAO;
 import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.dao.TrainDAO;
-import com.tsystems.javaschool.vm.dao.TripDAO;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.Train;
-import com.tsystems.javaschool.vm.domain.Trip;
+import com.tsystems.javaschool.vm.exception.InvalidIdException;
+import com.tsystems.javaschool.vm.exception.InvalidIndexException;
 
 import javax.persistence.EntityTransaction;
 import java.util.ArrayList;
@@ -71,14 +71,25 @@ public class PathService {
         return train;
     }
 
-    public void addStationToPath(Long pathId, Long stationId) throws Exception {
-        addStationToPath(pathId, stationId, 0);
+    public Path addStationToPath(Long pathId, Long stationId)  throws InvalidIndexException {
+        return addStationToPath(pathId, stationId, 0);
     }
 
-    public void addStationToPath(Long pathId, Long stationId, int index) throws Exception {
+    public Path addStationToPath(Long pathId, Long stationId, int index) throws InvalidIndexException {
         Path path = pathDAO.findById(pathId);
         Station station = stationDAO.findById(stationId);
-        addStationToPath(path, station, index);
+        return addStationToPath(path, station, index);
+    }
+
+    public Path addStationToPath(String pathTitle, String stationTitle) throws InvalidIndexException {
+        return addStationToPath(pathTitle, stationTitle, 0);
+    }
+
+    public Path addStationToPath(String pathTitle, String stationTitle, int index) throws InvalidIndexException {
+        Path path = pathDAO.findByTitle(pathTitle);
+        Station station = stationDAO.findByTitle(stationTitle);
+
+        return addStationToPath(path, station, index);
     }
 
     /**
@@ -86,8 +97,8 @@ public class PathService {
      * @param path маршрут
      * @param station станция
      */
-    public void addStationToPath(Path path, Station station) throws Exception {
-        addStationToPath(path, station, 0);
+    public Path addStationToPath(Path path, Station station)   throws InvalidIndexException {
+        return addStationToPath(path, station, 0);
     }
 
     /**
@@ -97,7 +108,10 @@ public class PathService {
      * @param index 0 - добавление в конец, от 1...n(кол-во станций в маршруте) - вставка на место 1го...n-го элемента
      *               со сдвигом всех последующих
      */
-    public void addStationToPath(Path path, Station station, int index) throws Exception {
+    public Path addStationToPath(Path path, Station station, int index) throws InvalidIndexException {
+        if (path == null || station == null) {
+            return null;
+        }
         EntityTransaction trx = pathDAO.getTransaction();
         try {
             trx.begin();
@@ -106,7 +120,7 @@ public class PathService {
                 stations = new ArrayList<Station>();
             }
             if (index < 0 || index > stations.size()) {
-                throw new RuntimeException("Illegal index of station: " + "index = " + index
+                throw new InvalidIndexException("Illegal index of station: " + "index = " + index
                         + "stations.size() = " + stations.size() + "path = " + path + "station = " + station);
                 //TODO: possible change class of exception
             }
@@ -122,50 +136,73 @@ public class PathService {
         } finally {
             if (trx.isActive()) {
                 trx.rollback();
+                return null;
             }
         }
+        return path;
     }
 
     /**
      *
      * @param pathId
-     * @param stationId
      * @param index от 1...n(кол-во станций в маршруте) - удаление 1го...n-го элемента
      *               со сдвигом всех последующих
      */
-    public void removeStationFromPath(Long pathId, Long stationId, int index) throws Exception {
+    public Path removeStationFromPath(Long pathId, int index) throws InvalidIndexException {
         Path path = pathDAO.findById(pathId);
-        Station station = stationDAO.findById(stationId);
-        removeStationFromPath(path, station, index);
+        return removeStationFromPath(path, index);
+    }
+
+    public Path removeStationFromPath(String pathTitle, int index) throws InvalidIndexException {
+        Path path = pathDAO.findByTitle(pathTitle);
+        return removeStationFromPath(path, index);
     }
 
     /**
      *
      * @param path
-     * @param station
      * @param index от 1...n(кол-во станций в маршруте) - удаление 1го...n-го элемента
      *               со сдвигом всех последующих
      */
-    public void removeStationFromPath(Path path, Station station, int index) throws Exception {
+    public Path removeStationFromPath(Path path, int index) throws InvalidIndexException {
+        if (path == null) {
+            return null;
+        }
         EntityTransaction trx = pathDAO.getTransaction();
         try {
             trx.begin();
             List<Station> stations = path.getStations();
             if (index <= 0 || index > stations.size()) {
-                throw new Exception("Illegal index of station: " + "index = " + index
-                        + "stations.size() = " + stations.size() + "path = " + path + "station = " + station);
-                //TODO: possible change class of exception
+                throw new InvalidIndexException("Illegal index of station: " + "index = " + index
+                        + "stations.size() = " + stations.size() + "path = " + path);
             }
             stations.remove(index - 1);
+            trx.commit();
         } finally {
             if (trx.isActive()) {
                 trx.rollback();
+                return null;
             }
         }
+        return path;
     }
 
     public List<Train> getAllTrains() {
         return trainDAO.findAll();
+    }
+
+    public List<Path> getAllPaths() {
+        return pathDAO.findAll();
+    }
+
+    public List<Station> getStationsOfPath(String pathTitle) {
+        Path path = pathDAO.findByTitle(pathTitle);
+        if (path == null) {
+            return null;
+        } else {
+            return path.getStations();
+        }
+
     }
 }
 

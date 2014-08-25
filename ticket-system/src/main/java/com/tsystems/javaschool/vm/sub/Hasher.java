@@ -1,21 +1,29 @@
 package com.tsystems.javaschool.vm.sub;
 
+import org.apache.log4j.Logger;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Hasher {
-    public static void main(String[] args) throws NoSuchAlgorithmException {
-    }
+    private static Logger logger = Logger.getLogger(Hasher.class);
 
-    public static String hash(String text, String alg) throws NoSuchAlgorithmException {
+    public static String hash(String text, String alg)  {
         StringBuilder code = new StringBuilder(); //the hash code
-        MessageDigest messageDigest = MessageDigest.getInstance(alg);
-        byte bytes[] = text.getBytes();
-        byte digest[] = messageDigest.digest(bytes); //create code
-        for (int i = 0; i < digest.length; ++i) {
-            code.append(Integer.toHexString(0x0100 + (digest[i] & 0x00FF)).substring(1));
+        MessageDigest messageDigest = null;
+        try {
+            messageDigest = MessageDigest.getInstance(alg);
+        } catch (NoSuchAlgorithmException e) {
+            logger.warn("Hash exception!", e);
+
+            byte bytes[] = text.getBytes();
+            byte digest[] = messageDigest.digest(bytes); //create code
+            for (int i = 0; i < digest.length; ++i) {
+                code.append(Integer.toHexString(0x0100 + (digest[i] & 0x00FF)).substring(1));
+            }
+            return code.toString();
         }
-        return code.toString();
+        return null;
     }
 
     public static String md5(String text) {
@@ -27,7 +35,7 @@ public class Hasher {
             }
             return code.toString();
         } catch (NoSuchAlgorithmException e) {
-            // TODO: add Logger
+            logger.warn("Hash md5 exception!", e);
         }
         return null;
     }
