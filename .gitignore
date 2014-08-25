@@ -1,5 +1,8 @@
-ticket-system/.idea
+*/.idea
+**/.idea
+**/target/*
+**.log
 ticket-system/lib/*
 ticket-system/target/*
-ticket-system/ticket-system.iml
+*.iml
 SQL/README.txt
