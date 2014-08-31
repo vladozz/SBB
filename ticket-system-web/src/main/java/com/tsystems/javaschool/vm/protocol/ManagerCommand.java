@@ -1,0 +1,6 @@
+package com.tsystems.javaschool.vm.protocol;
+
+public enum ManagerCommand {
+    ADD_STATION, ADD_TRAIN, GET_ALL_TRAINS, GET_ALL_PATHS, GET_STATIONS_OF_PATH,
+    INSERT_STATION_INTO_PATH, REMOVE_STATION_FROM_PATH, GET_PASSENGERS_OF_TRIP
+}
