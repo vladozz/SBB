@@ -7,14 +7,19 @@ public class TrainDTO implements Serializable {
     private static final long serialVersionUID = 3326713079683884452L;
     private Long id;
     private String number;
-    private Short placesQty;
+    private String placesQty;
 
-    public TrainDTO(String number, Short placesQty) {
+    public TrainDTO() {
+    }
+
+    public TrainDTO(String number, String placesQty) {
+
         this.number = number;
         this.placesQty = placesQty;
     }
 
-    public TrainDTO(Long id, String number, Short placesQty) {
+    public TrainDTO(Long id, String number, String placesQty) {
+
         this.id = id;
         this.number = number;
         this.placesQty = placesQty;
@@ -36,11 +41,11 @@ public class TrainDTO implements Serializable {
         this.number = number;
     }
 
-    public Short getPlacesQty() {
+    public String getPlacesQty() {
         return placesQty;
     }
 
-    public void setPlacesQty(Short placesQty) {
+    public void setPlacesQty(String placesQty) {
         this.placesQty = placesQty;
     }
 

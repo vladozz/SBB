@@ -21,7 +21,7 @@ public class SBBController {
     @RequestMapping("/index")
     public String listTrains(Map<String, Object> map) {
         map.put("train", new Train());
-        map.put("trainList", trainService.getAllTrains());
+
 
         return "train";
     }
