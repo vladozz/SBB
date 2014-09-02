@@ -1,6 +1,6 @@
 package com.tsystems.javaschool.vm.exception;
 
-public class DifferentArrayException extends Exception {
+public class DifferentArrayException extends SBBException {
     public DifferentArrayException() {
         super();
     }

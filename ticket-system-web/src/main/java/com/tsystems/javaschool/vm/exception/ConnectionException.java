@@ -1,5 +1,5 @@
 package com.tsystems.javaschool.vm.exception;
 
-public class ConnectionException extends Exception {
+public class ConnectionException extends SBBException {
 
 }

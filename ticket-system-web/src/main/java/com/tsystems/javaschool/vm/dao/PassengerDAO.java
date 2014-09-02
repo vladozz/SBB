@@ -15,7 +15,7 @@ public class PassengerDAO extends CommonDAO<Passenger> {
         super(Passenger.class);
     }
 
-    public Passenger findByNameAndBirthDate(String firstName, String lastName, Calendar birthDate) {
+    public List<Passenger> findByNameAndBirthDate(String firstName, String lastName, Calendar birthDate) {
         String queryString = "SELECT p FROM Passenger p WHERE LOWER(p.firstName) = :firstName AND " +
                 "LOWER(p.lastName) = :lastName AND year(p.birthDate) = year(:birthDate) " +
                 "and month(p.birthDate) = month(:birthDate) and day(p.birthDate) = day(:birthDate)";
@@ -24,12 +24,7 @@ public class PassengerDAO extends CommonDAO<Passenger> {
         query.setParameter("lastName", lastName.toLowerCase());
         query.setParameter("birthDate", birthDate);
 
-        List<Passenger> passenger = query.getResultList();
-        if (passenger.isEmpty()) {
-            return null;
-        } else {
-            return passenger.get(0);
-        }
+        return query.getResultList();
     }
 
     public List<Passenger> getPassengersOfTrip(Trip trip) {

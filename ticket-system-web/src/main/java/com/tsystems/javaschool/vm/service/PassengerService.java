@@ -9,6 +9,7 @@ import com.tsystems.javaschool.vm.exception.TenMinutesException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityTransaction;
 import java.util.Calendar;
@@ -33,19 +34,10 @@ public class PassengerService {
     public PassengerService() {
     }
 
+    @Transactional
     public Passenger addPassenger(String firstName, String lastName, Calendar birthDate) {
         Passenger passenger = new Passenger(firstName, lastName, birthDate);
-        EntityTransaction trx = passengerDAO.getTransaction();
-        try {
-            trx.begin();
-            passengerDAO.create(passenger);
-            trx.commit();
-        } finally {
-            if (trx.isActive()) {
-                trx.rollback();
-                passenger = null;
-            }
-        }
+        passengerDAO.create(passenger);
         return passenger;
     }
 
@@ -108,14 +100,17 @@ public class PassengerService {
 
     public Ticket buyTicket(String firstName, String lastName, Calendar birthDate, Long departureBoardId, Long arriveBoardId)
             throws InvalidIdException, OutOfFreeSpacesException, TenMinutesException, AlreadyOnTripException {
-        Passenger passenger = passengerDAO.findByNameAndBirthDate(firstName, lastName, birthDate);
-        if (passenger == null) {
+        List<Passenger> passengers = passengerDAO.findByNameAndBirthDate(firstName, lastName, birthDate);
+        Passenger passenger;
+        if (passengers.isEmpty()) {
             passenger = addPassenger(firstName, lastName, birthDate);
             if (passenger == null) {
                 LOGGER.warn("Unable to create passenger:" + " firstName = " + firstName +
                         " lastName = " + lastName + " birthDate = " + birthDate);
                 return null;
             }
+        } else {
+            passenger = passengers.get(0);
         }
         Board departureBoard = boardDAO.findById(departureBoardId);
         Board arriveBoard = boardDAO.findById(arriveBoardId);

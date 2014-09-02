@@ -1,21 +1,17 @@
 package com.tsystems.javaschool.vm.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "user"
-/*,
-        uniqueConstraints = @UniqueConstraint(columnNames = {"login"})*/)
+@Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = {"login"}))
 public class User extends SBBEntity {
     @Column(name = "login")
     private String login;
     @Column(name = "pswd")
     private String password;
-/*    @ManyToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn (name = "role_id")
-    private Role role;*/
+    private Role role;
 
     public User() {
     }
@@ -25,13 +21,11 @@ public class User extends SBBEntity {
         this.password = password;
     }
 
-    /*
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;
         this.role = role;
     }
-*/
 
     public String getLogin() {
         return login;
@@ -49,20 +43,20 @@ public class User extends SBBEntity {
         this.password = password;
     }
 
-/*    public Role getRole() {
+    public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
         this.role = role;
-    }*/
+    }
 
     @Override
     public String toString() {
         return "User{" +
                 "login='" + login + '\'' +
                 ", password='" + password + '\'' +
-                /*", role=" + role +*/
+                ", role=" + role +
                 '}';
     }
 }

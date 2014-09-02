@@ -29,15 +29,15 @@ public abstract class SBBEntity {
 
         SBBEntity sbbEntity = (SBBEntity) o;
 
-        if (!id.equals(sbbEntity.id)) {
-            return false;
-        }
+        return id != null && sbbEntity.id != null && id.equals(sbbEntity.id);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
+        if (id == null) {
+            return 0;
+        }
         return id.hashCode();
     }
 }
