@@ -119,5 +119,3 @@
     <!-- /.container-fluid -->
 </nav>
 
-<%@include file="add_train_modal.jsp" %>
-<%@include file="add_station_modal.jsp" %>

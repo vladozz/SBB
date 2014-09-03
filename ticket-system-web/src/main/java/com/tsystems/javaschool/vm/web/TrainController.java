@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.validation.Valid;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -27,7 +28,7 @@ public class TrainController {
 
     @RequestMapping(index)
     public String listTrains(Map<String, Object> map) {
-        map.put("train", new TrainDTO());
+        map.put("train", new Train());
         map.put("trainList", trainService.getAllTrains());
         map.put("station", new Station());
 
@@ -40,25 +41,13 @@ public class TrainController {
     }
 
     @RequestMapping(value = entityWithSlash + "/add", method = RequestMethod.POST)
-    public String addTrain(@ModelAttribute("train") TrainDTO trainDTO, BindingResult result) {
+    public String addTrain(@Valid @ModelAttribute("train") Train train, BindingResult result) {
 
-        String number = trainDTO.getNumber();
-        if (number.isEmpty()) {
+        if (result.hasErrors()) {
             return redirect;
         }
 
-        String placesQtyString = trainDTO.getPlacesQty();
-        Pattern pattern = Pattern.compile("[0-9]+");
-        if (placesQtyString.isEmpty() || !pattern.matcher(placesQtyString).matches()) {
-            return redirect;
-        }
-        Integer placesQtyInt = Integer.parseInt(placesQtyString);
-        if (placesQtyInt > Short.MAX_VALUE || placesQtyInt <= 0) {
-            return redirect;
-        }
-        Short placesQty = Short.parseShort(placesQtyString);
-
-        trainService.addTrain(new Train(number, placesQty));
+        trainService.addTrain(train);
 
         return redirect;
     }

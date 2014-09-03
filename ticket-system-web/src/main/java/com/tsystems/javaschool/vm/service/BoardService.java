@@ -152,7 +152,7 @@ public class BoardService {
         query.setParameter("departureAfter", departureAfter);
         query.setParameter("arriveBefore", arriveBefore);
         List<Board> boardsDeparture = query.getResultList();
-        List<PairBoard> pairBoards = new ArrayList<>();
+        List<PairBoard> pairBoards = new ArrayList<PairBoard>();
         for (Board ba : boardsArrive) {
             for (Board bd : boardsDeparture) {
                 if (ba.getTrip().equals(bd.getTrip())) {

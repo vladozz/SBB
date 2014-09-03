@@ -49,16 +49,10 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
-        <property name="definitions">
-            <list>
-                <value>/WEB-INF/tiles.xml</value>
-            </list>
-        </property>
 
-        <property name="preparerFactoryClass"
-                  value="org.springframework.web.servlet.view.tiles3.SpringBeanPreparerFactory"/>
-    </bean>
+
+
+
 
     <mvc:resources mapping="/resources/**" location="/resources/web/"/>
     <mvc:annotation-driven />
