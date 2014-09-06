@@ -29,4 +29,12 @@ public class TrainService {
     public List<Train> getAllTrains() {
         return trainDAO.findAll();
     }
+
+    @Transactional
+    public void editTrain(Train train) {
+        Train exTrain = trainDAO.findById(train.getId());
+        exTrain.setNumber(train.getNumber());
+        exTrain.setPlacesQty(train.getPlacesQty());
+        trainDAO.update(exTrain);
+    }
 }

@@ -58,6 +58,7 @@ public class PassengerService {
         int[] fillness = new int[end - begin];
         for (int i = begin; i < end; i++) {
             int c = 0;
+            //todo: optimize
             for (Ticket t : tickets) {
                 if (stations.indexOf(t.getDeparture().getStation()) <= i &&
                         stations.indexOf(t.getArrive().getStation()) >= i + 1) {

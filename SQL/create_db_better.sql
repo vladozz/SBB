@@ -94,7 +94,8 @@ select * from board;
 #select * from role;
 #insert into user set login = "admin", pswd = "21232F297A57A5A743894A0E4A801FC3", role_id = 1 
 
-select trip.id from trip, board, station 
-where trip.id = trip_id and 
-(board.arrive_time > 0 and board.station_id = station.id and station.title = "Moscow") and 
-(board.departure_time < 10 and board.station_id = station.id and station.title = "Adler");
+use sbb;
+select * from user;
+insert role set id = -2, title = "admin";
+update user set role_id = -2 where id = -1;
+select * from user, role where role_id = role.id;

@@ -1,20 +1,16 @@
 package com.tsystems.javaschool.vm.web;
 
-import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.Train;
-import com.tsystems.javaschool.vm.dto.TrainDTO;
 import com.tsystems.javaschool.vm.service.TrainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 @Controller
 public class TrainController {
@@ -30,7 +26,7 @@ public class TrainController {
     public String listTrains(Map<String, Object> map) {
         map.put("train", new Train());
         map.put("trainList", trainService.getAllTrains());
-        map.put("station", new Station());
+
 
         return entity;
     }
@@ -41,22 +37,51 @@ public class TrainController {
     }
 
     @RequestMapping(value = entityWithSlash + "/add", method = RequestMethod.POST)
-    public String addTrain(@Valid @ModelAttribute("train") Train train, BindingResult result) {
+    public @ResponseBody
+    String addTrain(@Valid @ModelAttribute(value = "train") Train train, BindingResult result) {
 
         if (result.hasErrors()) {
-            return redirect;
+            StringBuilder sb = new StringBuilder();
+            for (ObjectError e : result.getAllErrors()) {
+                sb.append(e.getObjectName()).append(" ").append(e.getDefaultMessage()).append("\n");
+            }
+            return sb.toString();
         }
-
+        
         trainService.addTrain(train);
-
-        return redirect;
+        return train.getId().toString();
     }
 
-    @RequestMapping(value = entityWithSlash + "/delete/{id}")
-    public String removeTrain(@PathVariable("id") Long trainId) {
+    @RequestMapping(value = entityWithSlash + "/edit", method = RequestMethod.POST)
+    public @ResponseBody
+    String editTrain(@Valid @ModelAttribute(value = "train") Train train, BindingResult result) {
+
+        if (result.hasErrors()) {
+            StringBuilder sb = new StringBuilder();
+            for (ObjectError e : result.getAllErrors()) {
+                sb.append(e.getObjectName()).append(" ").append(e.getDefaultMessage()).append("\n");
+            }
+            return sb.toString();
+        }
+
+        trainService.editTrain(train);
+        return train.getId().toString();
+    }
+
+//    @RequestMapping(value = entityWithSlash + "/delete/{id}")
+//    public String removeTrain(@PathVariable("id") Long trainId) {
+//
+//        trainService.removeTrain(trainId);
+//
+//        return redirect;
+//    }
+
+    @RequestMapping(value = entityWithSlash + "/delete/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    String removeTrain(@PathVariable("id") Long trainId) {
 
         trainService.removeTrain(trainId);
 
-        return redirect;
+        return "OK";
     }
 }
