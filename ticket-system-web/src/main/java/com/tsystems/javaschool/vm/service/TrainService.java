@@ -14,6 +14,10 @@ public class TrainService {
     @Autowired
     TrainDAO trainDAO;
 
+    public Train getTrainById(Long id) {
+        return trainDAO.findById(id);
+    }
+
     @Transactional
     public Train addTrain(Train train) {
         trainDAO.create(train);

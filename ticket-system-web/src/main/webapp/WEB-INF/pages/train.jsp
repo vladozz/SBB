@@ -47,36 +47,6 @@
 </c:if>
 
 
-<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/bootstrap.min.js' />"></script>
 
-<script type="text/javascript">
-    function confirmDelete(id, number) {
 
-        var ans = confirm("Do you confirm removing the train with id " + id + " and number " + number + "?");
-        if (ans) {
-            //document.location.href = "delete/" + id;
-            $.ajax({
-                url: "delete/" + id,
-                success: function (data) {
-                    $('#' + id).remove();
-                }});
-        }
-    }
 
-    function addModalTrain() {
-
-        $('#inputId').attr('value', '').slideUp('fast');
-        $('#inputNumber').attr('value', '');
-        $('#inputPQ').attr('value', '');
-        $('#submit').attr('onclick', 'addTrain();').text('Add train');
-    }
-
-    function editModalTrain(id, number, placesQty) {
-        $('#inputId').attr('value', id).slideDown('fast');
-        $('#inputNumber').attr('value', number);
-        $('#inputPQ').attr('value', placesQty);
-        $('#submit').attr('onclick', 'editTrain();').text('Edit train');
-    }
-
-</script>
