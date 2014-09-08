@@ -64,7 +64,6 @@ public class TrainController {
         return train.getId().toString();
     }
 
-
     @RequestMapping(value = rootWithSlash + "/delete/{id}", method = RequestMethod.GET)
     public @ResponseBody
     String removeTrain(@PathVariable("id") Long trainId) {

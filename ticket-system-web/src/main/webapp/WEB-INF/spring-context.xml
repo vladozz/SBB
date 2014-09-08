@@ -50,7 +50,8 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
 
-
+    <bean id="validator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
 
 

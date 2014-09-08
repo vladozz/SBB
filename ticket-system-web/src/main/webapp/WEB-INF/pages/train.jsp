@@ -19,15 +19,15 @@
                 <tr class="active">
                     <th>ID</th>
                     <th>Number</th>
-                    <th>Quanity of places</th>
+                    <th>Quantity of places</th>
                     <th width="10%">Edit</th>
                     <th width="10%">Delete</th>
                 </tr>
                 <c:forEach items="${trainList}" var="train">
                     <tr id="${train.id}">
-                        <td>${train.id}</td>
-                        <td>${train.number}</td>
-                        <td>${train.placesQty}</td>
+                        <td class = "id">${train.id}</td>
+                        <td class = "number">${train.number}</td>
+                        <td class= "placesQty">${train.placesQty}</td>
 
                         <td>
                             <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#addTrainModal"

@@ -82,10 +82,11 @@ function addTrain() {
     if (validateTrainForm(inputNumber, inputPQ)) {
         var number = inputNumber.value;
         var placesQty = inputPQ.value;
+
         $.ajax({
             type: "post",
             url: "add",
-            data: "number=" + number + "&placesQty=" + placesQty,
+            data:  encodeURIComponent("number=" + number + "&placesQty=" + placesQty),
             success: function (id) {
                 var inner = generateTableRow(id, number, placesQty);
                 var addHtml = "<tr id=\"" + id + "\">\n" + inner + "</tr>";
@@ -122,7 +123,7 @@ function editTrain() {
         $.ajax({
             type: "post",
             url: "edit",
-            data: "id=" + id + "&number=" + number + "&placesQty=" + placesQty,
+            data: encodeURIComponent("id=" + id + "&number=" + number + "&placesQty=" + placesQty),
             success: function () {
 /*                var editHtml = "<td>" + id + "</td>\n" +
                  "<td>" + number + "</td>\n" +
