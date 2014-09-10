@@ -21,6 +21,16 @@ public class StationService {
         stationDAO.create(station);
     }
 
+    @Transactional
+    public void editStation(Station station) {
+        stationDAO.update(station);
+    }
+
+    @Transactional
+    public void removeStation(Long stationId) {
+        stationDAO.delete(stationId);
+    }
+
     public List<Station> getAllStations() {
         return stationDAO.findAll();
     }

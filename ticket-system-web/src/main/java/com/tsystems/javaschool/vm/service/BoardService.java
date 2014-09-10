@@ -105,24 +105,11 @@ public class BoardService {
      * @return
      */
     public List<Board> getBoardForStation(Station station, Timestamp after, Timestamp before) {
-        String queryString = "SELECT b FROM Board b WHERE b.station = :station and b.departureTime >= :after and " +
-                "b.arriveTime <= :before";
-        Query query = boardDAO.createQuery(queryString);
-        query.setParameter("station", station);
-        query.setParameter("before", before);
-        query.setParameter("after", after);
-        return query.getResultList();
+
+        return boardDAO.getBoardForStation(station, after, before);
     }
 
-    public List<Board> getBoardForStation(String stationTitle, Timestamp after, Timestamp before) {
-        String queryString = "SELECT b FROM Board b WHERE b.station.title = :stationTitle and b.departureTime >= :after and " +
-                "b.arriveTime <= :before";
-        Query query = boardDAO.createQuery(queryString);
-        query.setParameter("stationTitle", stationTitle);
-        query.setParameter("before", before);
-        query.setParameter("after", after);
-        return query.getResultList();
-    }
+
 
     public List<Board> getBoardForTrip(Long tripId) {
         Trip trip = tripDAO.findById(tripId);

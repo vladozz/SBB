@@ -3,45 +3,49 @@ function confirmDelete(id, number) {
     BootstrapDialog.show({
         title: 'Confirm delete operation',
         message: "Do you confirm removing the train with id " + id + " and number " + number + "?",
-        buttons: [{
-            label: 'Delete',
-            action: function(dialog) {
-                $.ajax({
-                    url: "delete/" + id,
-                    success: function (data) {
-                        $('#' + id).remove();
-                        dialog.setMessage('Delete success');
-                        dialog.close();
-                    },
-                    error: function (error) {
-                        dialog.setMessage(error);
-                    }
-                });
+        buttons: [
+            {
+                label: 'Delete',
+                action: function (dialog) {
+                    $.ajax({
+                        url: "delete/" + id,
+                        success: function (data) {
+                            $('#' + id).remove();
+                            dialog.setMessage('Delete success');
+                            dialog.close();
+                        },
+                        error: function (error) {
+                            dialog.setMessage(error);
+                        }
+                    });
+                }
+            },
+            {
+                label: 'Cancel',
+                action: function () {
+                    this.close();
+                }
             }
-        }, {
-            label: 'Cancel',
-            action: function() {
-                this.close();
-            }
-        }]
+        ]
     });
 
 }
 
 function addModalTrain() {
-
+    $('#myModalLabel').text('Add new train');
     $('#inputId').attr('value', '');
     $('#commonId').slideUp('fast');
-    $('#inputNumber').attr('value', '');
-    $('#inputPQ').attr('value', '');
+    $('#inputTitle').attr('value', '');
+    $('#inputTZ').attr('value', '');
     $('#submit').attr('onclick', 'addTrain();').text('Add train');
 }
 
 function editModalTrain(id, number, placesQty) {
+    $('#myModalLabel').text('Edit train');
     $('#inputId').attr('value', id);
     $('#commonId').slideDown('fast');
-    $('#inputNumber').attr('value', number);
-    $('#inputPQ').attr('value', placesQty);
+    $('#inputTitle').attr('value', number);
+    $('#inputTZ').attr('value', placesQty);
     $('#submit').attr('onclick', 'editTrain();').text('Edit train');
 }
 
@@ -77,8 +81,8 @@ function validateTrainForm(inputNumber, inputPQ) {
 }
 
 function addTrain() {
-    var inputNumber = document.getElementById("inputNumber");
-    var inputPQ = document.getElementById("inputPQ");
+    var inputNumber = document.getElementById("inputTitle");
+    var inputPQ = document.getElementById("inputTZ");
     if (validateTrainForm(inputNumber, inputPQ)) {
         var number = inputNumber.value;
         var placesQty = inputPQ.value;
@@ -86,7 +90,7 @@ function addTrain() {
         $.ajax({
             type: "post",
             url: "add",
-            data:  encodeURIComponent("number=" + number + "&placesQty=" + placesQty),
+            data: "number=" + encodeURIComponent(number) + "&placesQty=" + encodeURIComponent(placesQty),
             success: function (id) {
                 var inner = generateTableRow(id, number, placesQty);
                 var addHtml = "<tr id=\"" + id + "\">\n" + inner + "</tr>";
@@ -94,7 +98,7 @@ function addTrain() {
                 $('#close').click();
             },
             error: function (data) {
-                alert('Error!');
+                alert('Error!' + data);
             }
         });
     }
@@ -114,8 +118,8 @@ function generateTableRow(id, number, placesQty) {
 
 function editTrain() {
     var inputId = document.getElementById("inputId");
-    var inputNumber = document.getElementById("inputNumber");
-    var inputPQ = document.getElementById("inputPQ");
+    var inputNumber = document.getElementById("inputTitle");
+    var inputPQ = document.getElementById("inputTZ");
     if (validateTrainForm(inputNumber, inputPQ)) {
         var id = inputId.value;
         var number = inputNumber.value;
@@ -123,16 +127,8 @@ function editTrain() {
         $.ajax({
             type: "post",
             url: "edit",
-            data: encodeURIComponent("id=" + id + "&number=" + number + "&placesQty=" + placesQty),
+            data: "id=" + encodeURIComponent(id) + "&number=" + encodeURIComponent(number) + "&placesQty=" + encodeURIComponent(placesQty),
             success: function () {
-/*                var editHtml = "<td>" + id + "</td>\n" +
-                 "<td>" + number + "</td>\n" +
-                 "<td>" + placesQty + "</td>\n" +
-                 "<td><button type=\"button\" class=\"btn btn-warning\" data-toggle=\"modal\" " +
-                 "data-target=\"#addTrainModal\" onclick=\"editModalTrain(" + id + ", '" + number + "', ' "
-                 + placesQty + "');\" >Edit</button></td>\n" +
-                 "<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"confirmDelete(" + id +
-                 ", '" + number + "');\">Delete</button></td>";*/
                 var editHtml = generateTableRow(id, number, placesQty);
                 $('#' + id).html(editHtml);
                 $('#close').click();
@@ -153,10 +149,4 @@ function resetTrainForm() {
     $('#trainForm').trigger('reset');
     $("#err").slideUp("fast");
     $('#mes').text("");
-}
-
-function getTime() {
-    $.ajax({url: 'time', success: function (data) {
-        $('#tim').html(data)
-    }});
 }

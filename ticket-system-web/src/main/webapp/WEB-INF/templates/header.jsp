@@ -74,14 +74,14 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Trains <span
                             class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="train">Get full list</a></li>
+                        <li><a href="<c:url value="/train" /> ">Get full list</a></li>
                         <li><a href="#" data-toggle="modal" data-target="#addTrainModal">Add new</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stations <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Get full list</a></li>
+                        <li><a href="<c:url value="/station" /> ">Get full list</a></li>
                         <li><a href="#" data-toggle="modal" data-target="#addStationModal">Add new</a></li>
                     </ul>
                 </li>

@@ -25,6 +25,7 @@ public class TrainController {
     @RequestMapping(index)
     public String listTrains(Map<String, Object> map) {
         map.put("train", new Train());
+
         map.put("trainList", trainService.getAllTrains());
 
 
@@ -41,11 +42,7 @@ public class TrainController {
     String addTrain(@Valid @ModelAttribute(value = "train") Train train, BindingResult result) {
 
         if (result.hasErrors()) {
-            StringBuilder sb = new StringBuilder();
-            for (ObjectError e : result.getAllErrors()) {
-                sb.append(e.getObjectName()).append(" ").append(e.getDefaultMessage()).append("\n");
-            }
-            return sb.toString();
+            return "result not ok";
         }
         
         trainService.addTrain(train);

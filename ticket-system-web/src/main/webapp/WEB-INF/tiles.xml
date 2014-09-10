@@ -13,4 +13,7 @@
     <definition name="train" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/train.jsp" />
     </definition>
+    <definition name="station" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/station.jsp" />
+    </definition>
 </tiles-definitions>

@@ -2,10 +2,8 @@ package com.tsystems.javaschool.vm.web;
 
 
 import com.tsystems.javaschool.vm.domain.Station;
-import com.tsystems.javaschool.vm.domain.Train;
 import com.tsystems.javaschool.vm.dto.StationDTO;
 import com.tsystems.javaschool.vm.service.StationService;
-import com.tsystems.javaschool.vm.service.TrainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -18,8 +16,8 @@ import java.util.Map;
 import java.util.TimeZone;
 
 @Controller
-public class StationController {
-    private final String root = "station";
+public class PathController {
+    private final String root = "path";
     private final String rootWithSlash = "/" + root;
     private final String index = rootWithSlash + "/index";
     private final String redirect = "redirect:" + index;
@@ -28,7 +26,7 @@ public class StationController {
     StationService stationService;
 
     @RequestMapping(index)
-    public String listStations(Map<String, Object> map) {
+    public String listPaths(Map<String, Object> map) {
         map.put("station", new StationDTO());
         List<StationDTO> stationDTOs = new ArrayList<StationDTO>();
         for (Station station : stationService.getAllStations()) {
