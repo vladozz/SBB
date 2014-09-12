@@ -1,9 +1,7 @@
 package com.tsystems.javaschool.vm.domain;
 
 
-
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.List;
 

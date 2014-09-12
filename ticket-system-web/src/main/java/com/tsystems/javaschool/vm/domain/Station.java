@@ -63,7 +63,6 @@ public class Station extends SBBEntity {
         return "Station{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", timeZone=" + timeZone +
                 '}';
     }
 

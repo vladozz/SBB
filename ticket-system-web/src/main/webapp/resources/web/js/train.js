@@ -35,8 +35,8 @@ function addModalTrain() {
     $('#myModalLabel').text('Add new train');
     $('#inputId').attr('value', '');
     $('#commonId').slideUp('fast');
-    $('#inputTitle').attr('value', '');
-    $('#inputTZ').attr('value', '');
+    $('#inputNumber').attr('value', '');
+    $('#inputPQ').attr('value', '');
     $('#submit').attr('onclick', 'addTrain();').text('Add train');
 }
 
@@ -44,8 +44,8 @@ function editModalTrain(id, number, placesQty) {
     $('#myModalLabel').text('Edit train');
     $('#inputId').attr('value', id);
     $('#commonId').slideDown('fast');
-    $('#inputTitle').attr('value', number);
-    $('#inputTZ').attr('value', placesQty);
+    $('#inputNumber').attr('value', number);
+    $('#inputPQ').attr('value', placesQty);
     $('#submit').attr('onclick', 'editTrain();').text('Edit train');
 }
 
@@ -81,8 +81,8 @@ function validateTrainForm(inputNumber, inputPQ) {
 }
 
 function addTrain() {
-    var inputNumber = document.getElementById("inputTitle");
-    var inputPQ = document.getElementById("inputTZ");
+    var inputNumber = document.getElementById("inputNumber");
+    var inputPQ = document.getElementById("inputPQ");
     if (validateTrainForm(inputNumber, inputPQ)) {
         var number = inputNumber.value;
         var placesQty = inputPQ.value;
@@ -118,8 +118,8 @@ function generateTableRow(id, number, placesQty) {
 
 function editTrain() {
     var inputId = document.getElementById("inputId");
-    var inputNumber = document.getElementById("inputTitle");
-    var inputPQ = document.getElementById("inputTZ");
+    var inputNumber = document.getElementById("inputNumber");
+    var inputPQ = document.getElementById("inputPQ");
     if (validateTrainForm(inputNumber, inputPQ)) {
         var id = inputId.value;
         var number = inputNumber.value;

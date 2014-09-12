@@ -1,7 +1,6 @@
 package com.tsystems.javaschool.vm.dao;
 
 import com.tsystems.javaschool.vm.domain.SBBEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -40,6 +39,7 @@ public abstract class CommonDAO<E extends SBBEntity>{
 
     public void update(E entity) {
         entityManager.merge(entity);
+
     }
 
     public void delete(Long id) {

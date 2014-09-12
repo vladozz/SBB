@@ -7,16 +7,13 @@ import com.tsystems.javaschool.vm.dao.TripDAO;
 import com.tsystems.javaschool.vm.domain.*;
 import com.tsystems.javaschool.vm.exception.DifferentArrayException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class BoardService {

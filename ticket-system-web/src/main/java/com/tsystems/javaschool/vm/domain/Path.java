@@ -9,11 +9,15 @@ public class Path extends SBBEntity {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "last_change")
+    private Integer lastChange;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(name = "path_station",
             joinColumns = {@JoinColumn(name = "path_id")},
             inverseJoinColumns = {@JoinColumn(name = "station_id")})
+//    @OrderColumn(name = "id")
     private List<Station> stations;
 
     @OneToMany(mappedBy = "path")
@@ -26,6 +30,10 @@ public class Path extends SBBEntity {
 
     public Path(String title) {
         this.title = title;
+    }
+
+    public void incrementLastChange() {
+        lastChange++;
     }
 
     public String getTitle() {
@@ -46,6 +54,14 @@ public class Path extends SBBEntity {
 
     public List<Trip> getTrips() {
         return trips;
+    }
+
+    public Integer getLastChange() {
+        return lastChange;
+    }
+
+    public void setLastChange(Integer lastChange) {
+        this.lastChange = lastChange;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.tsystems.javaschool.vm.dto;
 
 import java.io.Serializable;
-import java.util.TimeZone;
 
 public class StationDTO implements Serializable {
 

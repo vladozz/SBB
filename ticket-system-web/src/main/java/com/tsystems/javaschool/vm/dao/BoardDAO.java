@@ -4,7 +4,6 @@ import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.domain.Station;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.sql.Timestamp;
 import java.util.List;

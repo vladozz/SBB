@@ -16,4 +16,13 @@
     <definition name="station" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/station.jsp" />
     </definition>
+    <definition name="path" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/path.jsp" />
+    </definition>
+    <definition name="path/stations" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/path_station.jsp" />
+    </definition>
+    <definition name="trip" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/trip.jsp" />
+    </definition>
 </tiles-definitions>

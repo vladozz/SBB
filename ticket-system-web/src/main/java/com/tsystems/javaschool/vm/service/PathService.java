@@ -5,6 +5,8 @@ import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.exception.InvalidIndexException;
+import com.tsystems.javaschool.vm.exception.PathException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Service
 public class PathService {
+    private static Logger logger = Logger.getLogger(PathService.class);
     @Autowired
     private PathDAO pathDAO;
     @Autowired
@@ -24,21 +27,64 @@ public class PathService {
 
     @Transactional
     public void addPath(Path path) {
+        path.setLastChange(1);
         pathDAO.create(path);
     }
 
-    public Path addStationToPath(Long pathId, Long stationId) throws InvalidIndexException {
-        return addStationToPath(pathId, stationId, 0);
+    @Transactional
+    public boolean editPath(Path path) {
+        Path newPath = pathDAO.findById(path.getId());
+        if (checkLCI(newPath, path.getLastChange())) {
+            newPath.setTitle(path.getTitle());
+            pathDAO.update(newPath);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean checkLCI(Path path) {
+        Path existingPath = pathDAO.findById(path.getId());
+        if (existingPath == null || !path.getLastChange().equals(existingPath.getLastChange())) {
+            return false;
+        } else {
+            path.incrementLastChange();
+            return true;
+        }
+    }
+
+    private boolean checkLCI(Path path, Integer pathLCI) {
+        //Path existingPath = pathDAO.findById(pathId);
+        if (path == null || !pathLCI.equals(path.getLastChange())) {
+            return false;
+        } else {
+            path.incrementLastChange();
+            return true;
+        }
     }
 
     @Transactional
-    public Path addStationToPath(Long pathId, Long stationId, int index) throws InvalidIndexException {
+    public void removePath(Long pathId) {
+        pathDAO.delete(pathId);
+    }
+
+    @Transactional
+    public Path findById(Long pathId) {
+        return pathDAO.findById(pathId);
+    }
+
+    @Transactional
+    public Path addStationToPath(Long pathId, Long stationId, int index, Integer lci) throws PathException {
         Path path = pathDAO.findById(pathId);
         Station station = stationDAO.findById(stationId);
         if (path != null && station != null) {
-            return addStationToPath(path, station, index);
+            if (checkLCI(path, lci)) {
+                return addStationToPath(path, station, index);
+            } else {
+                return null;
+            }
         } else {
-            return null;
+            throw new PathException("Last change index were updated!");
         }
     }
 
@@ -52,21 +98,29 @@ public class PathService {
      */
     private Path addStationToPath(Path path, Station station, int index) throws InvalidIndexException {
         List<Station> stations = path.getStations();
-        if (stations == null) {
-            stations = new ArrayList<Station>();
-        }
         if (index < 0 || index > stations.size()) {
             throw new InvalidIndexException("Illegal index of station: " + "index = " + index
                     + "stations.size() = " + stations.size() + "path = " + path + "station = " + station);
         }
-
+        System.out.println("index = " + index);
+        System.out.println("path = " + path.getStations());
         if (index == 0) {
             stations.add(station);
         } else {
-            stations.add(index - 1, station);
-        }
+            List<Station> newStations = new ArrayList<Station>();
+            newStations.addAll(stations);
+            newStations.add(index - 1, station);
 
+            while (!stations.isEmpty()) {
+                stations.remove(stations.size() - 1);
+            }
+            //stations.removeAll(newStations);
+            pathDAO.update(path);
+            path.getStations().addAll(newStations);
+        }
+        System.out.println("path = " + path.getStations());
         pathDAO.update(path);
+        System.out.println("path = " + pathDAO.findById(path.getId()).getStations());
         return path;
     }
 
@@ -76,10 +130,15 @@ public class PathService {
      *               со сдвигом всех последующих
      */
     @Transactional
-    public Path removeStationFromPath(Long pathId, int index) throws InvalidIndexException {
+    public Path removeStationFromPath(Long pathId, int index, Integer lci) throws PathException {
         Path path = pathDAO.findById(pathId);
+
         if (path != null) {
-            return removeStationFromPath(path, index);
+            if (checkLCI(path, lci)) {
+                return removeStationFromPath(path, index);
+            } else {
+                throw new PathException("Last change index were updated!");
+            }
         } else {
             return null;
         }
@@ -97,7 +156,17 @@ public class PathService {
             throw new InvalidIndexException("Illegal index of station: " + "index = " + index
                     + "stations.size() = " + stations.size() + "path = " + path);
         }
-        stations.remove(index - 1);
+        List<Station> newStations = new ArrayList<Station>();
+        newStations.addAll(stations);
+        newStations.remove(index - 1);
+
+        while (!stations.isEmpty()) {
+            stations.remove(stations.size() - 1);
+        }
+
+        pathDAO.update(path);
+        path.getStations().addAll(newStations);
+
         return path;
     }
 

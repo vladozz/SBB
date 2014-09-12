@@ -2,10 +2,8 @@ package com.tsystems.javaschool.vm.web;
 
 
 import com.tsystems.javaschool.vm.domain.Station;
-import com.tsystems.javaschool.vm.domain.Train;
 import com.tsystems.javaschool.vm.dto.StationDTO;
 import com.tsystems.javaschool.vm.service.StationService;
-import com.tsystems.javaschool.vm.service.TrainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -15,7 +13,6 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 @Controller
 public class StationController {
@@ -47,12 +44,12 @@ public class StationController {
 
     @RequestMapping(value = rootWithSlash + "/add", method = RequestMethod.POST)
     public @ResponseBody
-    String addStation(@Valid @ModelAttribute(value = "station") StationDTO stationDTO, BindingResult result) {
+    String addStation(@Valid @ModelAttribute(value = "station") Station station, BindingResult result) {
 
         if (result.hasErrors()) {
             return "";
         }
-        Station station = new Station(stationDTO.getTitle(), TimeZone.getTimeZone(stationDTO.getTimeZone()));
+        //Station station = new Station(stationDTO.getTitle(), TimeZone.getTimeZone(stationDTO.getTimeZone()));
         stationService.addStation(station);
         return station.getId().toString();
     }

@@ -1,13 +1,17 @@
 package com.tsystems.javaschool.vm.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class PathDTO implements Serializable {
     private static final long serialVersionUID = -2482485965854484693L;
     private Long id;
     private String title;
-    private List<String> stations;
+    //    private List<String> stations;
+    private String beginStation;
+    private String endStation;
+    private Integer lastChange;
+
+
 
     public PathDTO() {
     }
@@ -17,10 +21,19 @@ public class PathDTO implements Serializable {
         this.title = title;
     }
 
-    public PathDTO(Long id, String title, List<String> stations) {
+    public PathDTO(Long id, String title, String beginStation, String endStation, Integer lastChange) {
         this.id = id;
         this.title = title;
-        this.stations = stations;
+        this.beginStation = beginStation;
+        this.endStation = endStation;
+        this.lastChange = lastChange;
+    }
+
+    public PathDTO(Long id, String title, String beginStation, String endStation) {
+        this.id = id;
+        this.title = title;
+        this.beginStation = beginStation;
+        this.endStation = endStation;
     }
 
     public Long getId() {
@@ -39,20 +52,27 @@ public class PathDTO implements Serializable {
         this.title = title;
     }
 
-    public List<String> getStations() {
-        return stations;
+    public String getBeginStation() {
+        return beginStation;
     }
 
-    public void setStations(List<String> stations) {
-        this.stations = stations;
+    public void setBeginStation(String beginStation) {
+        this.beginStation = beginStation;
     }
 
-    @Override
-    public String toString() {
-        return "PathDTO{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", stations=" + stations +
-                '}';
+    public String getEndStation() {
+        return endStation;
+    }
+
+    public void setEndStation(String endStation) {
+        this.endStation = endStation;
+    }
+
+    public Integer getLastChange() {
+        return lastChange;
+    }
+
+    public void setLastChange(Integer lastChange) {
+        this.lastChange = lastChange;
     }
 }

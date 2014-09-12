@@ -2,7 +2,7 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <!-- Modal -->
-<div class="modal fade" id="addTrainModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div class="modal fade" id="addPathModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -10,7 +10,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span
                         aria-hidden="true">&times;</span><span
                         class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">Add new train</h4>
+                <h4 class="modal-title" id="myModalLabel">Add new path</h4>
             </div>
             <div class="jumbotron" id="err" style="display: none; background-color: #FFA0A0">
                 <div class="container">
@@ -19,7 +19,7 @@
 
             </div>
             <div class="modal-body">
-                <form:form id="trainForm" class="form-horizontal" role="form" action="add" method="get" commandName="train">
+                <form:form id="pathForm" class="form-horizontal" role="form" action="add" method="get" commandName="path">
                     <div class="form-group" id="commonId">
                         <label for="inputId" class="col-sm-3 control-label">ID</label>
 
@@ -28,24 +28,25 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputNumber" class="col-sm-3 control-label">Number</label>
+                        <label for="inputTitle" class="col-sm-3 control-label">Number</label>
 
                         <div class="col-sm-9">
-                            <form:input path="number" type="text" class="form-control" id="inputNumber" placeholder=""/>
+                            <form:input path="title" type="text" class="form-control" id="inputTitle" placeholder=""/>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="inputPQ" class="col-sm-3 control-label">Quantity of palaces</label>
+                    <div class="form-group" id="commonLC">
+                        <label for="inputLC" class="col-sm-3 control-label">Last change index</label>
 
                         <div class="col-sm-9">
-                            <form:input path="placesQty" type="text" class="form-control" id="inputPQ" placeholder=""/>
+                            <form:input path="lastChange" type="text" class="form-control" id="inputLC" placeholder="" readonly="true"/>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <div class="modal-footer">
 
-                            <button id ="submit" type="button" class="btn btn-primary" onclick="addTrain();">Add train</button>
-                            <button id="close" type="button" class="btn btn-default" data-dismiss="modal" onclick="resetTrainForm()">Close</button>
+                            <button id ="submit" type="button" class="btn btn-primary" onclick="addPath();">Add path</button>
+                            <button id="close" type="button" class="btn btn-default" data-dismiss="modal" onclick="resetPathForm();">Close</button>
 
                         </div>
                     </div>
@@ -58,6 +59,6 @@
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/bootstrap.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/train.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/path.js'/>"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/bootstrap-dialog.js'/>"></script>
 

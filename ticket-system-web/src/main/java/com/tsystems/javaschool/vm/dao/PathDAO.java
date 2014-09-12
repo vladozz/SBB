@@ -24,6 +24,15 @@ public class PathDAO extends CommonDAO<Path> {
             return path.get(0);
         }
     }
+
+/*    public List<Station> getStationsOfPath(Long pathId) {
+        String queryString = "SELECT s FROM Path p WHERE LOWER(p.title) = :title order by ";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("title", title.toLowerCase());
+        List<Path> path = query.getResultList();
+    }*/
+
+
 }
 
 
