@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,12 @@ public class PathStationController {
         List<Station> pathStationList = pathService.getStationsOfPath(pathId);
         List<Station> stationList = stationService.getAllStations();
         stationList.removeAll(pathStationList);
+        Collections.sort(stationList, new Comparator<Station>() {
+            @Override
+            public int compare(Station o1, Station o2) {
+                return o1.getTitle().compareToIgnoreCase(o2.getTitle());
+            }
+        });
         map.put("path", new Path());
         map.put("pathId", pathId);
         map.put("lci", pathService.findById(pathId).getLastChange());
@@ -45,43 +52,27 @@ public class PathStationController {
     @RequestMapping(value = rootWithSlash, method = RequestMethod.POST)
     public @ResponseBody
     String addStationToPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
-                                   @RequestParam("index") int index, @RequestParam("lci") Integer lci, Map<String, Object> map) {
+                                   @RequestParam("stationBeforeInsertId") Long stationBeforeInsertId, @RequestParam("lci") Integer lci, Map<String, Object> map) {
         try {
-            pathService.addStationToPath(pathId, stationId, index, lci);
+            pathService.addStationToPathSafe(pathId, stationId, stationBeforeInsertId, lci);
         } catch (PathException e) {
             return "false";
         }
-/*        List<Path> pathList = pathService.getAllPaths();
-        List<Station> pathStationList = pathService.getStationsOfPath(pathId);
-        List<Station> stationList = stationService.getAllStations();
-        stationList.removeAll(pathStationList);
-        map.put("path", new Path());
-        map.put("pathId", pathId);
-        map.put("pathList", pathList);
-        map.put("pathStationList", pathStationList);
-        map.put("stationList", stationList);*/
         return "true";
     }
 
     @RequestMapping(value = rootWithSlash + "/remove", method = RequestMethod.POST)
     public @ResponseBody
-    String removeStationFromPath(@RequestParam("pathId") Long pathId, @RequestParam("index") int index,
+    String removeStationFromPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
                                         @RequestParam("lci") Integer lci, Map<String, Object> map) {
 
         try {
-            pathService.removeStationFromPath(pathId, index, lci);
+            pathService.removeStationFromPathSafe(pathId, stationId, lci);
         } catch (PathException e) {
             return "false";
         }
         List<Path> pathList = pathService.getAllPaths();
         List<Station> pathStationList = pathService.getStationsOfPath(pathId);
-/*        List<Station> stationList = stationService.getAllStations();
-        stationList.removeAll(pathStationList);
-        map.put("path", new Path());
-        map.put("pathId", pathId);
-        map.put("pathList", pathList);
-        map.put("pathStationList", pathStationList);
-        map.put("stationList", stationList);*/
         return "true";
     }
 }

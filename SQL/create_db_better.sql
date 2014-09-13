@@ -1,4 +1,4 @@
-#drop database if exists sbb;
+drop database if exists sbb;
 create database sbb;
 use sbb;
 
@@ -10,7 +10,8 @@ create table train (
 
 create table path (
 	id bigint not null auto_increment primary key,
-	title varchar(50)
+	title varchar(50),
+	last_change int default 1
 ) engine = InnoDB;
 
 create table station (
@@ -23,7 +24,6 @@ create table path_station (
 	id bigint not null auto_increment primary key,
 	path_id bigint,
 	station_id bigint,
-	stand_time int,
     foreign key (path_id) references path (id),
 	foreign key (station_id) references station (id)
 )  engine=InnoDB;
@@ -84,7 +84,8 @@ create table hibernate_sequences (
 	sequence_name varchar(50)
 ) engine = InnoDB;
 #delete from board where id > 0
-select * from board;
+select * from train;
+delete from path_station where path_id = 14;
 #select trip_id, title from board, station where station.id = station_id
 #update path_station set stand_time = 10 where id > 0
 #update train set places_qty = 4 where id = 32
@@ -93,9 +94,11 @@ select * from board;
 #insert into role set title = "admin";
 #select * from role;
 #insert into user set login = "admin", pswd = "21232F297A57A5A743894A0E4A801FC3", role_id = 1 
-
 use sbb;
-select * from user;
+select path_station.id, path.title, station.title from path_station, path, station where path.id = path_id and station_id = station.id;
+insert into path_station (path_id, station_id) values (0, 0), (0, 0);
 insert role set id = -2, title = "admin";
 update user set role_id = -2 where id = -1;
 select * from user, role where role_id = role.id;
+alter table path modify last_change int default 1;
+alter table path_station drop stand_time;

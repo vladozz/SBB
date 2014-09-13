@@ -124,6 +124,54 @@ public class PathService {
         return path;
     }
 
+    @Transactional
+    public Path addStationToPathSafe(Long pathId, Long stationId, Long stationBeforeInsertId, Integer lci) throws PathException {
+        Path path = pathDAO.findById(pathId);
+        Station station = stationDAO.findById(stationId);
+        if (path != null && station != null) {
+            if (checkLCI(path, lci)) {
+                return addStationToPathSafe(path, station, stationBeforeInsertId);
+            } else {
+                return null;
+            }
+        } else {
+            throw new PathException("Last change index were updated!");
+        }
+    }
+
+    /**
+     * Метод, добавляющий станцию в маршрут (в середину или в конец)
+     *
+     * @param path    маршрут
+     * @param station станция
+     * @param stationBeforeInsertId
+     */
+    private Path addStationToPathSafe(Path path, Station station, Long stationBeforeInsertId) throws InvalidIndexException {
+        List<Station> stations = path.getStations();
+        if (stationBeforeInsertId == 0) {
+            stations.add(station);
+        } else {
+            List<Station> newStations = new ArrayList<Station>();
+            newStations.addAll(stations);
+
+            for (int i = 0; i < newStations.size(); i++) {
+                if (newStations.get(i).getId().equals(stationBeforeInsertId)) {
+                    newStations.add(i, station);
+                    break;
+                }
+            }
+
+            while (!stations.isEmpty()) {
+                stations.remove(stations.size() - 1);
+            }
+            //stations.removeAll(newStations);
+            pathDAO.update(path);
+            path.getStations().addAll(newStations);
+        }
+        pathDAO.update(path);
+        return path;
+    }
+
     /**
      * @param pathId
      * @param index  от 1...n(кол-во станций в маршруте) - удаление 1го...n-го элемента
@@ -167,6 +215,53 @@ public class PathService {
         pathDAO.update(path);
         path.getStations().addAll(newStations);
 
+        return path;
+    }
+
+    /**
+     * @param pathId
+     * @param stationToRemoveId
+     */
+    @Transactional
+    public Path removeStationFromPathSafe(Long pathId, Long stationToRemoveId, Integer lci) throws PathException {
+        Path path = pathDAO.findById(pathId);
+
+        if (path != null) {
+            if (checkLCI(path, lci)) {
+                return removeStationFromPathSafe(path, stationToRemoveId);
+            } else {
+                throw new PathException("Last change index were updated!");
+            }
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
+     * @param path
+     * @param stationToRemoveId
+     */
+    private Path removeStationFromPathSafe(Path path, Long stationToRemoveId) throws InvalidIndexException {
+        List<Station> stations = path.getStations();
+
+        List<Station> newStations = new ArrayList<Station>();
+        newStations.addAll(stations);
+
+        for (int i = 0; i < newStations.size(); i++) {
+            if (newStations.get(i).getId().equals(stationToRemoveId)) {
+                newStations.remove(i);
+                break;
+            }
+        }
+
+        while (!stations.isEmpty()) {
+            stations.remove(stations.size() - 1);
+        }
+
+        pathDAO.update(path);
+        path.getStations().addAll(newStations);
+        pathDAO.update(path);
         return path;
     }
 
