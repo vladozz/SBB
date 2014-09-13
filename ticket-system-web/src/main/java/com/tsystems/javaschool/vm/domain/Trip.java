@@ -78,5 +78,15 @@ public class Trip extends SBBEntity{
                 ", train=" + train +
                 '}';
     }
+
+    public String toJson() {
+        return "{\"id\": " + id +
+                ",\"train\": { \"id\": " + train.getId() + ", \"number\": \"" + train.getNumber() +
+                "\"}, \"path\": { \"id\": " + path.getId() + ", \"title\": \"" + path.getTitle() +
+                "\"}}";
+
+
+
+    }
 }
 

@@ -11,25 +11,54 @@
 <div style="display: none" id="lci">${lci}</div>
 <div style="display: none" id="pathId">${pathId}</div>
 <c:if test="${!empty pathList}">
-    <div class="container">
-        <div class="form-group">
-            <label for="pathSelect" class="control-label col-sm-1">Path list</label>
+    <label for="pathSelect" class="control-label col-sm-1">Path list</label>
 
-            <div class="col-sm-6"><select class="form-control" id="pathSelect" onchange="go();">
-                <c:forEach items="${pathList}" var="path">
-                    <option id="ps${path.id}" value="${path.id}"
-                            <c:if test="${path.id == pathId}">selected</c:if> >${path.title}</option>
-                </c:forEach>
-            </select>
-            </div>
-        </div>
+    <div class="col-sm-4"><select class="form-control" id="pathSelect" onchange="go();">
+        <c:forEach items="${pathList}" var="path">
+            <option id="ps${path.id}" value="${path.id}"
+                    <c:if test="${path.id == pathId}">selected</c:if> >${path.title}</option>
+        </c:forEach>
+    </select>
+
     </div>
+    <div class="col-sm-3">
+        <button class="btn btn-primary" onclick="toggleAddForm();">Add station to path</button>
+    </div>
+    <br/>
+    <br/>
     <br/>
 </c:if>
 
+<div class="jumbotron col-lg-12" id="addForm" style="display: none">
+    <form class="form" role="form" method="post" action="<c:url value="/path/stations"/>">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="inputStation">Choose station</label>
+            <select class="form-control" id="inputStation" name="stationId">
+                <c:if test="${!empty stationList}">
+                    <c:forEach items="${stationList}" var="station">
+                        <option value="${station.id}">${station.title}</option>
+                    </c:forEach>
+                </c:if>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="inputIndex">Insert before</label>
+            <select class="form-control" id="inputIndex" name="index">
+                <c:if test="${!empty pathStationList}">
+                    <c:forEach items="${pathStationList}" var="station">
+                        <option value="${station.id}">${station.title}</option>
+                    </c:forEach>
+                </c:if>
+                <option value="0" selected>To the end</option>
+            </select>
+        </div>
+        <button type="button" class="btn btn-default" onclick="addStationToPath();">Add</button>
+    </form>
+</div>
 
-<c:if test="${!empty pathStationList}">
-    <div class="panel panel-default">
+
+
+    <div class="panel panel-default col-lg-12">
         <!-- Default panel contents -->
         <div class="panel-heading" align="center">List of stations</div>
         <div class="table-responsive">
@@ -39,7 +68,7 @@
                     <th>Title</th>
                     <th>Remove</th>
                 </tr>
-                <c:set var="count" value="1" scope="page"/>
+                <c:if test="${!empty pathStationList}">
                 <c:forEach items="${pathStationList}" var="station">
                     <tr id="${station.id}">
                         <td class="id">${station.id}</td>
@@ -51,41 +80,14 @@
                             </button>
                         </td>
                     </tr>
-                    <c:set var="count" value="${count + 1}" scope="page"/>
                 </c:forEach>
+                </c:if>
             </table>
         </div>
     </div>
-</c:if>
 
-<div class="jumbotron">
-    <form class="form" role="form" method="post" action="<c:url value="/path/stations"/>">
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="inputIndex">Insert before</label>
-            <select class="form-control" id="inputIndex" name="index">
-                <c:if test="${!empty pathStationList}">
-                    <c:set var="count" value="1" scope="page"/>
-                    <c:forEach items="${pathStationList}" var="station">
-                        <option value="${station.id}">${station.title}</option>
-                        <c:set var="count" value="${count + 1}" scope="page"/>
-                    </c:forEach>
-                </c:if>
-                <option value="0" selected>To the end</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="inputStation">Station</label>
-            <select class="form-control" id="inputStation" name="stationId">
-                <c:if test="${!empty stationList}">
-                    <c:forEach items="${stationList}" var="station">
-                        <option value="${station.id}">${station.title}</option>
-                    </c:forEach>
-                </c:if>
-            </select>
-        </div>
-        <button type="button" class="btn btn-default" onclick="addStationToPath();">Add</button>
-    </form>
-</div>
+
+
 
 
 

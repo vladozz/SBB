@@ -40,7 +40,7 @@ public class PathStationController {
                 return o1.getTitle().compareToIgnoreCase(o2.getTitle());
             }
         });
-        map.put("path", new Path());
+        //map.put("path", new Path());
         map.put("pathId", pathId);
         map.put("lci", pathService.findById(pathId).getLastChange());
         map.put("pathList", pathList);

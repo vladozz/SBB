@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<img src="<c:url value='/resources/res/logo.png'/>" class="img-responsive" alt="Responsive image">
+<%--<img src="<c:url value='/resources/res/logo.png'/>" class="img-responsive" alt="Responsive image">--%>
 <!--<nav class="navbar navbar-default" role="navigation">
 <div class="container-fluid">
 &lt;!&ndash; Brand and toggle get grouped for better mobile display &ndash;&gt;
@@ -53,7 +53,7 @@
 </div>&lt;!&ndash; /.navbar-collapse &ndash;&gt;
 </div>&lt;!&ndash; /.container-fluid &ndash;&gt;
 </nav>-->
-<nav class="navbar navbar-inverse" role="navigation">
+<nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">

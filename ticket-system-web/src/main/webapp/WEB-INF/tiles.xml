@@ -25,4 +25,7 @@
     <definition name="trip" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/trip.jsp" />
     </definition>
+    <definition name="passengers" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/passenger.jsp" />
+    </definition>
 </tiles-definitions>

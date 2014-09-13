@@ -50,6 +50,18 @@ function go() {
     location.href = '/SBB/path/stations/' + pathId;
 }
 
+function showAddForm() {
+    $('#addForm').slideDown('fast');
+}
+
+function hideAddForm() {
+    $('#addForm').slideUp('fast');
+}
+
+function toggleAddForm() {
+    $('#addForm').slideToggle('fast');
+}
+
 function removeStationFromPath(pathId, stationId) {
     var lci = $('#lci').text();
     $.post('/SBB/path/stations/remove', { pathId: pathId, stationId: stationId, lci: lci }, function (data) {
