@@ -6,15 +6,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.javaschool.vm.domain.Train;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.TripDTO;
+import com.tsystems.javaschool.vm.exception.InvalidIdException;
+import com.tsystems.javaschool.vm.exception.OutdateException;
+import com.tsystems.javaschool.vm.exception.SBBException;
 import com.tsystems.javaschool.vm.service.PathService;
 import com.tsystems.javaschool.vm.service.TrainService;
 import com.tsystems.javaschool.vm.service.TripService;
+import org.hibernate.dialect.Ingres10Dialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,62 +55,69 @@ public class TripController {
     }
 
     @RequestMapping(value = rootWithSlash + "/add", method = RequestMethod.POST)
-    public @ResponseBody
+    public
+    @ResponseBody
     String addTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) {
-        Trip trip = tripService.addTrip(pathId, trainId);
-        TripDTO tripDTO = new TripDTO(trip.getId(),
-                trip.getTrain().getId(), trip.getTrain().getNumber(),
-                trip.getPath().getId(), trip.getPath().getTitle());
         try {
+            Trip trip = tripService.addTrip(pathId, trainId);
+            TripDTO tripDTO = new TripDTO(trip.getId(),
+                    trip.getTrain().getId(), trip.getTrain().getNumber(),
+                    trip.getPath().getId(), trip.getPath().getTitle(), trip.getLastChange());
             return json.writeValueAsString(tripDTO);
-        } catch (JsonProcessingException e) {
-            return "error";
+        } catch (Exception e) {
+            return "error " + e.toString();
         }
     }
 
     @RequestMapping(value = rootWithSlash + "/select", method = RequestMethod.POST)
-    public @ResponseBody
+    public
+    @ResponseBody
     String selectTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) {
 
         List<Trip> trips = tripService.getTripsByPathAndTrain(pathId, trainId);
-
 
         List<TripDTO> tripDTOs = new ArrayList<TripDTO>();
         for (Trip trip : trips) {
             TripDTO tripDTO = new TripDTO(trip.getId(),
                     trip.getTrain().getId(), trip.getTrain().getNumber(),
-                    trip.getPath().getId(), trip.getPath().getTitle());
+                    trip.getPath().getId(), trip.getPath().getTitle(), trip.getLastChange());
             tripDTOs.add(tripDTO);
         }
 
         try {
             return json.writeValueAsString(tripDTOs);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            return "error " + e.toString();
         }
-
-        return "error";
     }
 
     @RequestMapping(value = rootWithSlash + "/edit", method = RequestMethod.POST)
     public
     @ResponseBody
-    String editTrain(@Valid @ModelAttribute(value = "train") Train train, BindingResult result) {
-
-        if (result.hasErrors()) {
-            return "";
+    String editTrip(@RequestParam("trip") String tripJSON) {
+        try {
+            TripDTO tripDTO = json.readValue(tripJSON, TripDTO.class);
+            tripService.editTrip(tripDTO.getId(), tripDTO.getPathId(), tripDTO.getTrainId(), tripDTO.getLastChange());
+            return "success";
+        } catch (OutdateException e) {
+            return "outdate " + e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error " + e;
         }
-
-        trainService.editTrain(train);
-        return train.getId().toString();
     }
 
-    @RequestMapping(value = rootWithSlash + "/delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = rootWithSlash + "/delete", method = RequestMethod.POST)
     public
     @ResponseBody
-    String removeTrain(@PathVariable("id") Long trainId) {
-        trainService.removeTrain(trainId);
-
-        return "";
+    String removeTrip(@RequestParam("tripId") Long tripId, @RequestParam("lci") Integer lci) {
+        try {
+            tripService.removeTrip(tripId, lci);
+        } catch (OutdateException e) {
+            return "outdate " + e;
+        } catch (Exception e) {
+            return "error " + e;
+        }
+        return "success";
     }
 }

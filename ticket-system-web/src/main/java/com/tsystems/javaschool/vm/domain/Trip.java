@@ -12,6 +12,8 @@ public class Trip extends SBBEntity{
     @ManyToOne
     @JoinColumn(name = "train_id")
     private Train train;
+    @Column(name = "last_change")
+    private Integer lastChange;
 
     @OneToMany(mappedBy = "trip")
     private List<Board> boardList;
@@ -42,6 +44,18 @@ public class Trip extends SBBEntity{
 
     public List<Board> getBoardList() {
         return boardList;
+    }
+
+    public Integer getLastChange() {
+        return lastChange;
+    }
+
+    public void setLastChange(Integer lastChange) {
+        this.lastChange = lastChange;
+    }
+
+    public void incrementLastChange() {
+        lastChange++;
     }
 
     @Override
@@ -77,16 +91,6 @@ public class Trip extends SBBEntity{
                 ", path=" + path +
                 ", train=" + train +
                 '}';
-    }
-
-    public String toJson() {
-        return "{\"id\": " + id +
-                ",\"train\": { \"id\": " + train.getId() + ", \"number\": \"" + train.getNumber() +
-                "\"}, \"path\": { \"id\": " + path.getId() + ", \"title\": \"" + path.getTitle() +
-                "\"}}";
-
-
-
     }
 }
 

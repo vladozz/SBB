@@ -54,7 +54,6 @@ public class PathService {
     }
 
     private boolean checkLCI(Path path, Integer pathLCI) {
-        //Path existingPath = pathDAO.findById(pathId);
         if (path == null || !pathLCI.equals(path.getLastChange())) {
             return false;
         } else {
