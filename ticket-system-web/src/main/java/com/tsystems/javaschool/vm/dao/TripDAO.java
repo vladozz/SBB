@@ -34,4 +34,5 @@ public class TripDAO extends CommonDAO<Trip> {
         query.setParameter("pathId", pathId);
         return query.getResultList();
     }
+
 }

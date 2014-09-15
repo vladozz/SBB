@@ -1,29 +1,28 @@
 package com.tsystems.javaschool.vm.web;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.javaschool.vm.domain.Board;
-import com.tsystems.javaschool.vm.domain.Path;
-import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.Trip;
-import com.tsystems.javaschool.vm.exception.PathException;
+import com.tsystems.javaschool.vm.dto.BoardTripDTO;
+import com.tsystems.javaschool.vm.exception.OutdateException;
+import com.tsystems.javaschool.vm.exception.SBBException;
 import com.tsystems.javaschool.vm.service.BoardService;
-import com.tsystems.javaschool.vm.service.PathService;
-import com.tsystems.javaschool.vm.service.StationService;
 import com.tsystems.javaschool.vm.service.TripService;
+import com.tsystems.javaschool.vm.sub.Adapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class TripBoardController {
     private static final String root = "trip/board";
     private static final String rootWithSlash = "/" + root;
 
+    private ObjectMapper json = new ObjectMapper();
 
     @Autowired
     TripService tripService;
@@ -41,16 +40,47 @@ public class TripBoardController {
         return root;
     }
 
-    @RequestMapping(value = rootWithSlash + "/create", method = RequestMethod.GET)
+    @RequestMapping(value = rootWithSlash + "/create", method = RequestMethod.POST)
     public
     @ResponseBody
     String createBoard(@RequestParam("tripId") Long tripId, @RequestParam("lci") Integer lci,
                        @RequestParam("date") String date) {
 
-        Trip trip = tripService.findById(tripId);
-
-        return root;
+        try {
+            List<Board> board = boardService.createEmptyBoard(tripId, date, lci);
+            List<BoardTripDTO> boardDTOs = new ArrayList<BoardTripDTO>();
+            for (Board b : board) {
+                boardDTOs.add(Adapter.convertToBoardTripDTO(b));
+            }
+            return json.writeValueAsString(boardDTOs);
+        } catch (OutdateException e) {
+            return "outdate " + e;
+        } catch (SBBException e) {
+            return "error " + e;
+        } catch (JsonProcessingException e) {
+            return "error " + e;
+        } catch (Throwable e) {
+            return "error " + e;
+        }
     }
 
-
+    @RequestMapping(value = rootWithSlash + "/select", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    String getBoard(@RequestParam("tripId") Long tripId) {
+        try {
+            List<Board> board = boardService.getBoardForTrip(tripId);
+            List<BoardTripDTO> boardDTOs = new ArrayList<BoardTripDTO>();
+            for (Board b : board) {
+                boardDTOs.add(Adapter.convertToBoardTripDTO(b));
+            }
+            return json.writeValueAsString(boardDTOs);
+        } catch (SBBException e) {
+            return "error " + e;
+        } catch (JsonProcessingException e) {
+            return "error " + e;
+        } catch (Throwable e) {
+            return "error " + e;
+        }
+    }
 }

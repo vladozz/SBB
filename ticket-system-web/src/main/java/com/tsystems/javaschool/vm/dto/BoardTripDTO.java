@@ -6,18 +6,19 @@ import java.sql.Timestamp;
 public class BoardTripDTO implements Serializable {
     private static final long serialVersionUID = -4561874501129316650L;
     private Long boardId;
+    private Long tripId;
     private String stationTitle;
-    private Timestamp arriveTime;
-    private Timestamp departureTime;
+    private String departureDate;
+    private String departureTime;
+    private String arriveDate;
+    private String arriveTime;
+    private Integer standTime;
 
     public BoardTripDTO() {
     }
 
-    public BoardTripDTO(Long boardId, String stationTitle, Timestamp arriveTime, Timestamp departureTime) {
-        this.boardId = boardId;
-        this.stationTitle = stationTitle;
-        this.arriveTime = arriveTime;
-        this.departureTime = departureTime;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public Long getBoardId() {
@@ -28,6 +29,14 @@ public class BoardTripDTO implements Serializable {
         this.boardId = boardId;
     }
 
+    public Long getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(Long tripId) {
+        this.tripId = tripId;
+    }
+
     public String getStationTitle() {
         return stationTitle;
     }
@@ -36,29 +45,43 @@ public class BoardTripDTO implements Serializable {
         this.stationTitle = stationTitle;
     }
 
-    public Timestamp getArriveTime() {
-        return arriveTime;
+    public String getDepartureDate() {
+        return departureDate;
     }
 
-    public void setArriveTime(Timestamp arriveTime) {
-        this.arriveTime = arriveTime;
+    public void setDepartureDate(String departureDate) {
+        this.departureDate = departureDate;
     }
 
-    public Timestamp getDepartureTime() {
+    public String getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(Timestamp departureTime) {
+    public void setDepartureTime(String departureTime) {
         this.departureTime = departureTime;
     }
 
-    @Override
-    public String toString() {
-        return "BoardDTO{" +
-                "boardId=" + boardId +
-                ", stationTitle='" + stationTitle + '\'' +
-                ", arriveTime=" + arriveTime +
-                ", departureTime=" + departureTime +
-                '}';
+    public String getArriveDate() {
+        return arriveDate;
+    }
+
+    public void setArriveDate(String arriveDate) {
+        this.arriveDate = arriveDate;
+    }
+
+    public String getArriveTime() {
+        return arriveTime;
+    }
+
+    public void setArriveTime(String arriveTime) {
+        this.arriveTime = arriveTime;
+    }
+
+    public Integer getStandTime() {
+        return standTime;
+    }
+
+    public void setStandTime(Integer standTime) {
+        this.standTime = standTime;
     }
 }

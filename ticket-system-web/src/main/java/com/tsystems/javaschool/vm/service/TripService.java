@@ -7,6 +7,7 @@ import com.tsystems.javaschool.vm.dao.TripDAO;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Train;
 import com.tsystems.javaschool.vm.domain.Trip;
+import com.tsystems.javaschool.vm.exception.EmptyListException;
 import com.tsystems.javaschool.vm.exception.InvalidIdException;
 import com.tsystems.javaschool.vm.exception.OutdateException;
 import com.tsystems.javaschool.vm.exception.SBBException;
@@ -35,12 +36,15 @@ public class TripService {
     }
 
     @Transactional
-    public Trip addTrip(Long pathId, Long trainId) {
+    public Trip addTrip(Long pathId, Long trainId) throws SBBException {
         Path path = pathDAO.findById(pathId);
         Train train = trainDAO.findById(trainId);
         if (train == null || path == null) {
             String message = "Path or train doesn't exist pathId = " + pathId + " trainId = " + trainId;
-            throw new IllegalArgumentException(message);
+            throw new InvalidIdException(message);
+        }
+        if (path.getStations().size() < 2) {
+            throw new EmptyListException("You can't create trip with empty list of stations. Path:" + path);
         }
         Trip trip = new Trip(path, train);
         trip.setLastChange(1);

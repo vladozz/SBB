@@ -81,6 +81,7 @@ function createRow(trip) {
     })));
     return row;
 }
+
 function appendRow(trip) {
     var row = createRow(trip);
     $('#listOfTrips').append(row);
@@ -155,7 +156,7 @@ function isError(response) {
     if (response.substring(0, 5) === "error") {
         alertError(response.substring(6));
     } else if (response.substring(0, 7) === "outdate") {
-        alertError('Your page is irrelevant! Try again.\n' + response.substring(6));
+        alertError('Your page is irrelevant! Try again.\n' + response.substring(8));
     } else {
         return false;
     }

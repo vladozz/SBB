@@ -1,94 +1,61 @@
 package com.tsystems.javaschool.vm.service;
 
 import com.tsystems.javaschool.vm.dao.BoardDAO;
-import com.tsystems.javaschool.vm.dao.PathDAO;
-import com.tsystems.javaschool.vm.dao.TrainDAO;
+import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.dao.TripDAO;
 import com.tsystems.javaschool.vm.domain.*;
-import com.tsystems.javaschool.vm.exception.DifferentArrayException;
+import com.tsystems.javaschool.vm.dto.BoardTripDTO;
+import com.tsystems.javaschool.vm.exception.*;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Minutes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BoardService {
     @Autowired
     private BoardDAO boardDAO;
     @Autowired
+    private StationDAO stationDAO;
+    @Autowired
     private TripDAO tripDAO;
-    @Autowired
-    private PathDAO pathDAO;
-    @Autowired
-    private TrainDAO trainDAO;
 
     public BoardService() {
     }
 
-    public Trip addTrip(Long pathID, Long trainID) {
-        Path path = pathDAO.findById(pathID);
-        Train train = trainDAO.findById(trainID);
-        return addTrip(path, train);
-    }
-
-    public Trip addTrip(Path path, Train train) {
-        if (path == null || train == null) {
-            return null;
-        }
-        Trip trip = new Trip(path, train);
-        EntityTransaction trx = tripDAO.getTransaction();
-        try {
-            trx.begin();
-            tripDAO.create(trip);
-            trx.commit();
-        } finally {
-            if (trx.isActive()) {
-                trx.rollback();
-            }
-        }
-        return trip;
-    }
-
-    /**
-     * Создание расписание для рейса
-     *
-     * @param trip       рейс
-     * @param arrives    список времен прибытия
-     * @param departures список времен отправления
-     * @return список созданных строчек расписания
-     */
-    public List<Board> generateBoardByTrip(Trip trip, List<Timestamp> arrives, List<Timestamp> departures) throws DifferentArrayException {
+    @Transactional
+    public List<Board> createEmptyBoard(Long tripId, String date, Integer lci) throws SBBException {
+        Trip trip = tripDAO.findById(tripId);
         if (trip == null) {
-            return null;
+            throw new InvalidIdException("Trip doesn't exist. id: " + tripId);
         }
-        List<Board> board = new ArrayList<Board>();
+        if (!checkLCI(trip, lci)) {
+            throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
+        }
+        if (!trip.getBoardList().isEmpty()) {
+            throw new TripException("Trip already has board!");
+        }
+
         List<Station> stations = trip.getPath().getStations();
-        if (stations.size() != arrives.size() || stations.size() != departures.size()) {
-            throw new DifferentArrayException("stations.size() = " + stations.size() +
-                    " arrives.size() = " + arrives.size() + " departures.size() = " + departures.size());
-
+        if (stations.isEmpty()) {
+            throw new EmptyListException("Can't create board for trip which path has empty list of stations." +
+                    "Trip id: " + trip.getId() + "; path: " + trip.getPath());
         }
-        int n = stations.size();
-        for (int i = 0; i < n; i++) {
-            Board boardLine = new Board(trip, stations.get(i), arrives.get(i), departures.get(i));
+
+        List<Board> board = new ArrayList<Board>(stations.size());
+        DateTime dateTime = parseJSDate(date, stations.get(0).getTimeZone());
+        Timestamp timestamp = new Timestamp(dateTime.getMillis());
+        for (Station station : stations) {
+            Board boardLine = new Board(trip, station, timestamp, timestamp);
+            boardDAO.create(boardLine);
             board.add(boardLine);
-        }
-
-        EntityTransaction trx = boardDAO.getTransaction();
-        try {
-            trx.begin();
-            for (Board boardLine : board) {
-                boardDAO.create(boardLine);
-            }
-            trx.commit();
-        } finally {
-            if (trx.isActive()) {
-                trx.rollback();
-            }
         }
         return board;
     }
@@ -96,55 +63,48 @@ public class BoardService {
     /**
      * Метод, возвращающий расписание для станции в интервале между after и before
      *
-     * @param station
-     * @param before
-     * @param after
-     * @return
+     * @param stationId station
+     * @param before  before
+     * @param after   after
+     * @return return
      */
-    public List<Board> getBoardForStation(Station station, Timestamp after, Timestamp before) {
-
+    public List<Board> getBoardForStation(Long stationId, Timestamp after, Timestamp before) throws InvalidIdException {
+        Station station = stationDAO.findById(stationId);
+        if (station == null) {
+            throw new InvalidIdException("Station doesn't exist. id: " + stationId);
+        }
         return boardDAO.getBoardForStation(station, after, before);
     }
 
-
-
-    public List<Board> getBoardForTrip(Long tripId) {
+    public List<Board> getBoardForTrip(Long tripId) throws InvalidIdException {
         Trip trip = tripDAO.findById(tripId);
         if (trip == null) {
-            return null;
+            throw new InvalidIdException("Trip doesn't exist. id: " + tripId);
         }
-        String queryString = "SELECT b FROM Board b WHERE b.trip = :trip";
-        Query query = boardDAO.createQuery(queryString);
-        query.setParameter("trip", trip);
-        return query.getResultList();
+        return boardDAO.getBoardForTrip(trip);
     }
 
-    public List<PairBoard> getDefTrips(String departureStation, String arriveStation, Timestamp departureAfter, Timestamp arriveBefore) {
-        String queryString = "SELECT b FROM Board b " +
-                "WHERE b.station.title = :arriveStation and " +
-                "b.arriveTime < :arriveBefore and b.arriveTime > :departureAfter";
-        Query query = boardDAO.createQuery(queryString);
-        query.setParameter("arriveStation", arriveStation);
-        query.setParameter("departureAfter", departureAfter);
-        query.setParameter("arriveBefore", arriveBefore);
-        List<Board> boardsArrive = query.getResultList();
-        queryString = "SELECT b FROM Board b " +
-                "WHERE b.station.title = :departureStation" +
-                " and b.departureTime > :departureAfter and b.departureTime < :arriveBefore ";
-        query = boardDAO.createQuery(queryString);
-        query.setParameter("departureStation", departureStation);
-        query.setParameter("departureAfter", departureAfter);
-        query.setParameter("arriveBefore", arriveBefore);
-        List<Board> boardsDeparture = query.getResultList();
-        List<PairBoard> pairBoards = new ArrayList<PairBoard>();
-        for (Board ba : boardsArrive) {
-            for (Board bd : boardsDeparture) {
-                if (ba.getTrip().equals(bd.getTrip())) {
-                    pairBoards.add(new PairBoard(bd, ba));
-                    break;
-                }
-            }
-        }
-        return pairBoards;
+    public List<PairBoard> getDefTrips(Long departureStationId, Long arriveStationId, Timestamp departureAfter, Timestamp arriveBefore) {
+
+        return boardDAO.getBoard(departureStationId, arriveStationId, departureAfter, arriveBefore);
     }
+
+    private static DateTime parseJSDate(String dateString, TimeZone timeZone) {
+        List<Integer> date = new ArrayList<Integer>(3);
+        for (String s : dateString.split("-")) {
+            date.add(Integer.parseInt(s));
+        }
+        return new DateTime(date.get(0), date.get(1), date.get(2), 0, 0, DateTimeZone.forTimeZone(timeZone));
+    }
+
+    private boolean checkLCI(Trip trip, Integer tripLCI) {
+        if (!tripLCI.equals(trip.getLastChange())) {
+            return false;
+        } else {
+            trip.incrementLastChange();
+            return true;
+        }
+    }
+
+
 }

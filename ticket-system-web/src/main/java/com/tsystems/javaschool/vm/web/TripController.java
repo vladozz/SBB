@@ -38,7 +38,7 @@ public class TripController {
     @Autowired
     TripService tripService;
 
-    ObjectMapper json = new ObjectMapper();
+    private ObjectMapper json = new ObjectMapper();
 
     @RequestMapping(index)
     public String listTrains(Map<String, Object> map) {
