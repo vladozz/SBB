@@ -26,10 +26,10 @@ import java.util.Map;
 
 @Controller
 public class TripController {
-    private final String root = "trip";
-    private final String rootWithSlash = "/" + root;
-    private final String index = rootWithSlash + "/index";
-    private final String redirect = "redirect:" + index;
+    private static final String root = "trip";
+    private static final String rootWithSlash = "/" + root;
+    private static final String index = rootWithSlash + "/index";
+    private static final String redirect = "redirect:" + index;
 
     @Autowired
     TrainService trainService;
@@ -102,7 +102,6 @@ public class TripController {
         } catch (OutdateException e) {
             return "outdate " + e;
         } catch (Exception e) {
-            e.printStackTrace();
             return "error " + e;
         }
     }

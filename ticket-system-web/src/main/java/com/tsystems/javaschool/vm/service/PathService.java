@@ -4,6 +4,7 @@ import com.tsystems.javaschool.vm.dao.PathDAO;
 import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
+import com.tsystems.javaschool.vm.exception.InvalidIdException;
 import com.tsystems.javaschool.vm.exception.InvalidIndexException;
 import com.tsystems.javaschool.vm.exception.PathException;
 import org.apache.log4j.Logger;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Service
 public class PathService {
-    private static Logger logger = Logger.getLogger(PathService.class);
+    private static final Logger logger = Logger.getLogger(PathService.class);
     @Autowired
     private PathDAO pathDAO;
     @Autowired
@@ -40,16 +41,6 @@ public class PathService {
             return true;
         } else {
             return false;
-        }
-    }
-
-    private boolean checkLCI(Path path) {
-        Path existingPath = pathDAO.findById(path.getId());
-        if (existingPath == null || !path.getLastChange().equals(existingPath.getLastChange())) {
-            return false;
-        } else {
-            path.incrementLastChange();
-            return true;
         }
     }
 
@@ -101,8 +92,6 @@ public class PathService {
             throw new InvalidIndexException("Illegal index of station: " + "index = " + index
                     + "stations.size() = " + stations.size() + "path = " + path + "station = " + station);
         }
-        System.out.println("index = " + index);
-        System.out.println("path = " + path.getStations());
         if (index == 0) {
             stations.add(station);
         } else {
@@ -117,9 +106,7 @@ public class PathService {
             pathDAO.update(path);
             path.getStations().addAll(newStations);
         }
-        System.out.println("path = " + path.getStations());
         pathDAO.update(path);
-        System.out.println("path = " + pathDAO.findById(path.getId()).getStations());
         return path;
     }
 
@@ -271,7 +258,8 @@ public class PathService {
     public List<Station> getStationsOfPath(Long pathId) {
         Path path = pathDAO.findById(pathId);
         if (path == null) {
-            return null;
+            //TODO: empty list or throw InvalidIdException
+            return new ArrayList<Station>();
         } else {
             return path.getStations();
         }

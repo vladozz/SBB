@@ -6,6 +6,7 @@ var $lbl = $("<label/>").attr('class', 'col-sm-3 control-label');
 var $disInp = $("<input/>").attr('class', 'form-control').attr('type', 'text').attr('readonly', 'true').attr('id', 'inputId');
 var $btnDelete = $("<button/>").attr('class', 'btn btn-danger').attr('type', 'button').text('Delete');
 var $btnEdit = $("<button/>").attr('class', 'btn btn-warning').attr('type', 'button').text('Edit');
+var $btnBoard = $("<button/>").attr('class', 'btn btn-primary').attr('type', 'button').text('Board');
 var $div = $('<div/>');
 
 function findTrips() {
@@ -69,6 +70,9 @@ function createRow(trip) {
     $.each(trip, function (key, value) {
         row.append($td.clone().attr('class', key).text(value));
     });
+    row.append($td.clone().html($btnBoard.clone().click(function () {
+        toBoard(trip.id);
+    })));
     row.append($td.clone().html($btnEdit.clone().click(function () {
         editTrip(trip.id);
     })));
@@ -100,11 +104,11 @@ function removeTrip(tripId) {
 }
 
 function editTrip(tripId) {
-    var $message = $div.clone();
-    initEditForm($message, tripId);
+    var $content = $div.clone();
+    initEditForm($content, tripId);
     BootstrapDialog.show({
         title: 'Edit trip',
-        message: $message,
+        message: $content,
         buttons: [
             {
                 label: 'Edit',
@@ -159,20 +163,20 @@ function isError(response) {
     return true;
 }
 
-function initEditForm(message, tripId) {
+function initEditForm($content, tripId) {
     var $tmpInp = createROInput(tripId);
     var $tmpLbl = createLabel('inputId', 'Trip ID');
-    message.append($fg.clone().append($tmpLbl).append($tmpInp));
+    $content.append($fg.clone().append($tmpLbl).append($tmpInp));
     var trainId = $('#' + tripId + ' .trainId').text();
     var $tmpLbl = createLabel('modalTS', 'Train');
     var $tmpSel = copySelect('trainSelect', 'modalTS');
     selectOption($tmpSel, trainId);
-    message.append($fg.clone().append($tmpLbl).append($tmpSel));
+    $content.append($fg.clone().append($tmpLbl).append($tmpSel));
     var pathId = $('#' + tripId + ' .pathId').text();
     $tmpLbl = createLabel('modalPS', 'Path');
     $tmpSel = copySelect('pathSelect', 'modalPS');
     selectOption($tmpSel, pathId);
-    message.append($fg.clone().append($tmpLbl).append($tmpSel));
+    $content.append($fg.clone().append($tmpLbl).append($tmpSel));
 }
 
 function createROInput(innerText) {
@@ -189,4 +193,8 @@ function selectOption($selectObj, value) {
 
 function copySelect(selectId, newId) {
     return $('#' + selectId).clone().attr('id', newId).attr('onchange', '');
+}
+
+function toBoard(tripId) {
+    location.href = '/SBB/trip/board/' + tripId;
 }

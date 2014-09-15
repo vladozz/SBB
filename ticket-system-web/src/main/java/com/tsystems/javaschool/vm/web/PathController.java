@@ -18,10 +18,10 @@ import java.util.Map;
 
 @Controller
 public class PathController {
-    private final String root = "path";
-    private final String rootWithSlash = "/" + root;
-    private final String index = rootWithSlash + "/index";
-    private final String redirect = "redirect:" + index;
+    private static final String root = "path";
+    private static final String rootWithSlash = "/" + root;
+    private static final String index = rootWithSlash + "/index";
+    private static final String redirect = "redirect:" + index;
 
     @Autowired
     PathService pathService;
@@ -73,8 +73,7 @@ public class PathController {
 
         if (pathService.editPath(path)) {
             return path.getId().toString();
-        }
-        else {
+        } else {
             return "0";
         }
     }

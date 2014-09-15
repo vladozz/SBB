@@ -19,17 +19,19 @@ import java.util.List;
 
 @Service
 public class TripService {
-    private static Logger logger = Logger.getLogger(TripService.class);
+    private static final Logger logger = Logger.getLogger(TripService.class);
     @Autowired
     private PathDAO pathDAO;
-    @Autowired
-    private StationDAO stationDAO;
     @Autowired
     private TrainDAO trainDAO;
     @Autowired
     private TripDAO tripDAO;
 
     public TripService() {
+    }
+
+    public Trip findById(Long tripId) {
+        return tripDAO.findById(tripId);
     }
 
     @Transactional

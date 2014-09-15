@@ -2,10 +2,7 @@ package com.tsystems.javaschool.vm.service;
 
 import com.tsystems.javaschool.vm.dao.*;
 import com.tsystems.javaschool.vm.domain.*;
-import com.tsystems.javaschool.vm.exception.AlreadyOnTripException;
-import com.tsystems.javaschool.vm.exception.InvalidIdException;
-import com.tsystems.javaschool.vm.exception.OutOfFreeSpacesException;
-import com.tsystems.javaschool.vm.exception.TenMinutesException;
+import com.tsystems.javaschool.vm.exception.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,7 +82,7 @@ public class PassengerService {
     }
 
     public boolean canBuyTicket(Passenger passenger, Board departure, Board arrive)
-            throws OutOfFreeSpacesException, AlreadyOnTripException, TenMinutesException {
+            throws PassengerException {
         final long TEN_MINUTES = 1000L * 60 * 10;
         if (departure.getDepartureTime().getTime() - (new Date()).getTime() < TEN_MINUTES ) {
             throw new TenMinutesException("Less than ten minutes before train departure");
@@ -100,7 +97,7 @@ public class PassengerService {
     }
 
     public Ticket buyTicket(String firstName, String lastName, Calendar birthDate, Long departureBoardId, Long arriveBoardId)
-            throws InvalidIdException, OutOfFreeSpacesException, TenMinutesException, AlreadyOnTripException {
+            throws InvalidIdException, PassengerException {
         List<Passenger> passengers = passengerDAO.findByNameAndBirthDate(firstName, lastName, birthDate);
         Passenger passenger;
         if (passengers.isEmpty()) {
@@ -126,7 +123,7 @@ public class PassengerService {
     }
 
     public Ticket buyTicket(Passenger passenger, Board departure, Board arrive)
-            throws OutOfFreeSpacesException, TenMinutesException, AlreadyOnTripException {
+            throws PassengerException {
         if (canBuyTicket(passenger, departure, arrive)) {
             Ticket ticket = new Ticket(passenger, departure, arrive);
             EntityTransaction trx = ticketDAO.getTransaction();

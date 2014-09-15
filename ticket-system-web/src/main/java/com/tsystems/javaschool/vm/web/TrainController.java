@@ -13,10 +13,10 @@ import java.util.Map;
 
 @Controller
 public class TrainController {
-    private final String root = "train";
-    private final String rootWithSlash = "/" + root;
-    private final String index = rootWithSlash + "/index";
-    private final String redirect = "redirect:" + index;
+    private static final String root = "train";
+    private static final String rootWithSlash = "/" + root;
+    private static final String index = rootWithSlash + "/index";
+    private static final String redirect = "redirect:" + index;
 
     @Autowired
     TrainService trainService;

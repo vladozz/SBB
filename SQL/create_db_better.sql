@@ -40,6 +40,7 @@ create table trip (
 	id bigint not null auto_increment primary KEY,
 	path_id bigint,
 	train_id bigint,
+	last_change int default 1,
 	foreign key (train_id) references train (id),
 	foreign key (path_id) references path (id)
 )   engine=InnoDB;
@@ -84,7 +85,7 @@ create table hibernate_sequences (
 	sequence_name varchar(50)
 ) engine = InnoDB;
 #delete from board where id > 0
-select * from train;
+select * from trip;
 delete from path_station where path_id = 14;
 #select trip_id, title from board, station where station.id = station_id
 #update path_station set stand_time = 10 where id > 0
@@ -101,4 +102,6 @@ insert role set id = -2, title = "admin";
 update user set role_id = -2 where id = -1;
 select * from user, role where role_id = role.id;
 alter table path modify last_change int default 1;
+alter table train add last_change int default 1;
 alter table path_station drop stand_time;
+update trip set last_change = 1 where id > 0

@@ -7,18 +7,12 @@ public class TripDTO {
     private String pathTitle;    private Long trainId;
     private String trainNumber;
     private Integer lastChange;
+    private String departureStation;
+    private String arriveStation;
 
     public TripDTO() {
 
 
-    }
-
-    public TripDTO(Long id, Long trainId, String trainNumber, Long pathId, String pathTitle) {
-        this.id = id;
-        this.pathId = pathId;
-        this.pathTitle = pathTitle;
-        this.trainId = trainId;
-        this.trainNumber = trainNumber;
     }
 
     public TripDTO(Long id, Long trainId, String trainNumber, Long pathId, String pathTitle, Integer lastChange) {
@@ -28,6 +22,8 @@ public class TripDTO {
         this.pathId = pathId;
         this.pathTitle = pathTitle;
         this.lastChange = lastChange;
+        this.departureStation = "";
+        this.arriveStation = "";
     }
 
     public Long getId() {
@@ -76,5 +72,21 @@ public class TripDTO {
 
     public void setLastChange(Integer lastChange) {
         this.lastChange = lastChange;
+    }
+
+    public String getDepartureStation() {
+        return departureStation;
+    }
+
+    public void setDepartureStation(String departureStation) {
+        this.departureStation = departureStation;
+    }
+
+    public String getArriveStation() {
+        return arriveStation;
+    }
+
+    public void setArriveStation(String arriveStation) {
+        this.arriveStation = arriveStation;
     }
 }

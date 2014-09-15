@@ -17,10 +17,8 @@ import java.util.Map;
 
 @Controller
 public class PathStationController {
-    private final String root = "path/stations";
-    private final String rootWithSlash = "/" + root;
-    private final String index = rootWithSlash + "/index";
-    private final String redirect = "redirect:" + rootWithSlash + "/";
+    private static final String root = "path/stations";
+    private static final String rootWithSlash = "/" + root;
 
     @Autowired
     PathService pathService;
@@ -40,9 +38,8 @@ public class PathStationController {
                 return o1.getTitle().compareToIgnoreCase(o2.getTitle());
             }
         });
-        //map.put("path", new Path());
         map.put("pathId", pathId);
-        map.put("lci", pathService.findById(pathId).getLastChange());
+        map.put("lastChange", pathService.findById(pathId).getLastChange());
         map.put("pathList", pathList);
         map.put("pathStationList", pathStationList);
         map.put("stationList", stationList);
@@ -65,14 +62,11 @@ public class PathStationController {
     public @ResponseBody
     String removeStationFromPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
                                         @RequestParam("lci") Integer lci, Map<String, Object> map) {
-
         try {
             pathService.removeStationFromPathSafe(pathId, stationId, lci);
         } catch (PathException e) {
             return "false";
         }
-        List<Path> pathList = pathService.getAllPaths();
-        List<Station> pathStationList = pathService.getStationsOfPath(pathId);
         return "true";
     }
 }
