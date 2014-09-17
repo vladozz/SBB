@@ -9,7 +9,7 @@ function confirmDelete(id, title) {
                 action: function (dialog) {
                     $.ajax({
                         url: "delete/" + id,
-                        success: function (data) {
+                        success: function () {
                             $('#' + id).remove();
                             dialog.setMessage('Delete success');
                             dialog.close();

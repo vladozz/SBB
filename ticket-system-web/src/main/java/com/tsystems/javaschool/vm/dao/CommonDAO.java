@@ -42,6 +42,14 @@ public abstract class CommonDAO<E extends SBBEntity>{
 
     }
 
+    public void detach(E entity) {
+        entityManager.detach(entity);
+    }
+
+    public void refresh(E entity) {
+        entityManager.refresh(entity);
+    }
+
     public void delete(Long id) {
         E entity = entityManager.find(entityClass, id);
         if (entity != null) {

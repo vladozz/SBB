@@ -16,14 +16,19 @@ public class Adapter {
         boardTripDTO.setBoardId(board.getId());
         boardTripDTO.setTripId(board.getTrip().getId());
         boardTripDTO.setStationTitle(board.getStation().getTitle());
+
         TimeZone timeZone = board.getStation().getTimeZone();
-        DateTime departureDateTime = new DateTime(board.getDepartureTime().getTime(), DateTimeZone.forTimeZone(timeZone));
-        boardTripDTO.setDepartureDate(departureDateTime.toString(dateFormat));
-        boardTripDTO.setDepartureTime(departureDateTime.toString(timeFormat));
+        boardTripDTO.setMinuteOffset(timeZone.getRawOffset() / 60000);
+
         DateTime arriveDateTime = new DateTime(board.getArriveTime().getTime(), DateTimeZone.forTimeZone(timeZone));
         boardTripDTO.setArriveDate(arriveDateTime.toString(dateFormat));
         boardTripDTO.setArriveTime(arriveDateTime.toString(timeFormat));
-        boardTripDTO.setStandTime(Minutes.minutesBetween(departureDateTime, arriveDateTime).getMinutes());
+
+        DateTime departureDateTime = new DateTime(board.getDepartureTime().getTime(), DateTimeZone.forTimeZone(timeZone));
+        boardTripDTO.setDepartureDate(departureDateTime.toString(dateFormat));
+        boardTripDTO.setDepartureTime(departureDateTime.toString(timeFormat));
+
+        boardTripDTO.setStandTime(Minutes.minutesBetween(arriveDateTime, departureDateTime).getMinutes());
         return boardTripDTO;
     }
 }

@@ -50,14 +50,6 @@ function go() {
     location.href = '/SBB/path/stations/' + pathId;
 }
 
-function showAddForm() {
-    $('#addForm').slideDown('fast');
-}
-
-function hideAddForm() {
-    $('#addForm').slideUp('fast');
-}
-
 function toggleAddForm() {
     $('#addForm').slideToggle('fast');
 }

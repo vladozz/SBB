@@ -169,7 +169,7 @@ function initEditForm($content, tripId) {
     var $tmpLbl = createLabel('inputId', 'Trip ID');
     $content.append($fg.clone().append($tmpLbl).append($tmpInp));
     var trainId = $('#' + tripId + ' .trainId').text();
-    var $tmpLbl = createLabel('modalTS', 'Train');
+    $tmpLbl = createLabel('modalTS', 'Train');
     var $tmpSel = copySelect('trainSelect', 'modalTS');
     selectOption($tmpSel, trainId);
     $content.append($fg.clone().append($tmpLbl).append($tmpSel));

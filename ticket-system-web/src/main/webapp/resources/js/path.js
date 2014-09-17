@@ -10,7 +10,7 @@ function confirmDelete(id, title) {
                     $.ajax({
                         type: 'get',
                         url: "/SBB/path/delete/" + id,
-                        success: function (data) {
+                        success: function () {
                             $('#' + id).remove();
                             dialog.setMessage('Delete success');
                             dialog.close();
@@ -126,7 +126,7 @@ function editPath() {
                         buttons: [{
                             label: 'OK',
                             action: function() {
-                                location.reload();;
+                                location.reload();
                             }
                         }]
                     });

@@ -57,8 +57,6 @@ public class TripBoardController {
             return "outdate " + e;
         } catch (SBBException e) {
             return "error " + e;
-        } catch (JsonProcessingException e) {
-            return "error " + e;
         } catch (Throwable e) {
             return "error " + e;
         }
@@ -77,8 +75,23 @@ public class TripBoardController {
             return json.writeValueAsString(boardDTOs);
         } catch (SBBException e) {
             return "error " + e;
-        } catch (JsonProcessingException e) {
+        } catch (Throwable e) {
             return "error " + e;
+        }
+    }
+
+    @RequestMapping(value = rootWithSlash + "/edit", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    String getBoard(@RequestParam("board") String jsonString) {
+        try {
+            BoardTripDTO[] boardTripDTOs = json.readValue(jsonString, BoardTripDTO[].class);
+            String response = boardService.changeBoard(boardTripDTOs);
+            if (response.equals("")) {
+                return "success";
+            } else {
+                return "error " + response;
+            }
         } catch (Throwable e) {
             return "error " + e;
         }

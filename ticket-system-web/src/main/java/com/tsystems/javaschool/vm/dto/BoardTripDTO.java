@@ -1,17 +1,17 @@
 package com.tsystems.javaschool.vm.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 public class BoardTripDTO implements Serializable {
     private static final long serialVersionUID = -4561874501129316650L;
     private Long boardId;
     private Long tripId;
     private String stationTitle;
-    private String departureDate;
-    private String departureTime;
+    private Integer minuteOffset;
     private String arriveDate;
     private String arriveTime;
+    private String departureDate;
+    private String departureTime;
     private Integer standTime;
 
     public BoardTripDTO() {
@@ -43,6 +43,14 @@ public class BoardTripDTO implements Serializable {
 
     public void setStationTitle(String stationTitle) {
         this.stationTitle = stationTitle;
+    }
+
+    public Integer getMinuteOffset() {
+        return minuteOffset;
+    }
+
+    public void setMinuteOffset(Integer minuteOffset) {
+        this.minuteOffset = minuteOffset;
     }
 
     public String getDepartureDate() {
@@ -84,4 +92,5 @@ public class BoardTripDTO implements Serializable {
     public void setStandTime(Integer standTime) {
         this.standTime = standTime;
     }
+
 }
