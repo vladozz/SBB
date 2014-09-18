@@ -1,0 +1,27 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/security
+http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+    <http access-denied-page="/WEB-INF/pages/error403.jsp">
+        <intercept-url pattern="/train*" access="ROLE_USER,ROLE_ANONYMOUS"/>
+        <intercept-url pattern="/station*" access="ROLE_USER"/>
+        <intercept-url pattern="/path*" access="ROLE_ADMIN"/>
+        <form-login login-page="/login" default-target-url="/train/index"
+                    authentication-failure-url="/login"/>
+        <logout logout-url="/logout" logout-success-url="/"/>
+
+        <anonymous username="guest" granted-authority="ROLE_ANONYMOUS"/>
+        <remember-me/>
+    </http>
+
+    <authentication-manager>
+        <authentication-provider user-service-ref="loginService">
+            <password-encoder hash="sha-256"/>
+        </authentication-provider>
+    </authentication-manager>
+
+</beans:beans>

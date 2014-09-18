@@ -34,4 +34,7 @@
     <definition name="passengers" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/passenger.jsp" />
     </definition>
+    <definition name="login" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/login.jsp" />
+    </definition>
 </tiles-definitions>

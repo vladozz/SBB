@@ -23,7 +23,7 @@ public class SBBController {
         map.put("train", new Train());
 
 
-        return "train";
+        return "login";
     }
 
     @RequestMapping("/")

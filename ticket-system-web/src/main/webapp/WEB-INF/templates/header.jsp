@@ -77,7 +77,7 @@
                 <li><a href="<c:url value="/passenger" /> ">Passenger</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Log out</a></li>
+                <li><a href="/SBB/logout">Log out</a></li>
                 <li class="dropdown">
                 </li>
             </ul>
