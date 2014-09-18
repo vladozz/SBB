@@ -1,15 +1,18 @@
-package com.tsystems.javaschool.vm.sub;
+package com.tsystems.javaschool.vm.converter;
 
 import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Minutes;
+import org.springframework.stereotype.Component;
 
 import java.util.TimeZone;
 
-public class Adapter {
-    public static BoardTripDTO convertToBoardTripDTO(Board board) {
+@Component
+public class BoardConverter {
+
+    public BoardTripDTO convertToBoardTripDTO(Board board) {
         String dateFormat = "yyyy-MM-dd";
         String timeFormat = "HH:mm";
         BoardTripDTO boardTripDTO = new BoardTripDTO();

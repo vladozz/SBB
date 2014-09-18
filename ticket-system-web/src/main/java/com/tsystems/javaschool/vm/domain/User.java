@@ -13,6 +13,8 @@ public class User extends SBBEntity {
     @JoinColumn (name = "role_id")
     private Role role;
 
+//    private boolean empty;
+
     public User() {
     }
 

@@ -24,9 +24,9 @@ public class PathController {
     private static final String redirect = "redirect:" + index;
 
     @Autowired
-    PathService pathService;
+    private PathService pathService;
     @Autowired
-    StationService stationService;
+    private StationService stationService;
 
     @RequestMapping(index)
     public String listPaths(Map<String, Object> map) {

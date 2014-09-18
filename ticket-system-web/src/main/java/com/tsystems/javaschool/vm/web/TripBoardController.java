@@ -1,8 +1,8 @@
 package com.tsystems.javaschool.vm.web;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tsystems.javaschool.vm.converter.BoardConverter;
 import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
@@ -10,7 +10,6 @@ import com.tsystems.javaschool.vm.exception.OutdateException;
 import com.tsystems.javaschool.vm.exception.SBBException;
 import com.tsystems.javaschool.vm.service.BoardService;
 import com.tsystems.javaschool.vm.service.TripService;
-import com.tsystems.javaschool.vm.sub.Adapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +21,14 @@ public class TripBoardController {
     private static final String root = "trip/board";
     private static final String rootWithSlash = "/" + root;
 
-    private ObjectMapper json = new ObjectMapper();
-
     @Autowired
-    TripService tripService;
+    private ObjectMapper json;
     @Autowired
-    BoardService boardService;
+    private BoardConverter boardConverter;
+    @Autowired
+    private TripService tripService;
+    @Autowired
+    private BoardService boardService;
 
 
     @RequestMapping(value = rootWithSlash + "/{id}", method = RequestMethod.GET)
@@ -50,7 +51,7 @@ public class TripBoardController {
             List<Board> board = boardService.createEmptyBoard(tripId, date, lci);
             List<BoardTripDTO> boardDTOs = new ArrayList<BoardTripDTO>();
             for (Board b : board) {
-                boardDTOs.add(Adapter.convertToBoardTripDTO(b));
+                boardDTOs.add(boardConverter.convertToBoardTripDTO(b));
             }
             return json.writeValueAsString(boardDTOs);
         } catch (OutdateException e) {
@@ -70,7 +71,7 @@ public class TripBoardController {
             List<Board> board = boardService.getBoardForTrip(tripId);
             List<BoardTripDTO> boardDTOs = new ArrayList<BoardTripDTO>();
             for (Board b : board) {
-                boardDTOs.add(Adapter.convertToBoardTripDTO(b));
+                boardDTOs.add(boardConverter.convertToBoardTripDTO(b));
             }
             return json.writeValueAsString(boardDTOs);
         } catch (SBBException e) {

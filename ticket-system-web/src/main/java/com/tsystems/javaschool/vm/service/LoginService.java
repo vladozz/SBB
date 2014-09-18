@@ -18,18 +18,16 @@ import java.util.Map;
 @Service
 public class LoginService implements UserDetailsService {
     @Autowired
-    UserDAO userDAO;
+    private UserDAO userDAO;
 
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userDAO.findByLogin(s);
-        if (user == null) {
+        List<User> users = userDAO.findByLogin(s);
+        if (users.isEmpty()) {
             throw new UsernameNotFoundException("User " + s + " not found");
         }
-        System.out.println("user = " + user);
-        System.out.println("user.getRole().getTitle() = " + user.getRole().getTitle());
-
+        User user = users.get(0);
         List<SimpleGrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(user.getRole().getTitle()));
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), authorities);
     }

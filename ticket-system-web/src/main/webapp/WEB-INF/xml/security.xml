@@ -6,16 +6,18 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.springframework.org/schema/security
 http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
-    <http access-denied-page="/WEB-INF/pages/error403.jsp">
-        <intercept-url pattern="/train*" access="ROLE_USER,ROLE_ANONYMOUS"/>
-        <intercept-url pattern="/station*" access="ROLE_USER"/>
-        <intercept-url pattern="/path*" access="ROLE_ADMIN"/>
-        <form-login login-page="/login" default-target-url="/train/index"
+    <http access-denied-page="/WEB-INF/pages/error403.jsp" use-expressions="true">
+        <intercept-url pattern="/train/**" access="hasAnyRole('ROLE_MANAGER')"/>
+        <intercept-url pattern="/station/**" access="hasAnyRole('ROLE_MANAGER')"/>
+        <intercept-url pattern="/path/**" access="hasAnyRole('ROLE_MANAGER')"/>
+        <intercept-url pattern="/trip/**" access="hasAnyRole('ROLE_MANAGER')"/>
+        <intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN')"/>
+        <form-login login-page="/login" default-target-url="/"
                     authentication-failure-url="/login"/>
         <logout logout-url="/logout" logout-success-url="/"/>
 
-        <anonymous username="guest" granted-authority="ROLE_ANONYMOUS"/>
-        <remember-me/>
+        <anonymous username="guest" granted-authority="ROLE_GUEST"/>
+        <remember-me user-service-ref="loginService"/>
     </http>
 
     <authentication-manager>

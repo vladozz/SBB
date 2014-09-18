@@ -13,15 +13,10 @@ public class UserDAO extends CommonDAO<User> {
         super(User.class);
     }
 
-    public User findByLogin(String login) {
+    public List<User> findByLogin(String login) {
         String queryString = "SELECT u FROM User u WHERE LOWER(u.login) = :login";
         Query query = entityManager.createQuery(queryString);
         query.setParameter("login", login.toLowerCase());
-        List<User> list = query.getResultList();
-        if (list.isEmpty()) {
-            return null;
-        } else {
-            return list.get(0);
-        }
+        return query.getResultList();
     }
 }

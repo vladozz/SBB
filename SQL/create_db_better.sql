@@ -84,9 +84,14 @@ create table hibernate_sequences (
 	sequence_next_hi_value bigint,
 	sequence_name varchar(50)
 ) engine = InnoDB;
+
+insert role set id = -2, title = "ROLE_ADMIN";
+insert user set id = -1, login = "admin", pswd = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", role_id = -2;
+
+
 #delete from board where id > 0
-select * from trip;
-delete from path_station where path_id = 14;
+select * from board;
+delete from board where id > 0;
 #select trip_id, title from board, station where station.id = station_id
 #update path_station set stand_time = 10 where id > 0
 #update train set places_qty = 4 where id = 32
@@ -98,10 +103,12 @@ delete from path_station where path_id = 14;
 use sbb;
 select path_station.id, path.title, station.title from path_station, path, station where path.id = path_id and station_id = station.id;
 insert into path_station (path_id, station_id) values (0, 0), (0, 0);
-insert role set id = -2, title = "admin";
-update user set role_id = -2 where id = -1;
+
+update user set pswd = "d033e22ae348aeb5660fc2140aec35850c4da997" where id = -1;
+update user set pswd ="8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" where id = -1;
 select * from user, role where role_id = role.id;
 alter table path modify last_change int default 1;
 alter table train add last_change int default 1;
 alter table path_station drop stand_time;
-update trip set last_change = 1 where id > 0
+update trip set last_change = 1 where id > 0;
+select * from role;

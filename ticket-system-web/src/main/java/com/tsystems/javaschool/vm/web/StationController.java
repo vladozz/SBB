@@ -22,7 +22,7 @@ public class StationController {
     private static final String redirect = "redirect:" + index;
 
     @Autowired
-    StationService stationService;
+    private StationService stationService;
 
     @RequestMapping(index)
     public String listStations(Map<String, Object> map) {

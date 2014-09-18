@@ -6,9 +6,15 @@
     <definition name="common" template="/WEB-INF/templates/classic.jsp">
         <put-attribute name="title" value="Tiles tutorial homepage" />
         <put-attribute name="head" value="/WEB-INF/templates/head.jsp"/>
-        <put-attribute name="header" value="/WEB-INF/templates/header.jsp" />
+        <put-attribute name="header" value="/WEB-INF/templates/header-manager.jsp" />
         <put-attribute name="body" value="/WEB-INF/templates/blank.jsp" />
         <put-attribute name="footer" value="/WEB-INF/templates/footer.jsp" />
+    </definition>
+    <definition name="index" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/index.jsp"/>
+    </definition>
+    <definition name="user" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/user.jsp"/>
     </definition>
     <definition name="train" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/train.jsp" />

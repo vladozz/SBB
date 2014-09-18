@@ -19,7 +19,7 @@ public class TrainController {
     private static final String redirect = "redirect:" + index;
 
     @Autowired
-    TrainService trainService;
+    private TrainService trainService;
 
     @RequestMapping(index)
     public String listTrains(Map<String, Object> map) {

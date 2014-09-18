@@ -17,7 +17,6 @@ public class Path extends SBBEntity {
     @JoinTable(name = "path_station",
             joinColumns = {@JoinColumn(name = "path_id")},
             inverseJoinColumns = {@JoinColumn(name = "station_id")})
-//    @OrderColumn(name = "id")
     private List<Station> stations;
 
     @OneToMany(mappedBy = "path")

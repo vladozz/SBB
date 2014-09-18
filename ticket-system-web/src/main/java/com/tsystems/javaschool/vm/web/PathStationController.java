@@ -21,9 +21,9 @@ public class PathStationController {
     private static final String rootWithSlash = "/" + root;
 
     @Autowired
-    PathService pathService;
+    private PathService pathService;
     @Autowired
-    StationService stationService;
+    private StationService stationService;
 
 
     @RequestMapping(value = rootWithSlash + "/{id}", method = RequestMethod.GET)

@@ -32,20 +32,18 @@ public class TripController {
     private static final String redirect = "redirect:" + index;
 
     @Autowired
-    TrainService trainService;
+    private TrainService trainService;
     @Autowired
-    PathService pathService;
+    private PathService pathService;
     @Autowired
-    TripService tripService;
-
-    private ObjectMapper json = new ObjectMapper();
+    private TripService tripService;
+    @Autowired
+    private ObjectMapper json;
 
     @RequestMapping(index)
     public String listTrains(Map<String, Object> map) {
-
         map.put("trainList", trainService.getAllTrains());
         map.put("pathList", pathService.getAllPaths());
-
         return root;
     }
 

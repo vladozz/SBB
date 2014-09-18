@@ -3,7 +3,7 @@
  */
 function addStationToPath() {
     var pathId = $('#pathSelect').find('option:selected').attr('value');
-    var stationId = $('#inputStation').find('option:selected').attr('value');
+    var stationId = $('#inputLogin').find('option:selected').attr('value');
     var stationBeforeInsertId = $('#inputIndex').find('option:selected').attr('value');
     var lci = $('#lci').text();
     $.post('/SBB/path/stations',
@@ -111,7 +111,7 @@ function confirmRemoveStationFromPath(pathId, station, stationId) {
 }
 
 function moveOptionAdd (stationId, stationBeforeInsertId) {
-    var option = $('#inputStation').find("[value='" + stationId + "']");
+    var option = $('#inputLogin').find("[value='" + stationId + "']");
     var optionBefore = $('#inputIndex').find("[value='" + stationBeforeInsertId + "']");
     optionBefore.before(option.clone());
     var stationTitle = option.text();
@@ -138,7 +138,7 @@ function createRow(stationId, stationTitle) {
 function moveOptionDelete(stationId) {
     var option = $('#inputIndex').find("[value='" + stationId + "']");
 
-    $('#inputStation').find("option").each(function () {
+    $('#inputLogin').find("option").each(function () {
         if ($(this).text() > option.text()) {
             $(this).before(option.clone());
             return false;

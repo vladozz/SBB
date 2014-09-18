@@ -13,11 +13,10 @@
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-
-    <context:component-scan base-package="com.tsystems.javaschool.vm.dao"/>
-    <context:component-scan base-package="com.tsystems.javaschool.vm.service"/>
+    <context:component-scan base-package="com.tsystems.javaschool.vm.*"/>
     <context:annotation-config/>
 
+    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" scope="prototype"/>
 
     <import resource="xml/data.xml"/>
     <import resource="xml/security.xml"/>

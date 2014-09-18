@@ -15,35 +15,17 @@ import java.util.Map;
 @Controller
 public class SBBController {
 
-    @Autowired
-    TrainService trainService;
 
     @RequestMapping("/index")
-    public String listTrains(Map<String, Object> map) {
-        map.put("train", new Train());
+    public String mainPage(Map<String, Object> map) {
 
 
-        return "login";
+
+        return "index";
     }
 
     @RequestMapping("/")
     public String home() {
-        return "redirect:/index";
-    }
-
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addContact(@ModelAttribute("train") Train train, BindingResult result) {
-
-        trainService.addTrain(train);
-
-        return "redirect:/index";
-    }
-
-    @RequestMapping(value = "/delete/{trainId}")
-    public String removeContact(@PathVariable("trainId") Long trainId) {
-
-        trainService.removeTrain(trainId);
-
         return "redirect:/index";
     }
 }
