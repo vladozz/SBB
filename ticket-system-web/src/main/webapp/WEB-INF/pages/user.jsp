@@ -1,31 +1,45 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: Vlad
-  Date: 19.09.2014
-  Time: 1:07
-  To change this template use File | Settings | File Templates.
---%>
-<button type="button" class="btn btn-primary" id="addUserButton">Add new user</button>
 
-<div class="jumbotron col-lg-12" id="addUserForm" style="display: none">
-    <form class="form" role="form" method="post" action="<c:url value="/user/add"/>">
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="inputLogin">Login</label>
-            <input type="text" id="inputLogin"/>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="inputRole">Choose role</label>
-            <select class="form-control" id="inputRole" name="role">
-                <c:if test="${!empty roleList}">
-                    <c:forEach items="${roleList}" var="role">
-                        <option value="${role.id}">${role.title}</option>
-                    </c:forEach>
-                </c:if>
-            </select>
-        </div>
-        <button type="button" class="btn btn-default" onclick="addUser();">Add</button>
-    </form>
+<div class="form-group">
+    <button type="button" class="btn btn-primary" id="addUserButton">Add new user</button>
+</div>
+<div class="jumbotron" id="addUserForm" style="display: none">
+    <div class="container">
+        <form class="form-horizontal col-sm-6" role="form" method="post" action="<c:url value="/user/add"/>">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="inputLogin">Login</label>
+
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="inputLogin"/>
+                </div>
+            </div>
+            <div class="form-group" id="passwordFG">
+                <label class="col-sm-3 control-label" for="inputPassword">Password</label>
+
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="inputPassword"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="inputRole">Role</label>
+
+                <div class="col-sm-9">
+                    <select class="form-control" id="inputRole" name="role">
+                        <c:if test="${!empty roleList}">
+                            <c:forEach items="${roleList}" var="role">
+                                <option value="${role.id}">${role.title}</option>
+                            </c:forEach>
+                        </c:if>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button type="button" class="btn btn-default" onclick="addUser();">Add user</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 <c:if test="${!empty userList}">
@@ -33,7 +47,7 @@
         <!-- Default panel contents -->
         <div class="panel-heading" align="center">List of users</div>
         <div class="table-responsive">
-            <table class="table table-hover" id="listOfusers">
+            <table class="table table-hover" id="listOfUsers">
                 <tr class="active">
                     <th>ID</th>
                     <th>Login</th>
@@ -42,42 +56,11 @@
                     <th width="10%">Delete</th>
                 </tr>
                 <c:forEach items="${userList}" var="user">
-                    <tr id="${user.id}">
-                        <td class="id">${user.id}</td>
-                        <td class="login">${user.login}</td>
-                        <td class="role">${user.role.title}</td>
-                        <td>
-                            <button type="button" class="btn btn-warning">Edit</button>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
+                    <%@include file="admin/user_row.jsp" %>
                 </c:forEach>
             </table>
         </div>
     </div>
 </c:if>
 
-<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/bootstrap.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/bootstrap-dialog.js'/>"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#addUserButton').click(function () {
-            $('#addUserForm').slideToggle('slow');
-        });
-    });
-
-    function addUser() {
-        var login = $('#inputLogin').val();
-        var role = $('#inputRole').find('option:selected').val();
-
-        $.post('/SBB/user/add',
-                {login: login, roleId: role},
-                function (response) {
-                    BootstrapDialog.alert(response);
-                }
-        );
-    }
-</script>
+<script type="text/javascript" src="<c:url value="/resources/js/user.js"/> "></script>

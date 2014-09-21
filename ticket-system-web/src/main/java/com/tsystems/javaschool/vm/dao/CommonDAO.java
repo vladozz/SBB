@@ -62,4 +62,6 @@ public abstract class CommonDAO<E extends SBBEntity>{
         Query query = entityManager.createQuery(queryString);
         return query.getResultList();
     }
+
+
 }

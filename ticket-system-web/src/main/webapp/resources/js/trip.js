@@ -16,6 +16,7 @@ function findTrips() {
         { pathId: pathId, trainId: trainId},
         function (response) {
             if (isError(response)) {
+                findTrips();
                 return;
             }
             var trips = $.parseJSON(response);
@@ -57,6 +58,7 @@ function addTrip() {
         { pathId: pathId, trainId: trainId},
         function (response) {
             if (isError(response)) {
+                findTrips();
                 return;
             }
             var trip = $.parseJSON(response);
@@ -96,6 +98,7 @@ function removeTrip(tripId) {
                 function (response) {
                     //dialog.close();
                     if (isError(response)) {
+                        findTrips();
                         return;
                     }
                     $('#' + tripId).remove();
@@ -124,6 +127,7 @@ function editTrip(tripId) {
                         function (response) {
                             dialog.close();
                             if (isError(response)) {
+                                findTrips();
                                 return;
                             }
                             BootstrapDialog.alert('Update success!');
@@ -142,26 +146,6 @@ function editTrip(tripId) {
             }
         ]
     });
-}
-
-function isError(response) {
-    function alertError(errorMessage) {
-        BootstrapDialog.show({
-            title: 'Error',
-            message: errorMessage,
-            type: BootstrapDialog.TYPE_DANGER
-        });
-    }
-
-    if (response.substring(0, 5) === "error") {
-        alertError(response.substring(6));
-    } else if (response.substring(0, 7) === "outdate") {
-        alertError('Your page is irrelevant! Try again.\n' + response.substring(8));
-    } else {
-        return false;
-    }
-    findTrips();
-    return true;
 }
 
 function initEditForm($content, tripId) {

@@ -237,17 +237,6 @@ function updateBoard() {
     );
 }
 
-function isError(response) {
-    if (response.substring(0, 5) === "error") {
-        alertError(response.substring(6));
-    } else if (response.substring(0, 7) === "outdate") {
-        alertError('Your page is irrelevant! Try again.\n' + response.substring(8));
-    } else {
-        return false;
-    }
-    return true;
-}
-
 function formatDateToString(date) {
     var dd = date.getDate();
     if (dd < 10) {

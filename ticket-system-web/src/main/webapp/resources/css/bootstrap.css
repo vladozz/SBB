@@ -6200,4 +6200,14 @@ button.close {
     display: none !important;
   }
 }
+#wrap {
+     min-height: 100%;
+     height: auto !important;
+     margin: 0 auto -60px;
+}
+#push,#footer {
+    height: 60px;
+}
+
+
 /*# sourceMappingURL=bootstrap.css.map */

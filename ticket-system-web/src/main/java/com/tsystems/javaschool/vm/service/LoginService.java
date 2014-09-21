@@ -8,12 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class LoginService implements UserDetailsService {
@@ -23,7 +20,7 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        List<User> users = userDAO.findByLogin(s);
+        List<User> users = userDAO.findByLogin(s.toLowerCase());
         if (users.isEmpty()) {
             throw new UsernameNotFoundException("User " + s + " not found");
         }

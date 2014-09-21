@@ -85,9 +85,10 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <sec:authorize access="hasRole('ROLE_GUEST')">
+                    <li><a href="<c:url value="/register" /> ">Register</a></li>
                     <li><a href="<c:url value="/login" /> ">Log in</a></li>
                 </sec:authorize>
-                <sec:authorize access="hasAnyRole('ROLE_ADMIN, ROLE_MANAGER')">
+                <sec:authorize access="hasAnyRole('ROLE_ADMIN, ROLE_MANAGER, ROLE_USER')">
                     <li><a href="<c:url value="/logout" /> "><sec:authentication property="principal.username"/></a></li>
                 </sec:authorize>
                 <li class="dropdown">
@@ -99,3 +100,6 @@
     <!-- /.container-fluid -->
 </nav>
 
+<script type="text/javascript">
+
+</script>

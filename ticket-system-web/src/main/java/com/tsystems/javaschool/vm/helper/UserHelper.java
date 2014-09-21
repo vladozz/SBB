@@ -1,4 +1,4 @@
-package com.tsystems.javaschool.vm.service;
+package com.tsystems.javaschool.vm.helper;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -23,11 +23,12 @@ public class UserHelper {
             }
             return code.toString();
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.warn("Hash sha-256 exception!", e);
+            LOGGER.error("Hash sha-256 exception!", e);
         }
         return null;
     }
 
+    //TODO: change 3 to 10
     public String generatePassword() {
         return sha256(Double.toString(Math.random())).substring(0,3);
     }

@@ -4,7 +4,6 @@ import com.tsystems.javaschool.vm.dao.PathDAO;
 import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
-import com.tsystems.javaschool.vm.exception.InvalidIdException;
 import com.tsystems.javaschool.vm.exception.InvalidIndexException;
 import com.tsystems.javaschool.vm.exception.PathException;
 import org.apache.log4j.Logger;

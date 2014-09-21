@@ -3,20 +3,22 @@ package com.tsystems.javaschool.vm.service;
 import com.tsystems.javaschool.vm.dao.BoardDAO;
 import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.dao.TripDAO;
-import com.tsystems.javaschool.vm.domain.*;
+import com.tsystems.javaschool.vm.domain.Board;
+import com.tsystems.javaschool.vm.domain.PairBoard;
+import com.tsystems.javaschool.vm.domain.Station;
+import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
 import com.tsystems.javaschool.vm.exception.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Minutes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TimeZone;
 
 @Service
 public class BoardService {

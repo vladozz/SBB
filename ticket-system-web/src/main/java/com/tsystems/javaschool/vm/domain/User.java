@@ -1,10 +1,12 @@
 package com.tsystems.javaschool.vm.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = {"login"}))
 public class User extends SBBEntity {
+    @Size(min = 1, max = 40)
     @Column(name = "login")
     private String login;
     @Column(name = "pswd")
@@ -12,8 +14,6 @@ public class User extends SBBEntity {
     @ManyToOne(optional = false)
     @JoinColumn (name = "role_id")
     private Role role;
-
-//    private boolean empty;
 
     public User() {
     }
