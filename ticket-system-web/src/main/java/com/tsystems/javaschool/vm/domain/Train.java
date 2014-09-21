@@ -21,7 +21,7 @@ public class Train extends SBBEntity {
 
     @Column(name = "places_qty")
     @NotNull(message = "Quantity of places cannot be empty")
-    @Max(value = 2000, message = "Quantity of places cannot be more then 2000")
+    @Max(value = 5000, message = "Quantity of places cannot be more then 5000")
     @Min(value = 1, message = "Quantity of places cannot be less than 1")
     private Short placesQty;
 

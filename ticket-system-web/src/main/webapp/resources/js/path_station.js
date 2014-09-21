@@ -3,16 +3,17 @@
  */
 function addStationToPath() {
     var pathId = $('#pathSelect').find('option:selected').attr('value');
-    var stationId = $('#inputLogin').find('option:selected').attr('value');
+    var stationId = $('#inputStation').find('option:selected').attr('value');
     var stationBeforeInsertId = $('#inputIndex').find('option:selected').attr('value');
     var lci = $('#lci').text();
+
     $.post('/SBB/path/stations',
-    {
-        pathId: pathId,
-        stationId: stationId,
-        stationBeforeInsertId: stationBeforeInsertId,
-        lci: lci
-    },
+        {
+            pathId: pathId,
+            stationId: stationId,
+            stationBeforeInsertId: stationBeforeInsertId,
+            lci: lci
+        },
         function (data) {
             if (data == "false") {
                 BootstrapDialog.show({
@@ -110,8 +111,8 @@ function confirmRemoveStationFromPath(pathId, station, stationId) {
     });
 }
 
-function moveOptionAdd (stationId, stationBeforeInsertId) {
-    var option = $('#inputLogin').find("[value='" + stationId + "']");
+function moveOptionAdd(stationId, stationBeforeInsertId) {
+    var option = $('#inputStation').find("[value='" + stationId + "']");
     var optionBefore = $('#inputIndex').find("[value='" + stationBeforeInsertId + "']");
     optionBefore.before(option.clone());
     var stationTitle = option.text();
@@ -130,7 +131,7 @@ function createRow(stationId, stationTitle) {
     var pathId = $('#pathId').text();
     var html = "<tr id=\"" + stationId + "\"><td class=\"id\">" + stationId + "</td><td class=\"title\">" + stationTitle + "</td>" +
         "<td class=\"remove\"><button class=\"btn btn-warning\" " +
-        "onclick=\"confirmRemoveStationFromPath("  + pathId + ", '" + stationTitle + "' , " + stationId +
+        "onclick=\"confirmRemoveStationFromPath(" + pathId + ", '" + stationTitle + "' , " + stationId +
         ");\">Remove</button></td></tr>";
     return html;
 }
@@ -138,7 +139,7 @@ function createRow(stationId, stationTitle) {
 function moveOptionDelete(stationId) {
     var option = $('#inputIndex').find("[value='" + stationId + "']");
 
-    $('#inputLogin').find("option").each(function () {
+    $('#inputStation').find("option").each(function () {
         if ($(this).text() > option.text()) {
             $(this).before(option.clone());
             return false;

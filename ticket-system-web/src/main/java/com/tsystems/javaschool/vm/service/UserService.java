@@ -35,10 +35,8 @@ public class UserService {
         if (role == null) {
             throw new InvalidIdException("Role doesn't exist; id: " + roleId);
         }
-        //String password = userHelper.generatePassword();
 
         User user = new User(login, userHelper.sha256(password), role);
-
         userDAO.create(user);
         return user;
 

@@ -19,9 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/trip/board")
 public class TripBoardController {
-    private static final String root = "trip/board";
-    private static final String rootWithSlash = "/" + root;
 
     @Autowired
     private ObjectMapper json;
@@ -33,17 +32,17 @@ public class TripBoardController {
     private BoardService boardService;
 
 
-    @RequestMapping(value = rootWithSlash + "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String showBoard(@PathVariable("id") Long tripId, Map<String, Object> map) {
 
         map.put("tripId", tripId);
         Trip trip = tripService.findById(tripId);
         map.put("lci", trip.getLastChange());
 
-        return root;
+        return "trip/board";
     }
 
-    @RequestMapping(value = rootWithSlash + "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     public
     @ResponseBody
     String createBoard(@RequestParam("tripId") Long tripId, @RequestParam("lci") Integer lci,
@@ -65,7 +64,7 @@ public class TripBoardController {
         }
     }
 
-    @RequestMapping(value = rootWithSlash + "/select", method = RequestMethod.POST)
+    @RequestMapping(value = "/select", method = RequestMethod.POST)
     public
     @ResponseBody
     String getBoard(@RequestParam("tripId") Long tripId) {
@@ -83,7 +82,7 @@ public class TripBoardController {
         }
     }
 
-    @RequestMapping(value = rootWithSlash + "/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public
     @ResponseBody
     String getBoard(@RequestParam("board") String jsonString) {

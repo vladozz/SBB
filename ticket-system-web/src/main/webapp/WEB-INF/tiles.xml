@@ -7,7 +7,6 @@
         <put-attribute name="title" value="Tiles tutorial homepage" />
         <put-attribute name="head" value="/WEB-INF/templates/head.jsp"/>
         <put-attribute name="header" value="/WEB-INF/templates/header.jsp" />
-        <put-attribute name="body" value="/WEB-INF/templates/blank.jsp" />
         <put-attribute name="footer" value="/WEB-INF/templates/footer.jsp" />
     </definition>
     <definition name="index" extends="common">
@@ -46,15 +45,20 @@
     <definition name="register" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/register.jsp" />
     </definition>
-
-
-    <definition name="simple" template="/WEB-INF/templates/simple.jsp">
-        <put-attribute name="body" value="/WEB-INF/templates/blank.jsp" />
+    <definition name="board" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/board.jsp" />
     </definition>
+
+
+    <definition name="simple" template="/WEB-INF/templates/simple.jsp"/>
     <definition name="user_row" extends="simple">
         <put-attribute name="body" value="/WEB-INF/pages/admin/user_row.jsp" />
+    </definition>
+    <definition name="board_row" extends="simple">
+        <put-attribute name="body" value="/WEB-INF/pages/guest/board_row.jsp" />
     </definition>
     <definition name="error" extends="simple">
         <put-attribute name="body" value="/WEB-INF/pages/msg/error.jsp" />
     </definition>
+
 </tiles-definitions>

@@ -7,10 +7,16 @@ import java.util.List;
 @Component
 public class ResponseHelper {
     public String createErrorResponse(List<String> errorList) {
+
         StringBuilder errorResponse = new StringBuilder("error ");
         for (String error : errorList) {
             errorResponse.append("<p>").append(error).append(".</p>");
         }
         return errorResponse.toString();
+    }
+
+    public String createErrorResponse(Throwable e) {
+
+        return "error " + e;
     }
 }

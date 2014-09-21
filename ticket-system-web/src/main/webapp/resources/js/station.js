@@ -78,10 +78,11 @@ function addStation() {
             url: "add",
             data: "title=" + encodeURIComponent(title) + "&timeZone=" + encodeURIComponent(timeZone),
             success: function (id) {
+                $('.close').click();
+                $('#close').click();
                 var inner = generateTableRow(id, title, timeZone);
                 var addHtml = "<tr id=\"" + id + "\">\n" + inner + "</tr>";
                 $('#listOfStations').append(addHtml);
-                $('#close').click();
             },
             error: function (data) {
                 alert('Error!' + data);
@@ -115,9 +116,10 @@ function editStation() {
             url: "edit",
             data: "id=" + encodeURIComponent(id) + "&title=" + encodeURIComponent(title) + "&timeZone=" + encodeURIComponent(timeZone),
             success: function () {
+                $('.close').click();
+                $('#close').click();
                 var editHtml = generateTableRow(id, title, timeZone);
                 $('#' + id).html(editHtml);
-                $('#close').click();
             },
             error: function () {
                 alert('Error!');

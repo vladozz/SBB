@@ -9,8 +9,8 @@ import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
 import com.tsystems.javaschool.vm.exception.*;
+import com.tsystems.javaschool.vm.helper.DateHelper;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +28,8 @@ public class BoardService {
     private StationDAO stationDAO;
     @Autowired
     private TripDAO tripDAO;
+    @Autowired
+    private DateHelper dateHelper;
 
     public BoardService() {
     }
@@ -52,7 +54,7 @@ public class BoardService {
         }
 
         List<Board> board = new ArrayList<Board>(stations.size());
-        DateTime dateTime = parseJSDate(date, stations.get(stations.size() - 1).getTimeZone());
+        DateTime dateTime = dateHelper.parseBSDate(date, stations.get(stations.size() - 1).getTimeZone());
         Timestamp timestamp = new Timestamp(dateTime.getMillis());
         for (Station station : stations) {
             Board boardLine = new Board(trip, station, timestamp, timestamp);
@@ -106,27 +108,26 @@ public class BoardService {
         boardDAO.detach(board);
         TimeZone timeZone = board.getStation().getTimeZone();
         board.setArriveTime(new Timestamp(
-                parseJSDateTime(boardTripDTO.getArriveDate(), boardTripDTO.getArriveTime(), timeZone).getMillis()));
+                dateHelper.parseBSDateTime(boardTripDTO.getArriveDate(), boardTripDTO.getArriveTime(), timeZone).getMillis()));
         board.setDepartureTime(new Timestamp(
-                parseJSDateTime(boardTripDTO.getDepartureDate(), boardTripDTO.getDepartureTime(), timeZone).getMillis()));
+                dateHelper.parseBSDateTime(boardTripDTO.getDepartureDate(), boardTripDTO.getDepartureTime(), timeZone).getMillis()));
         return board;
     }
 
-    /**
-     * Метод, возвращающий расписание для станции в интервале между after и before
-     *
-     * @param stationId station
-     * @param before    before
-     * @param after     after
-     * @return return
-     */
-    public List<Board> getBoardForStation(Long stationId, Timestamp after, Timestamp before) throws InvalidIdException {
+
+    public List<Board> getBoardForStation(Long stationId, String date) throws InvalidIdException {
         Station station = stationDAO.findById(stationId);
         if (station == null) {
             throw new InvalidIdException("Station doesn't exist. id: " + stationId);
         }
+        TimeZone timeZone = station.getTimeZone();
+        Timestamp after = new Timestamp(dateHelper.parseBSDateTime(date, "00:00", timeZone).getMillis());
+        Timestamp before = new Timestamp(dateHelper.parseBSDateTime(date, "23:59", timeZone).getMillis());
         return boardDAO.getBoardForStation(station, after, before);
     }
+
+
+
 
     public List<Board> getBoardForTrip(Long tripId) throws InvalidIdException {
         Trip trip = tripDAO.findById(tripId);
@@ -141,25 +142,7 @@ public class BoardService {
         return boardDAO.getBoard(departureStationId, arriveStationId, departureAfter, arriveBefore);
     }
 
-    private static DateTime parseJSDate(String dateString, TimeZone timeZone) {
-        List<Integer> date = new ArrayList<Integer>(3);
-        for (String s : dateString.split("-")) {
-            date.add(Integer.parseInt(s));
-        }
-        return new DateTime(date.get(0), date.get(1), date.get(2), 23, 59, DateTimeZone.forTimeZone(timeZone));
-    }
 
-    private static DateTime parseJSDateTime(String dateString, String timeString, TimeZone timeZone) {
-        List<Integer> datetime = new ArrayList<Integer>(5);
-        for (String s : dateString.split("-")) {
-            datetime.add(Integer.parseInt(s));
-        }
-        for (String s : timeString.split(":")) {
-            datetime.add(Integer.parseInt(s));
-        }
-        return new DateTime(datetime.get(0), datetime.get(1), datetime.get(2),
-                datetime.get(3), datetime.get(4), DateTimeZone.forTimeZone(timeZone));
-    }
 
 
     private boolean checkLCI(Trip trip, Integer tripLCI) {

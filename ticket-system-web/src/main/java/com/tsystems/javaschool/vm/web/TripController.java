@@ -21,11 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/trip")
 public class TripController {
-    private static final String root = "trip";
-    private static final String rootWithSlash = "/" + root;
-    private static final String index = rootWithSlash + "/index";
-    private static final String redirect = "redirect:" + index;
 
     @Autowired
     private TrainService trainService;
@@ -36,22 +33,21 @@ public class TripController {
     @Autowired
     private ObjectMapper json;
 
-    @RequestMapping(index)
+    @RequestMapping("/index")
     public String listTrains(Map<String, Object> map) {
         map.put("trainList", trainService.getAllTrains());
         map.put("pathList", pathService.getAllPaths());
-        return root;
+        return "trip";
     }
 
-    @RequestMapping(rootWithSlash)
+    @RequestMapping("")
     public String home() {
-        return redirect;
+        return "redirect:/trip/index";
     }
 
-    @RequestMapping(value = rootWithSlash + "/add", method = RequestMethod.POST)
-    public
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    String addTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) {
+    public String addTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) {
         try {
             Trip trip = tripService.addTrip(pathId, trainId);
             TripDTO tripDTO = new TripDTO(trip.getId(),
@@ -63,10 +59,9 @@ public class TripController {
         }
     }
 
-    @RequestMapping(value = rootWithSlash + "/select", method = RequestMethod.POST)
-    public
+    @RequestMapping(value = "/select", method = RequestMethod.POST)
     @ResponseBody
-    String selectTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) {
+    public String selectTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) {
 
         List<Trip> trips = tripService.getTripsByPathAndTrain(pathId, trainId);
 
@@ -85,7 +80,7 @@ public class TripController {
         }
     }
 
-    @RequestMapping(value = rootWithSlash + "/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public
     @ResponseBody
     String editTrip(@RequestParam("trip") String tripJSON) {
@@ -100,7 +95,7 @@ public class TripController {
         }
     }
 
-    @RequestMapping(value = rootWithSlash + "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public
     @ResponseBody
     String removeTrip(@RequestParam("tripId") Long tripId, @RequestParam("lci") Integer lci) {

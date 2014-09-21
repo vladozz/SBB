@@ -16,9 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/path/stations")
 public class PathStationController {
-    private static final String root = "path/stations";
-    private static final String rootWithSlash = "/" + root;
 
     @Autowired
     private PathService pathService;
@@ -26,7 +25,7 @@ public class PathStationController {
     private StationService stationService;
 
 
-    @RequestMapping(value = rootWithSlash + "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String pathStations(@PathVariable("id") Long pathId, Map<String, Object> map) {
         List<Path> pathList = pathService.getAllPaths();
         List<Station> pathStationList = pathService.getStationsOfPath(pathId);
@@ -43,13 +42,15 @@ public class PathStationController {
         map.put("pathList", pathList);
         map.put("pathStationList", pathStationList);
         map.put("stationList", stationList);
-        return root;
+        return "path/stations";
     }
 
-    @RequestMapping(value = rootWithSlash, method = RequestMethod.POST)
-    public @ResponseBody
-    String addStationToPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
-                                   @RequestParam("stationBeforeInsertId") Long stationBeforeInsertId, @RequestParam("lci") Integer lci, Map<String, Object> map) {
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    @ResponseBody
+    public String addStationToPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
+                                   @RequestParam("stationBeforeInsertId") Long stationBeforeInsertId,
+                                   @RequestParam("lci") Integer lci, Map<String, Object> map) {
+        System.out.println("addStationToPath");
         try {
             pathService.addStationToPathSafe(pathId, stationId, stationBeforeInsertId, lci);
         } catch (PathException e) {
@@ -58,9 +59,9 @@ public class PathStationController {
         return "true";
     }
 
-    @RequestMapping(value = rootWithSlash + "/remove", method = RequestMethod.POST)
-    public @ResponseBody
-    String removeStationFromPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
+    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+    @ResponseBody
+    public String removeStationFromPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
                                         @RequestParam("lci") Integer lci, Map<String, Object> map) {
         try {
             pathService.removeStationFromPathSafe(pathId, stationId, lci);

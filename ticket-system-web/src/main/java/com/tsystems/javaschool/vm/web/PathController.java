@@ -17,18 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/path")
 public class PathController {
-    private static final String root = "path";
-    private static final String rootWithSlash = "/" + root;
-    private static final String index = rootWithSlash + "/index";
-    private static final String redirect = "redirect:" + index;
 
     @Autowired
     private PathService pathService;
     @Autowired
     private StationService stationService;
 
-    @RequestMapping(index)
+    @RequestMapping("/index")
     public String listPaths(Map<String, Object> map) {
         map.put("path", new PathDTO());
         List<PathDTO> pathDTOs = new ArrayList<PathDTO>();
@@ -43,16 +40,17 @@ public class PathController {
         }
         map.put("pathList", pathDTOs);
 
-        return root;
+        return "path";
     }
 
-    @RequestMapping(rootWithSlash)
+    @RequestMapping("")
     public String home() {
-        return redirect;
+        return "redirect:/path/index";
     }
 
-    @RequestMapping(value = rootWithSlash + "/add", method = RequestMethod.POST)
-    public @ResponseBody
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ResponseBody
+    public
     String addPath(@Valid @ModelAttribute(value = "path") PathDTO pathDTO, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -63,8 +61,9 @@ public class PathController {
         return path.getId().toString();
     }
 
-    @RequestMapping(value = rootWithSlash + "/edit", method = RequestMethod.POST)
-    public @ResponseBody
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public
     String editPath(@Valid @ModelAttribute(value = "path") Path path, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -78,8 +77,9 @@ public class PathController {
         }
     }
 
-    @RequestMapping(value = rootWithSlash + "/delete/{id}", method = RequestMethod.GET)
-    public @ResponseBody
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public
     String removePath(@PathVariable("id") Long pathId) {
         pathService.removePath(pathId);
 

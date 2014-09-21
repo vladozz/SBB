@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping(value = "/user")
 public class AdminController {
     @Autowired
     private UserService userService;
@@ -24,7 +25,7 @@ public class AdminController {
     @Autowired
     private ResponseHelper responseHelper;
 
-    @RequestMapping(value = "/user")
+    @RequestMapping(value = "")
     public String showUsers(Map<String, Object> map) {
 
         map.put("roleList", userService.getAllServiceRoles());
@@ -33,7 +34,7 @@ public class AdminController {
         return "user";
     }
 
-    @RequestMapping(value = "/user/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addUser(@RequestParam(value = "login") String login,
                           @RequestParam(value = "password") String password,
                           @RequestParam(value = "roleId") Long roleId, ModelMap map) {
@@ -56,10 +57,9 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
-    public
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    String editUserPassword(@RequestParam(value = "userId") Long userId,
+    public String editUserPassword(@RequestParam(value = "userId") Long userId,
                             @RequestParam(value = "password") String password) {
 
         if (userId < 0) {
@@ -79,10 +79,9 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "/user/delete/{id}", method = RequestMethod.GET)
-    public
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     @ResponseBody
-    String removeUser(@PathVariable("id") Long userId) {
+    public String removeUser(@PathVariable("id") Long userId) {
         if (userId < 0) {
             return "error You can't delete this user";
         }
@@ -96,7 +95,6 @@ public class AdminController {
     public
     @ResponseBody
     String handleIOException(RuntimeException ex) {
-
         return ex.toString();
     }
 }

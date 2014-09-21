@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = {"login"}))
 public class User extends SBBEntity {
-    @Size(min = 1, max = 40)
+    @Size(min = 1, max = 40, message = "Login must contain between 1 and 40 characters")
     @Column(name = "login")
     private String login;
     @Column(name = "pswd")

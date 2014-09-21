@@ -6208,6 +6208,9 @@ button.close {
 #push,#footer {
     height: 60px;
 }
+.mg {
+    margin: 10px;
+}
 
 
 /*# sourceMappingURL=bootstrap.css.map */

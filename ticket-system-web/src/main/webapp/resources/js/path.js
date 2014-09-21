@@ -78,10 +78,11 @@ function addPath() {
             url: "add",
             data: "title=" + encodeURIComponent(title),
             success: function (id) {
+                $('.close').click();
+                $('#close').click();
                 var inner = generateTableRow(id, title, 1);
                 var addHtml = "<tr id=\"" + id + "\">\n" + inner + "</tr>";
                 $('#listOfPaths').append(addHtml);
-                $('#close').click();
             },
             error: function (data) {
                 alert('Error!' + data);
@@ -131,9 +132,10 @@ function editPath() {
                         }]
                     });
                 } else {
+                    $('.close').click();
+                    $('#close').click();
                     var editHtml = generateTableRow(id, title, ++lastChange);
                     $('#' + id).html(editHtml);
-                    $('#close').click();
                 }
             },
             error: function () {

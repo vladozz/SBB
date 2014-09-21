@@ -83,22 +83,33 @@ function validateTrainForm(inputNumber, inputPQ) {
 function addTrain() {
     var inputNumber = document.getElementById("inputNumber");
     var inputPQ = document.getElementById("inputPQ");
-    if (validateTrainForm(inputNumber, inputPQ)) {
+    if (true || validateTrainForm(inputNumber, inputPQ)) {
         var number = inputNumber.value;
         var placesQty = inputPQ.value;
 
         $.ajax({
             type: "post",
             url: "add",
-            data: "number=" + encodeURIComponent(number) + "&placesQty=" + encodeURIComponent(placesQty),
-            success: function (id) {
+            data: {number: number, placesQty: placesQty},
+            success: function (response) {
+                $('.close').click();
+                $('#close').click();
+                if (isError(response)) {
+                    return;
+                }
+                var id = response;
                 var inner = generateTableRow(id, number, placesQty);
                 var addHtml = "<tr id=\"" + id + "\">\n" + inner + "</tr>";
                 $('#listOfTrains').append(addHtml);
-                $('#close').click();
             },
-            error: function (data) {
-                alert('Error!' + data);
+            error: function (data, textStatus, errorThrown) {
+                var message = '';
+                message += data.status + '\n';
+                message += data.statusText + '\n';
+                $.each(data, function (key, value) {
+                    alert(key + ' = ' + value);
+                });
+                alert(message);
             }
         });
     }
@@ -129,9 +140,10 @@ function editTrain() {
             url: "edit",
             data: "id=" + encodeURIComponent(id) + "&number=" + encodeURIComponent(number) + "&placesQty=" + encodeURIComponent(placesQty),
             success: function () {
+                $('.close').click();
+                $('#close').click();
                 var editHtml = generateTableRow(id, number, placesQty);
                 $('#' + id).html(editHtml);
-                $('#close').click();
             },
             error: function () {
                 alert('Error!');

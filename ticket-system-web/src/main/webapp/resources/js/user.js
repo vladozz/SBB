@@ -5,8 +5,10 @@ $(document).ready(function () {
 });
 
 function addUser() {
-    var login = $('#inputLogin').val();
-    var password = $('#inputPassword').val();
+    var $inputLogin = $('#inputLogin');
+    var $inputPassword = $('#inputPassword');
+    var login = $inputLogin.val();
+    var password = $inputPassword.val();
     var role = $('#inputRole').find('option:selected').val();
 
     $.post('/SBB/user/add',
@@ -16,6 +18,8 @@ function addUser() {
             if (isError(response)) {
                 return;
             }
+            $inputLogin.val('');
+            $inputPassword.val('');
             popupSuccess('User ' + login + ' added successfully');
             $('#listOfUsers').find('tbody').append(response);
         }

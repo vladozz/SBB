@@ -34,9 +34,8 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public
     @ResponseBody
-    String register(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
+    public String register(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
 
         List<String> validationErrors = userValidator.validateEmail(email);
         validationErrors.addAll(userValidator.validatePassword(password));

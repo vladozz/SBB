@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -11,6 +13,9 @@ import java.util.TimeZone;
 @Table(name = "station")
 public class Station extends SBBEntity {
     @Column(name = "title")
+    @NotNull(message = "Number cannot be empty")
+    @Size(min = 1, max = 30,
+            message = "The length of station title must be between 1 and 30 characters")
     private String title;
 
     @Column(name = "time_zone")
