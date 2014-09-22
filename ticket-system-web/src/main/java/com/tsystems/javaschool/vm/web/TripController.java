@@ -40,7 +40,7 @@ public class TripController {
         return "trip";
     }
 
-    @RequestMapping("")
+    @RequestMapping(method = RequestMethod.GET)
     public String home() {
         return "redirect:/trip/index";
     }

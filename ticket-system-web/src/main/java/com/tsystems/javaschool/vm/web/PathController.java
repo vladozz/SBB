@@ -43,7 +43,7 @@ public class PathController {
         return "path";
     }
 
-    @RequestMapping("")
+    @RequestMapping(method = RequestMethod.GET)
     public String home() {
         return "redirect:/path/index";
     }

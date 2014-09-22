@@ -9,8 +9,8 @@ public class TicketDTO implements Serializable {
 
 //    PassengerDTO passengerDTO;
 //    Long tripId;
-//    String departureStation;
-//    String arriveStation;
+//    String departureStationId;
+//    String arriveStationId;
 //    String pathTitle;
 //    String trainNumber;
 //    Timestamp departureTime;

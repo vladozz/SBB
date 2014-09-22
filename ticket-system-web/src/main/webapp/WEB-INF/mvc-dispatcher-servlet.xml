@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <mvc:resources mapping="/resources/**" location="/resources/"/>
-    <mvc:annotation-driven />
+    <mvc:annotation-driven/>
     <context:component-scan base-package="com.tsystems.javaschool.vm.web"/>
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
@@ -17,9 +17,14 @@
 
     <bean id="tilesConfigurer"
           class="org.springframework.web.servlet.view.tiles3.TilesConfigurer"
-          p:definitions="/WEB-INF/tiles.xml" />
-
+          p:definitions="/WEB-INF/tiles.xml"/>
     <bean id="tilesViewResolver"
           class="org.springframework.web.servlet.view.UrlBasedViewResolver"
-          p:viewClass="org.springframework.web.servlet.view.tiles3.TilesView" />
+          p:viewClass="org.springframework.web.servlet.view.tiles3.TilesView"/>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
 </beans>

@@ -1,8 +1,7 @@
 package com.tsystems.javaschool.vm.domain;
 
 
-//TODO: delete this class
-public class PairBoard {
+public class PairBoard implements Comparable<PairBoard>{
     Board departure;
     Board arrive;
 
@@ -33,5 +32,10 @@ public class PairBoard {
                 "departure=" + departure +
                 ", arrive=" + arrive +
                 '}';
+    }
+
+    @Override
+    public int compareTo(PairBoard o) {
+        return departure.getDepartureTime().compareTo(o.departure.getDepartureTime());
     }
 }

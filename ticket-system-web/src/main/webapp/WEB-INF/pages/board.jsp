@@ -34,6 +34,7 @@
                 <tr class="active">
                     <th>Trip ID</th>
                     <th>Route</th>
+                    <th>Train</th>
                     <th>Arrive time</th>
                     <th>Departure time</th>
                     <th>Stand time</th>

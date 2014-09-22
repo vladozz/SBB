@@ -86,12 +86,13 @@ create table hibernate_sequences (
 ) engine = InnoDB;
 
 insert role set id = -2, title = "ROLE_ADMIN";
+insert role set id = -4, title = "ROLE_USER";
 insert user set id = -1, login = "admin", pswd = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", role_id = -2;
 
 
 #delete from board where id > 0
 select * from board;
-delete from board where id > 0;
+delete from user where id >= 240;
 #select trip_id, title from board, station where station.id = station_id
 #update path_station set stand_time = 10 where id > 0
 #update train set places_qty = 4 where id = 32

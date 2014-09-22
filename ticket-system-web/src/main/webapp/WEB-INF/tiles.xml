@@ -48,17 +48,8 @@
     <definition name="board" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/board.jsp" />
     </definition>
-
-
-    <definition name="simple" template="/WEB-INF/templates/simple.jsp"/>
-    <definition name="user_row" extends="simple">
-        <put-attribute name="body" value="/WEB-INF/pages/admin/user_row.jsp" />
-    </definition>
-    <definition name="board_row" extends="simple">
-        <put-attribute name="body" value="/WEB-INF/pages/guest/board_row.jsp" />
-    </definition>
-    <definition name="error" extends="simple">
-        <put-attribute name="body" value="/WEB-INF/pages/msg/error.jsp" />
+    <definition name="req_trips" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/req_trips.jsp" />
     </definition>
 
 </tiles-definitions>

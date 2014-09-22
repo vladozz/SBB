@@ -1,35 +1,28 @@
 package com.tsystems.javaschool.vm.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 public class BoardStationDTO implements Serializable {
     private static final long serialVersionUID = -7055087988191590355L;
-    private long tripNumber;
+    private long tripId;
     private String pathTitle;
     private String trainNumber;
-    private Timestamp arriveTime;
+    private String arriveTime;
+    private String departureTime;
     private int standTime;
-    private Timestamp departureTime;
+
 
     public BoardStationDTO() {
     }
 
-    public BoardStationDTO(long tripNumber, String pathTitle, String trainNumber, Timestamp arriveTime, int standTime, Timestamp departureTime) {
-        this.tripNumber = tripNumber;
-        this.pathTitle = pathTitle;
-        this.trainNumber = trainNumber;
-        this.arriveTime = arriveTime;
-        this.standTime = standTime;
-        this.departureTime = departureTime;
+
+
+    public long getTripId() {
+        return tripId;
     }
 
-    public long getTripNumber() {
-        return tripNumber;
-    }
-
-    public void setTripNumber(long tripNumber) {
-        this.tripNumber = tripNumber;
+    public void setTripId(long tripId) {
+        this.tripId = tripId;
     }
 
     public String getPathTitle() {
@@ -48,12 +41,20 @@ public class BoardStationDTO implements Serializable {
         this.trainNumber = trainNumber;
     }
 
-    public Timestamp getArriveTime() {
+    public String getArriveTime() {
         return arriveTime;
     }
 
-    public void setArriveTime(Timestamp arriveTime) {
+    public void setArriveTime(String arriveTime) {
         this.arriveTime = arriveTime;
+    }
+
+    public String getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
     }
 
     public int getStandTime() {
@@ -64,18 +65,10 @@ public class BoardStationDTO implements Serializable {
         this.standTime = standTime;
     }
 
-    public Timestamp getDepartureTime() {
-        return departureTime;
-    }
-
-    public void setDepartureTime(Timestamp departureTime) {
-        this.departureTime = departureTime;
-    }
-
     @Override
     public String toString() {
         return "BoardDTO{" +
-                "tripNumber=" + tripNumber +
+                "tripId=" + tripId +
                 ", pathTitle='" + pathTitle + '\'' +
                 ", arriveTime=" + arriveTime +
                 ", standTime=" + standTime +

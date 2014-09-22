@@ -25,7 +25,7 @@ public class AdminController {
     @Autowired
     private ResponseHelper responseHelper;
 
-    @RequestMapping(value = "")
+    @RequestMapping(method = RequestMethod.GET)
     public String showUsers(Map<String, Object> map) {
 
         map.put("roleList", userService.getAllServiceRoles());
@@ -43,13 +43,13 @@ public class AdminController {
         validationErrors.addAll(userValidator.validatePassword(password));
         if (!validationErrors.isEmpty()) {
             map.put("errorList", validationErrors);
-            return "error";
+            return "msg/error";
         }
 
         try {
             User user = userService.addUser(login, password, roleId);
             map.put("user", user);
-            return "user_row";
+            return "admin/user_row";
         } catch (LoginAlreadyExistException e) {
             return "error " + e;
         } catch (SBBException e) {

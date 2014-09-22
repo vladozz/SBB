@@ -65,4 +65,35 @@ public class BoardDAO extends CommonDAO<Board> {
 
         return pairBoards;
     }
+
+    public List<PairBoard> getBoard(Station departureStation, Station arriveStation, Timestamp departureAfter, Timestamp arriveBefore) {
+        String queryString = "SELECT b FROM Board b " +
+                "WHERE b.station = :arriveStation and " +
+                "b.arriveTime <= :arriveBefore and b.arriveTime >= :departureAfter";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("arriveStation", arriveStation);
+        query.setParameter("departureAfter", departureAfter);
+        query.setParameter("arriveBefore", arriveBefore);
+        List<Board> boardsArrive = query.getResultList();
+        queryString = "SELECT b FROM Board b " +
+                "WHERE b.station = :departureStation" +
+                " and b.departureTime >= :departureAfter and b.departureTime <= :arriveBefore ";
+        query = entityManager.createQuery(queryString);
+        query.setParameter("departureStation", departureStation);
+        query.setParameter("departureAfter", departureAfter);
+        query.setParameter("arriveBefore", arriveBefore);
+        List<Board> boardsDeparture = query.getResultList();
+        List<PairBoard> pairBoards = new ArrayList<PairBoard>();
+        for (Board ba : boardsArrive) {
+            for (Board bd : boardsDeparture) {
+                if (ba.getTrip().getId().equals(bd.getTrip().getId()) &&
+                        ba.getArriveTime().compareTo(bd.getDepartureTime()) > 0) {
+
+                    pairBoards.add(new PairBoard(bd, ba));
+                    break;
+                }
+            }
+        }
+        return pairBoards;
+    }
 }

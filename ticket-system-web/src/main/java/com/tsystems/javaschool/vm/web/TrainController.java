@@ -35,7 +35,7 @@ public class TrainController {
         return "train";
     }
 
-    @RequestMapping("")
+    @RequestMapping(method = RequestMethod.GET)
     public String home() {
         return "redirect:/train/index";
     }

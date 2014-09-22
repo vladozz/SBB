@@ -1,8 +1,13 @@
 package com.tsystems.javaschool.vm.web;
 
+import com.tsystems.javaschool.vm.converter.BoardConverter;
 import com.tsystems.javaschool.vm.domain.Board;
+import com.tsystems.javaschool.vm.domain.PairBoard;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.User;
+import com.tsystems.javaschool.vm.dto.BoardStationDTO;
+import com.tsystems.javaschool.vm.dto.DefTripDTO;
+import com.tsystems.javaschool.vm.dto.RespDefTripDTO;
 import com.tsystems.javaschool.vm.exception.InvalidIdException;
 import com.tsystems.javaschool.vm.exception.LoginAlreadyExistException;
 import com.tsystems.javaschool.vm.exception.SBBException;
@@ -19,17 +24,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @Controller
-@RequestMapping(value = "/board")
 public class GuestController {
     @Autowired
     private StationService stationService;
     @Autowired
     private BoardService boardService;
     @Autowired
-    private ResponseHelper responseHelper;
+    private BoardConverter boardConverter;
 
-    @RequestMapping(value = "/index")
-    public String index(Map<String, Object> map) {
+    @RequestMapping(value = "/board/index")
+    public String boardIndex(Map<String, Object> map) {
         List<Station> stationList = stationService.getAllStations();
         Collections.sort(stationList, new Comparator<Station>() {
             @Override
@@ -41,23 +45,70 @@ public class GuestController {
         return "board";
     }
 
-    @RequestMapping(value = "")
-    public String showIndex(Map<String, Object> map) {
+    @RequestMapping(value = "/board")
+    public String showBoard(Map<String, Object> map) {
 
         return "redirect:/board/index";
     }
 
-    @RequestMapping(value = "/get")
-    public String getBoard(@RequestParam("stationId") Long stationId,
-                           @RequestParam("date") String date, Map<String, Object> map) {
+    @RequestMapping(value = "/board/get" , method = RequestMethod.POST)
+     public String getBoard(@RequestParam("stationId") Long stationId,
+                            @RequestParam("date") String date, Map<String, Object> map) {
         try {
-            List<Board> boardList = boardService.getBoardForStation(stationId, date);
-            map.put("boardList", boardList);
-            return "board_row";
+            List<Board> board = boardService.getBoardForStation(stationId, date);
+            Collections.sort(board, new Comparator<Board>() {
+                @Override
+                public int compare(Board o1, Board o2) {
+                    return o1.getArriveTime().compareTo(o2.getArriveTime());
+                }
+            });
+            List<BoardStationDTO> boardStationDTOs = new ArrayList<BoardStationDTO>();
+            for (Board b : board) {
+                boardStationDTOs.add(boardConverter.convertToBoardStationDTO(b));
+            }
+            map.put("boardList", boardStationDTOs);
+            return "guest/board_row";
         } catch (InvalidIdException e) {
             map.put("errorList", Arrays.asList(e.getMessage()));
-            return "error";
+            return "msg/error";
         }
     }
 
+    @RequestMapping(value = "/reqtrip/index")
+    public String tripsIndex(Map<String, Object> map) {
+        List<Station> stationList = stationService.getAllStations();
+        Collections.sort(stationList, new Comparator<Station>() {
+            @Override
+            public int compare(Station o1, Station o2) {
+                return o1.getTitle().compareToIgnoreCase(o2.getTitle());
+            }
+        });
+//        map.put("dto", new DefTripDTO());
+        map.put("stationList", stationList);
+        return "req_trips";
+    }
+
+    @RequestMapping(value = "/reqtrip")
+    public String showTrips() {
+        return "redirect:/reqtrip/index";
+    }
+
+    @RequestMapping(value = "/reqtrip/get", method = RequestMethod.POST)
+    public String getTrips(@ModelAttribute(value="dto") DefTripDTO defTripDTO, ModelMap map) {
+        //TODO:validation
+        System.out.println(defTripDTO);
+        try {
+            List<PairBoard> pairBoards = boardService.getDefTrips(defTripDTO);
+            Collections.sort(pairBoards);
+            List<RespDefTripDTO> dtoList = new ArrayList<RespDefTripDTO>();
+            for (PairBoard pairBoard : pairBoards) {
+                dtoList.add(boardConverter.convertToRespDefTripDTO(pairBoard, 0));
+            }
+            map.put("tripList", dtoList);
+            return "guest/req_trips_row";
+        } catch (InvalidIdException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

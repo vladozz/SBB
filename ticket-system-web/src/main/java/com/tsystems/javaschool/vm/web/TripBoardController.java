@@ -59,7 +59,7 @@ public class TripBoardController {
             return "outdate " + e;
         } catch (SBBException e) {
             return "error " + e;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             return "error " + e;
         }
     }
@@ -77,7 +77,7 @@ public class TripBoardController {
             return json.writeValueAsString(boardDTOs);
         } catch (SBBException e) {
             return "error " + e;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             return "error " + e;
         }
     }
@@ -94,7 +94,7 @@ public class TripBoardController {
             } else {
                 return "error " + response;
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             return "error " + e;
         }
     }

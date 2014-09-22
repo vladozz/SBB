@@ -45,7 +45,7 @@ public class PathStationController {
         return "path/stations";
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public String addStationToPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
                                    @RequestParam("stationBeforeInsertId") Long stationBeforeInsertId,

@@ -1,65 +1,86 @@
 package com.tsystems.javaschool.vm.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 public class DefTripDTO implements Serializable {
 
     private static final long serialVersionUID = 6433110031074206463L;
-    String arriveStation;
-    String departureStation;
-    Timestamp departureTime;
-    Timestamp arriveTime;
+    Long arriveStationId;
+    String arriveDate;
+    String arriveTime;
+    Long departureStationId;
+    String departureDate;
+    String departureTime;
 
     public DefTripDTO() {
     }
 
-    public DefTripDTO(String arriveStation, String departureStation, Timestamp departureTime, Timestamp arriveTime) {
-        this.arriveStation = arriveStation;
-        this.departureStation = departureStation;
-        this.departureTime = departureTime;
+    public DefTripDTO(Long arriveStationId, String arriveDate, String arriveTime, Long departureStationId, String departureDate, String departureTime) {
+        this.arriveStationId = arriveStationId;
+        this.arriveDate = arriveDate;
         this.arriveTime = arriveTime;
-    }
-
-    public String getArriveStation() {
-        return arriveStation;
-    }
-
-    public void setArriveStation(String arriveStation) {
-        this.arriveStation = arriveStation;
-    }
-
-    public String getDepartureStation() {
-        return departureStation;
-    }
-
-    public void setDepartureStation(String departureStation) {
-        this.departureStation = departureStation;
-    }
-
-    public Timestamp getDepartureTime() {
-        return departureTime;
-    }
-
-    public void setDepartureTime(Timestamp departureTime) {
+        this.departureStationId = departureStationId;
+        this.departureDate = departureDate;
         this.departureTime = departureTime;
     }
 
-    public Timestamp getArriveTime() {
+    public Long getArriveStationId() {
+        return arriveStationId;
+    }
+
+    public void setArriveStationId(Long arriveStationId) {
+        this.arriveStationId = arriveStationId;
+    }
+
+    public String getArriveDate() {
+        return arriveDate;
+    }
+
+    public void setArriveDate(String arriveDate) {
+        this.arriveDate = arriveDate;
+    }
+
+    public String getArriveTime() {
         return arriveTime;
     }
 
-    public void setArriveTime(Timestamp arriveTime) {
+    public void setArriveTime(String arriveTime) {
         this.arriveTime = arriveTime;
+    }
+
+    public Long getDepartureStationId() {
+        return departureStationId;
+    }
+
+    public void setDepartureStationId(Long departureStationId) {
+        this.departureStationId = departureStationId;
+    }
+
+    public String getDepartureDate() {
+        return departureDate;
+    }
+
+    public void setDepartureDate(String departureDate) {
+        this.departureDate = departureDate;
+    }
+
+    public String getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
     }
 
     @Override
     public String toString() {
         return "DefTripDTO{" +
-                "arriveStation='" + arriveStation + '\'' +
-                ", departureStation='" + departureStation + '\'' +
-                ", departureTime=" + departureTime +
-                ", arriveTime=" + arriveTime +
+                "arriveStationId=" + arriveStationId +
+                ", arriveDate='" + arriveDate + '\'' +
+                ", arriveTime='" + arriveTime + '\'' +
+                ", departureStationId=" + departureStationId +
+                ", departureDate='" + departureDate + '\'' +
+                ", departureTime='" + departureTime + '\'' +
                 '}';
     }
 }

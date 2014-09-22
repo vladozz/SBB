@@ -27,11 +27,11 @@
                     <tr id="${station.id}">
                         <td class = "id">${station.id}</td>
                         <td class = "title">${station.title}</td>
-                        <td class= "timeZone">${station.timeZone}</td>
+                        <td class= "timeZone">${station.timeZone.ID}</td>
 
                         <td>
                             <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#addStationModal"
-                                    onclick="editModalStation(${station.id}, '${station.title}', '${station.timeZone}');">Edit</button>
+                                    onclick="editModalStation(${station.id}, '${station.title}', '${station.timeZone.ID}');">Edit</button>
                         </td>
                         <td>
                             <a <%--href="delete/${station.id}"--%>

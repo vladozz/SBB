@@ -15,9 +15,11 @@ function createBoard() {
     var tripId = $('#tripId').text();
     var lci = $('#lci').text();
 
-    var date = $('#defaultDate').val();
+    var $defaultDate = $('#defaultDate');
+    var date = $defaultDate.val();
     if (date === "") {
         date = formatDateToString(new Date());
+        $defaultDate.val(date);
     }
     $.post('/SBB/trip/board/create',
         {tripId: tripId, lci: lci, date: date},

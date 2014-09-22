@@ -4,7 +4,8 @@ public class TripDTO {
 
     private Long id;
     private Long pathId;
-    private String pathTitle;    private Long trainId;
+    private String pathTitle;
+    private Long trainId;
     private String trainNumber;
     private Integer lastChange;
     private String departureStation;

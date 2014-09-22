@@ -1,8 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/bootstrap.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/bootstrap-dialog.js'/>"></script>
-<script type="text/javascript" src="https://github.com/Krinkle/jquery-json/raw/master/src/jquery.json.js"></script>
 
 <br/>
 <br/>
@@ -58,6 +54,4 @@
     </div>
 </div>
 
-
 <script type="text/javascript" src="<c:url value="/resources/js/trip.js"/> "></script>
-

@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    //$('#date').val(formatDateToString(new Date()));
+
     $('#getBoardBtn').click(function () {
 //        alert('Ok');
         getBoard();
@@ -6,11 +8,9 @@ $(document).ready(function () {
 });
 
 function getBoard() {
+
+    var date = readDateInput($('#date'));
     var stationId = $('#stationList').find('option:selected').val();
-    var date = $('#date').val();
-    if (date === "") {
-        date = formatDateToString(new Date());
-    }
     $.post('/SBB/board/get',
         {stationId: stationId, date: date},
         function (response) {
@@ -19,6 +19,7 @@ function getBoard() {
                 return;
             }
             $('#board').slideDown('fast');
+            $('.remove').remove();
             $('#boardTable').append(response);
         }
     );
