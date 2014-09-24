@@ -40,18 +40,18 @@ public class UserValidator {
     }
 
     public List<String> validatePassword(String password) {
-        final String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$";
+        final String regex = "^.{5,20}$";
         List<String> errorList = new ArrayList<String>();
 
         if (password.isEmpty()) {
             errorList.add("Password cannot be empty");
             return errorList;
-        } else if (password.length() < 8) {
-            errorList.add("Password length cannot be less than 8 letters");
+        } else if (password.length() < 5) {
+            errorList.add("Password length cannot be less than 5 letters");
         } else if (password.length() > 20) {
             errorList.add("Password length cannot be more than 20 letters");
         } else if (!password.matches(regex)) {
-            errorList.add("Password must contain at least one upper case letter, one lower case letter and one digit. Size must be between 8 and 20 characters");
+            errorList.add("Password contains invalid characters.");
         }
 
         return errorList;

@@ -18,7 +18,7 @@
     <div class="form-group">
         <label class="control-label" for="stationBegin">Choose station</label>
         <select class="form-control" id="stationBegin" name="index">
-            <%@include file="guest/station_option.jsp"%>
+            <%@include file="guest/station_option.jsp" %>
         </select>
     </div>
     <div class="form-group">
@@ -32,7 +32,7 @@
     <div class="form-group">
         <label class="control-label" for="stationEnd">Choose station</label>
         <select class="form-control" id="stationEnd" name="index">
-            <%@include file="guest/station_option.jsp"%>
+            <%@include file="guest/station_option.jsp" %>
         </select>
     </div>
     <div class="form-group">
@@ -61,9 +61,38 @@
     </div>
 </div>
 
+<div class="hidden">
+    <div id="passengerForm">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="inputFN" class="col-sm-3 control-label">First name</label>
 
-<script type="text/javascript" src="<c:url value="/resources/js/req_trips.js"/> ">
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="inputFN" placeholder="First name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputLN" class="col-sm-3 control-label">Last name</label>
 
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="inputLN" placeholder="Last name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputDate" class="col-sm-3 control-label">Date</label>
 
-</script>
+                <div class="col-sm-6">
+                    <input type="date" class="form-control" id="inputDate">
+                </div>
+            </div>
+<%--            <div class="form-group">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default">Close</button>
+                    <button type="submit" class="btn btn-primary">Add passenger</button>
+                </div>
+            </div>--%>
+        </form>
+    </div>
+</div>
 
+<script type="text/javascript" src="<c:url value="/resources/js/req_trips.js"/> "></script>

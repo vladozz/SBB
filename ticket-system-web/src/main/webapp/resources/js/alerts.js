@@ -1,3 +1,6 @@
+var sbb_debug_js_validation_off;
+var pswdRegex = (/^.{5,20}$/);
+
 function popupError(message) {
     toastr.options = {
         "closeButton": true,
@@ -52,7 +55,6 @@ function isError(response) {
     } else {
         return false;
     }
-    findTrips();
     return true;
 }
 
@@ -104,4 +106,25 @@ function readTimeInput($input, defaultTime) {
         $input.val(time);
     }
     return time;
+}
+
+function cellsToDate(dateText, timeText, minuteOffset) {
+    var year = parseInt(dateText.substring(0, 4));
+    var month = parseInt(dateText.substring(5, 7));
+    var day = parseInt(dateText.substring(8, 10));
+
+
+    var hour = 0;
+    var minute = 0;
+    if(timeText != undefined) {
+        hour = parseInt(timeText.substring(0, 2));
+        minute = parseInt(timeText.substring(3, 5));
+    }
+
+    var dateUTC = Date.UTC(year, month - 1, day, hour, minute);
+    if (minuteOffset != undefined) {
+        dateUTC -= minuteOffset * 60000;
+    }
+
+    return dateUTC;
 }

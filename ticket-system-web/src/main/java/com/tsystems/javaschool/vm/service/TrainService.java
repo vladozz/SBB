@@ -31,9 +31,6 @@ public class TrainService {
 
     @Transactional
     public void editTrain(Train train) {
-        Train exTrain = trainDAO.findById(train.getId());
-        exTrain.setNumber(train.getNumber());
-        exTrain.setPlacesQty(train.getPlacesQty());
-        trainDAO.update(exTrain);
+        trainDAO.update(train);
     }
 }

@@ -1,7 +1,7 @@
 package com.tsystems.javaschool.vm.web;
 
 import com.tsystems.javaschool.vm.domain.User;
-import com.tsystems.javaschool.vm.exception.InvalidIdException;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.LoginAlreadyExistException;
 import com.tsystems.javaschool.vm.exception.SBBException;
 import com.tsystems.javaschool.vm.helper.ResponseHelper;
@@ -42,8 +42,8 @@ public class AdminController {
         List<String> validationErrors = userValidator.validateLogin(login);
         validationErrors.addAll(userValidator.validatePassword(password));
         if (!validationErrors.isEmpty()) {
-            map.put("errorList", validationErrors);
-            return "msg/error";
+            map.put("errors", validationErrors);
+            return "msg";
         }
 
         try {
@@ -74,7 +74,7 @@ public class AdminController {
         try {
             userService.changeUserPassword(userId, password);
             return "success";
-        } catch (InvalidIdException e) {
+        } catch (EntityNotFoundException e) {
             return "error " + e;
         }
     }
@@ -85,16 +85,7 @@ public class AdminController {
         if (userId < 0) {
             return "error You can't delete this user";
         }
-        System.out.println("userId = " + userId);
         userService.removeUser(userId);
         return "";
-    }
-
-
-    @ExceptionHandler(Exception.class)
-    public
-    @ResponseBody
-    String handleIOException(RuntimeException ex) {
-        return ex.toString();
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 @Component
+
 public class StationDAO extends CommonDAO<Station> {
 
     public StationDAO() {
@@ -25,13 +26,6 @@ public class StationDAO extends CommonDAO<Station> {
         } else {
             return stations.get(0);
         }
-    }
-
-    public List<Station> findByGMT(TimeZone timeZone) {
-        String queryString = "SELECT s FROM Station s WHERE LOWER(s.timeZone) = :timeZone";
-        Query query = entityManager.createQuery(queryString);
-        query.setParameter("timeZone", timeZone);
-        return query.getResultList();
     }
 
     public List<Station> getFromBoardByTrip(Trip trip) {

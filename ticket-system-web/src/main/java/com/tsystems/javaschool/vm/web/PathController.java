@@ -4,6 +4,7 @@ package com.tsystems.javaschool.vm.web;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.dto.PathDTO;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.service.PathService;
 import com.tsystems.javaschool.vm.service.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class PathController {
         List<PathDTO> pathDTOs = new ArrayList<PathDTO>();
         for (Path path : pathService.getAllPaths()) {
             PathDTO pathDTO = new PathDTO(path.getId(), path.getTitle(), " ", " ", path.getLastChange());
-            List<Station> pathStationList = pathService.getStationsOfPath(path.getId());
+            List<Station> pathStationList = pathService.getStationsOfPath(path);
             if (!pathStationList.isEmpty()) {
                 pathDTO.setBeginStation(pathStationList.get(0).getTitle());
                 pathDTO.setEndStation(pathStationList.get(pathStationList.size() - 1).getTitle());
@@ -70,9 +71,14 @@ public class PathController {
             return "";
         }
 
-        if (pathService.editPath(path)) {
-            return path.getId().toString();
-        } else {
+        try {
+            if (pathService.editPath(path)) {
+                return path.getId().toString();
+            } else {
+                return "0";
+            }
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
             return "0";
         }
     }

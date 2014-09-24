@@ -50,7 +50,10 @@ function editModalTrain(id, number, placesQty) {
 }
 
 function validateTrainForm(inputNumber, inputPQ) {
-
+    alert(sbb_debug_js_validation_off);
+    if (sbb_debug_js_validation_off != undefined) {
+        return true;
+    }
     var number = inputNumber.value;
     if (number.length < 1 || number.length > 30) {
         showError("Number field must contain between 1 and 30 characters");
@@ -83,7 +86,7 @@ function validateTrainForm(inputNumber, inputPQ) {
 function addTrain() {
     var inputNumber = document.getElementById("inputNumber");
     var inputPQ = document.getElementById("inputPQ");
-    if (true || validateTrainForm(inputNumber, inputPQ)) {
+    if (validateTrainForm(inputNumber, inputPQ)) {
         var number = inputNumber.value;
         var placesQty = inputPQ.value;
 

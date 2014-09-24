@@ -2,13 +2,15 @@ package com.tsystems.javaschool.vm.domain;
 
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 @Entity
-@Table(name="passenger",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name", "birthdate"}))
-public class Passenger extends SBBEntity {
+@Table(name="passenger")
+public class Passenger extends SBBEntity implements Comparable<Passenger> {
     @Column(name="first_name")
     private String firstName;
 
@@ -62,6 +64,8 @@ public class Passenger extends SBBEntity {
         this.tickets = tickets;
     }
 
+
+
     @Override
     public String toString() {
         return "Passenger{" +
@@ -70,5 +74,17 @@ public class Passenger extends SBBEntity {
                 ", lastName='" + lastName + '\'' +
                 ", birthDate=" + birthDate +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Passenger that) {
+        int result = this.lastName.compareToIgnoreCase(that.lastName);
+        if (result == 0) {
+            result = this.firstName.compareToIgnoreCase(that.getFirstName());
+            if (result == 0) {
+                result = - this.birthDate.compareTo(that.birthDate);
+            }
+        }
+        return result;
     }
 }

@@ -7,7 +7,7 @@ import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Train;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.exception.EmptyListException;
-import com.tsystems.javaschool.vm.exception.InvalidIdException;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.OutdateException;
 import com.tsystems.javaschool.vm.exception.SBBException;
 import org.apache.log4j.Logger;
@@ -30,7 +30,7 @@ public class TripService {
     public TripService() {
     }
 
-    public Trip findById(Long tripId) {
+    public Trip findById(Long tripId) throws EntityNotFoundException {
         return tripDAO.findById(tripId);
     }
 
@@ -38,10 +38,6 @@ public class TripService {
     public Trip addTrip(Long pathId, Long trainId) throws SBBException {
         Path path = pathDAO.findById(pathId);
         Train train = trainDAO.findById(trainId);
-        if (train == null || path == null) {
-            String message = "Path or train doesn't exist pathId = " + pathId + " trainId = " + trainId;
-            throw new InvalidIdException(message);
-        }
         if (path.getStations().size() < 2) {
             throw new EmptyListException("You can't create trip with empty list of stations. Path:" + path);
         }
@@ -61,18 +57,11 @@ public class TripService {
     }
 
     @Transactional
-    public Trip editTrip(Long tripId, Long pathId, Long trainId, Integer lci) throws OutdateException {
+    public Trip editTrip(Long tripId, Long pathId, Long trainId, Integer lci) throws OutdateException, EntityNotFoundException {
         Trip trip = tripDAO.findById(tripId);
         Path path = pathDAO.findById(pathId);
         Train train = trainDAO.findById(trainId);
-        if (trip == null) {
-            String message = "Trip doesn't exist tripId = " + tripId;
-            throw new IllegalArgumentException(message);
-        }
-        if (train == null || path == null) {
-            String message = "Path or train doesn't exist pathId = " + pathId + " trainId = " + trainId;
-            throw new IllegalArgumentException(message);
-        }
+
         if (!checkLCI(trip, lci)) {
             throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
         }
@@ -85,9 +74,7 @@ public class TripService {
     @Transactional
     public void removeTrip(Long tripId, Integer lci) throws SBBException {
         Trip trip = tripDAO.findById(tripId);
-        if (trip == null) {
-            throw new InvalidIdException("Trip with id '" + tripId + "' doesn't exist.");
-        }
+
         if (!checkLCI(trip, lci)) {
             throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
         }

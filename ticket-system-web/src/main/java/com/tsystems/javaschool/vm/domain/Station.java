@@ -11,7 +11,7 @@ import java.util.TimeZone;
 
 @Entity
 @Table(name = "station")
-public class Station extends SBBEntity {
+public class Station extends SBBEntity implements Comparable<Station> {
     @Column(name = "title")
     @NotNull(message = "Number cannot be empty")
     @Size(min = 1, max = 30,
@@ -71,4 +71,8 @@ public class Station extends SBBEntity {
                 '}';
     }
 
+    @Override
+    public int compareTo(Station that) {
+        return this.title.compareToIgnoreCase(that.title);
+    }
 }

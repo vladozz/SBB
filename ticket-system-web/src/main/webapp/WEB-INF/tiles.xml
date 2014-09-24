@@ -36,6 +36,9 @@
      <definition name="trip/board" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/trip_board.jsp" />
     </definition>
+    <definition name="trip/passengers" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/trip_passengers.jsp" />
+    </definition>
     <definition name="passengers" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/passenger.jsp" />
     </definition>
@@ -45,6 +48,10 @@
     <definition name="register" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/register.jsp" />
     </definition>
+    <definition name="settings" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/settings.jsp" />
+    </definition>
+
     <definition name="board" extends="common">
         <put-attribute name="body" value="/WEB-INF/pages/board.jsp" />
     </definition>

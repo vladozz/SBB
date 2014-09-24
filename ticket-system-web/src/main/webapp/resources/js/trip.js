@@ -7,6 +7,7 @@ var $disInp = $("<input/>").attr('class', 'form-control').attr('type', 'text').a
 var $btnDelete = $("<button/>").attr('class', 'btn btn-danger').attr('type', 'button').text('Delete');
 var $btnEdit = $("<button/>").attr('class', 'btn btn-warning').attr('type', 'button').text('Edit');
 var $btnBoard = $("<button/>").attr('class', 'btn btn-primary').attr('type', 'button').text('Board');
+var $btnPassenger = $("<button/>").attr('class', 'btn btn-primary').attr('type', 'button').text('Passengers');
 var $div = $('<div/>');
 
 function findTrips() {
@@ -29,6 +30,10 @@ function findTrips() {
 }
 
 function checkFields(trainId, pathId) {
+    if (sbb_debug_js_validation_off != undefined) {
+        return true;
+    }
+
     function showError(addedText) {
         BootstrapDialog.alert({
             title: 'Error',
@@ -74,6 +79,9 @@ function createRow(trip) {
     });
     row.append($td.clone().html($btnBoard.clone().click(function () {
         toBoard(trip.id);
+    })));
+    row.append($td.clone().html($btnPassenger.clone().click(function () {
+        toPassengers(trip.id);
     })));
     row.append($td.clone().html($btnEdit.clone().click(function () {
         editTrip(trip.id);
@@ -182,4 +190,8 @@ function copySelect(selectId, newId) {
 
 function toBoard(tripId) {
     location.href = '/SBB/trip/board/' + tripId;
+}
+
+function toPassengers(tripId) {
+    location.href = '/SBB/trip/passengers/' + tripId;
 }

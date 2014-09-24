@@ -3,6 +3,7 @@ package com.tsystems.javaschool.vm.web;
 
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.PathException;
 import com.tsystems.javaschool.vm.service.PathService;
 import com.tsystems.javaschool.vm.service.StationService;
@@ -26,7 +27,7 @@ public class PathStationController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String pathStations(@PathVariable("id") Long pathId, Map<String, Object> map) {
+    public String pathStations(@PathVariable("id") Long pathId, Map<String, Object> map) throws EntityNotFoundException {
         List<Path> pathList = pathService.getAllPaths();
         List<Station> pathStationList = pathService.getStationsOfPath(pathId);
         List<Station> stationList = stationService.getAllStations();
@@ -49,7 +50,7 @@ public class PathStationController {
     @ResponseBody
     public String addStationToPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
                                    @RequestParam("stationBeforeInsertId") Long stationBeforeInsertId,
-                                   @RequestParam("lci") Integer lci, Map<String, Object> map) {
+                                   @RequestParam("lci") Integer lci, Map<String, Object> map) throws EntityNotFoundException {
         System.out.println("addStationToPath");
         try {
             pathService.addStationToPathSafe(pathId, stationId, stationBeforeInsertId, lci);
@@ -62,7 +63,7 @@ public class PathStationController {
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     @ResponseBody
     public String removeStationFromPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
-                                        @RequestParam("lci") Integer lci, Map<String, Object> map) {
+                                        @RequestParam("lci") Integer lci, Map<String, Object> map) throws EntityNotFoundException {
         try {
             pathService.removeStationFromPathSafe(pathId, stationId, lci);
         } catch (PathException e) {
@@ -70,4 +71,11 @@ public class PathStationController {
         }
         return "true";
     }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String handleEntityNotFoundException(EntityNotFoundException e) {
+        System.out.println("from handler " + e);
+        return "from handler " + e;
+    }
+
 }

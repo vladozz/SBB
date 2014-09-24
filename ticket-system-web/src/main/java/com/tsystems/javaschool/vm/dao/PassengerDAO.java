@@ -33,4 +33,5 @@ public class PassengerDAO extends CommonDAO<Passenger> {
         query.setParameter("trip", trip);
         return query.getResultList();
     }
+
 }

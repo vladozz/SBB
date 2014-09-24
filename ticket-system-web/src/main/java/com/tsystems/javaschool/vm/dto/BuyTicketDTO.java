@@ -1,29 +1,38 @@
 package com.tsystems.javaschool.vm.dto;
 
-import java.io.Serializable;
+public class BuyTicketDTO {
 
-public class BuyTicketDTO implements Serializable{
-
-    private static final long serialVersionUID = 3790160588472980299L;
-    PassengerDTO passengerDTO;
+    private String firstName;
+    private String lastName;
+    private Long birthDate;
     Long departureBoardId;
     Long arriveBoardId;
 
     public BuyTicketDTO() {
     }
 
-    public BuyTicketDTO(PassengerDTO passengerDTO, Long departureBoardId, Long arriveBoardId) {
-        this.passengerDTO = passengerDTO;
-        this.departureBoardId = departureBoardId;
-        this.arriveBoardId = arriveBoardId;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public PassengerDTO getPassengerDTO() {
-        return passengerDTO;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setPassengerDTO(PassengerDTO passengerDTO) {
-        this.passengerDTO = passengerDTO;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Long getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Long birthDate) {
+        this.birthDate = birthDate;
     }
 
     public Long getDepartureBoardId() {
@@ -45,7 +54,9 @@ public class BuyTicketDTO implements Serializable{
     @Override
     public String toString() {
         return "BuyTicketDTO{" +
-                "passengerDTO=" + passengerDTO +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDate=" + birthDate +
                 ", departureBoardId=" + departureBoardId +
                 ", arriveBoardId=" + arriveBoardId +
                 '}';

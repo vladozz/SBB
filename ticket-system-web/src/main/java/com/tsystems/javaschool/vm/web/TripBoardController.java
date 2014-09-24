@@ -6,9 +6,11 @@ import com.tsystems.javaschool.vm.converter.BoardConverter;
 import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.OutdateException;
 import com.tsystems.javaschool.vm.exception.SBBException;
 import com.tsystems.javaschool.vm.service.BoardService;
+import com.tsystems.javaschool.vm.service.PassengerService;
 import com.tsystems.javaschool.vm.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,10 +32,12 @@ public class TripBoardController {
     private TripService tripService;
     @Autowired
     private BoardService boardService;
+    @Autowired
+    private PassengerService passengerService;
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String showBoard(@PathVariable("id") Long tripId, Map<String, Object> map) {
+    public String showBoard(@PathVariable("id") Long tripId, Map<String, Object> map) throws EntityNotFoundException {
 
         map.put("tripId", tripId);
         Trip trip = tripService.findById(tripId);
@@ -98,4 +102,5 @@ public class TripBoardController {
             return "error " + e;
         }
     }
+
 }

@@ -11,6 +11,9 @@
             <td>${trip.arrive.time}</td>
             <td>${trip.routeTime}</td>
             <td>${trip.freePlaces}</td>
+            <td>
+                <a href="#" onclick="buyTicketDialog(${trip.departure.boardId}, ${trip.arrive.boardId}, ${trip.freePlaces})">Buy ticket</a>
+            </td>
         </tr>
     </c:forEach>
 </c:if>

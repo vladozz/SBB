@@ -4,9 +4,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "ticket")
-public class Ticket extends SBBEntity{
+public class Ticket extends SBBEntity implements Comparable<Ticket> {
     @ManyToOne
-    @JoinColumn (name = "passenger_id")
+    @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
     @OneToOne
@@ -14,7 +14,7 @@ public class Ticket extends SBBEntity{
     private Board arrive;
 
     @OneToOne
-    @JoinColumn (name = "departure")
+    @JoinColumn(name = "departure")
     private Board departure;
 
     public Ticket() {
@@ -59,6 +59,18 @@ public class Ticket extends SBBEntity{
                 ", arrive=" + arrive +
                 ", departure=" + departure +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Ticket that) {
+        int result = this.departure.getDepartureTime().compareTo(that.departure.getDepartureTime());
+        if (result == 0) {
+            result = this.arrive.getArriveTime().compareTo(that.arrive.getArriveTime());
+            if (result == 0) {
+                result = this.passenger.compareTo(that.passenger);
+            }
+        }
+        return result;
     }
 }
 

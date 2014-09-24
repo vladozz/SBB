@@ -45,9 +45,10 @@
                 <th>LCI</th>
                 <th>Departure date</th>
                 <th>Arrive date</th>
-                <th width="10%">Board</th>
-                <th width="10%">Edit</th>
-                <th width="10%">Delete</th>
+                <th>Board</th>
+                <th>Passengers</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
 
         </table>

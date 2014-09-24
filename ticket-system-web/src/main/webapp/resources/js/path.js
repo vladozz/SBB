@@ -54,7 +54,9 @@ function editModalPath(id, title, lastChange) {
 }
 
 function validatePathForm(inputTitle) {
-
+    if (sbb_debug_js_validation_off != undefined) {
+        return true;
+    }
     var title = inputTitle.value;
     if (title.length < 1 || title.length > 50) {
         showError("Title field must contain between 1 and 50 characters");

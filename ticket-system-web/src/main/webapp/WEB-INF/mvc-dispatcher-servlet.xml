@@ -10,6 +10,7 @@
     <mvc:annotation-driven/>
     <context:component-scan base-package="com.tsystems.javaschool.vm.web"/>
 
+
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basename" value="classpath:messages"/>
         <property name="defaultEncoding" value="UTF-8"/>
@@ -20,11 +21,13 @@
           p:definitions="/WEB-INF/tiles.xml"/>
     <bean id="tilesViewResolver"
           class="org.springframework.web.servlet.view.UrlBasedViewResolver"
-          p:viewClass="org.springframework.web.servlet.view.tiles3.TilesView"/>
+          p:viewClass="org.springframework.web.servlet.view.tiles3.TilesView"
+          p:order="1"/>
 
     <bean id="viewResolver"
-          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/pages/"/>
-        <property name="suffix" value=".jsp"/>
-    </bean>
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/pages/"
+          p:suffix=".jsp"
+          p:order="2"/>
+
 </beans>

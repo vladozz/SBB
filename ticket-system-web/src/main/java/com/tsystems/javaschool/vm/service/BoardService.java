@@ -4,11 +4,9 @@ import com.tsystems.javaschool.vm.dao.BoardDAO;
 import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.dao.TripDAO;
 import com.tsystems.javaschool.vm.domain.Board;
-import com.tsystems.javaschool.vm.domain.PairBoard;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
-import com.tsystems.javaschool.vm.dto.DefTripDTO;
 import com.tsystems.javaschool.vm.exception.*;
 import com.tsystems.javaschool.vm.helper.DateHelper;
 import org.joda.time.DateTime;
@@ -38,9 +36,6 @@ public class BoardService {
     @Transactional
     public List<Board> createEmptyBoard(Long tripId, String date, Integer lci) throws SBBException {
         Trip trip = tripDAO.findById(tripId);
-        if (trip == null) {
-            throw new InvalidIdException("Trip doesn't exist. id: " + tripId);
-        }
         if (!checkLCI(trip, lci)) {
             throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
         }
@@ -66,7 +61,7 @@ public class BoardService {
     }
 
     @Transactional
-    public String changeBoard(BoardTripDTO[] boardTripDTOs) throws InvalidIdException {
+    public String changeBoard(BoardTripDTO[] boardTripDTOs) throws EntityNotFoundException {
         List<Board> boardList = new ArrayList<Board>();
         StringBuilder errorList = new StringBuilder();
         int errorCount = 0;
@@ -101,11 +96,8 @@ public class BoardService {
         return errorList.toString();
     }
 
-    private Board prepareBoard(BoardTripDTO boardTripDTO) throws InvalidIdException {
+    private Board prepareBoard(BoardTripDTO boardTripDTO) throws EntityNotFoundException {
         Board board = boardDAO.findById(boardTripDTO.getBoardId());
-        if (board == null) {
-            throw new InvalidIdException("Board line doesn't exist. id: " + boardTripDTO.getBoardId());
-        }
         boardDAO.detach(board);
         TimeZone timeZone = board.getStation().getTimeZone();
         board.setArriveTime(new Timestamp(
@@ -116,55 +108,18 @@ public class BoardService {
     }
 
 
-    public List<Board> getBoardForStation(Long stationId, String date) throws InvalidIdException {
+    public List<Board> getBoardForStation(Long stationId, String date) throws EntityNotFoundException {
         Station station = stationDAO.findById(stationId);
-        if (station == null) {
-            throw new InvalidIdException("Station doesn't exist. id: " + stationId);
-        }
         TimeZone timeZone = station.getTimeZone();
         Timestamp after = new Timestamp(dateHelper.parseBSDateTime(date, "00:00", timeZone).getMillis());
         Timestamp before = new Timestamp(dateHelper.parseBSDateTime(date, "23:59", timeZone).getMillis());
         return boardDAO.getBoardForStation(station, after, before);
     }
 
-
-
-
-    public List<Board> getBoardForTrip(Long tripId) throws InvalidIdException {
+    public List<Board> getBoardForTrip(Long tripId) throws EntityNotFoundException {
         Trip trip = tripDAO.findById(tripId);
-        if (trip == null) {
-            throw new InvalidIdException("Trip doesn't exist. id: " + tripId);
-        }
         return boardDAO.getBoardForTrip(trip);
     }
-
-    public List<PairBoard> getDefTrips(DefTripDTO defTripDTO) throws InvalidIdException {
-
-        Station departureStation = stationDAO.findById(defTripDTO.getDepartureStationId());
-        Station arriveStation = stationDAO.findById(defTripDTO.getArriveStationId());
-        if (arriveStation == null) {
-            throw new InvalidIdException("Arrive station doesn't exist; id: " + defTripDTO.getArriveStationId());
-        } else if (departureStation == null) {
-            throw new InvalidIdException("Departure station doesn't exist; id: " + defTripDTO.getDepartureStationId());
-        }
-
-        Timestamp departureAfter = new Timestamp(dateHelper.parseBSDateTime(
-                defTripDTO.getDepartureDate(), defTripDTO.getDepartureTime(), departureStation.getTimeZone())
-                .getMillis());
-        Timestamp arriveBefore = new Timestamp(dateHelper.parseBSDateTime(
-                defTripDTO.getArriveDate(), defTripDTO.getArriveTime(), arriveStation.getTimeZone())
-                .getMillis());
-
-        return boardDAO.getBoard(departureStation, arriveStation, departureAfter, arriveBefore);
-    }
-
-    public List<PairBoard> getDefTrips(Long departureStationId, Long arriveStationId, Timestamp departureAfter, Timestamp arriveBefore) {
-
-        return boardDAO.getBoard(departureStationId, arriveStationId, departureAfter, arriveBefore);
-    }
-
-
-
 
     private boolean checkLCI(Trip trip, Integer tripLCI) {
         if (!tripLCI.equals(trip.getLastChange())) {

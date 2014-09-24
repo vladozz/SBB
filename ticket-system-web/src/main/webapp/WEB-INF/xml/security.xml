@@ -12,6 +12,7 @@ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
         <intercept-url pattern="/path/**" access="hasAnyRole('ROLE_MANAGER')"/>
         <intercept-url pattern="/trip/**" access="hasAnyRole('ROLE_MANAGER')"/>
         <intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/settings/**" access="isAuthenticated()"/>
         <form-login login-page="/login" default-target-url="/"
                     authentication-failure-url="/login"/>
         <logout logout-url="/logout" logout-success-url="/"/>

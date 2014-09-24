@@ -44,7 +44,7 @@
                                 class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li class="disabled"><a><sec:authentication property="principal.username"/></a></li>
-                            <li><a href="#">Settings</a></li>
+                            <li><a href="<c:url value="/settings" /> ">Settings</a></li>
                             <sec:authorize access="hasRole('ROLE_USER')">
                                 <li><a href="#">My tickets</a></li>
                             </sec:authorize>

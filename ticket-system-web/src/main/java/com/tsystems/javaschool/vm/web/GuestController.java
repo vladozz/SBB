@@ -1,21 +1,13 @@
 package com.tsystems.javaschool.vm.web;
 
 import com.tsystems.javaschool.vm.converter.BoardConverter;
-import com.tsystems.javaschool.vm.domain.Board;
-import com.tsystems.javaschool.vm.domain.PairBoard;
-import com.tsystems.javaschool.vm.domain.Station;
-import com.tsystems.javaschool.vm.domain.User;
-import com.tsystems.javaschool.vm.dto.BoardStationDTO;
-import com.tsystems.javaschool.vm.dto.DefTripDTO;
-import com.tsystems.javaschool.vm.dto.RespDefTripDTO;
-import com.tsystems.javaschool.vm.exception.InvalidIdException;
-import com.tsystems.javaschool.vm.exception.LoginAlreadyExistException;
-import com.tsystems.javaschool.vm.exception.SBBException;
-import com.tsystems.javaschool.vm.helper.ResponseHelper;
-import com.tsystems.javaschool.vm.service.BoardService;
+import com.tsystems.javaschool.vm.domain.*;
+import com.tsystems.javaschool.vm.dto.*;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
+import com.tsystems.javaschool.vm.exception.PassengerException;
+import com.tsystems.javaschool.vm.service.PassengerBoardService;
+import com.tsystems.javaschool.vm.service.PassengerService;
 import com.tsystems.javaschool.vm.service.StationService;
-import com.tsystems.javaschool.vm.service.UserService;
-import com.tsystems.javaschool.vm.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -28,7 +20,10 @@ public class GuestController {
     @Autowired
     private StationService stationService;
     @Autowired
-    private BoardService boardService;
+    private PassengerBoardService passengerBoardService;
+    @Autowired
+    private PassengerService passengerService;
+
     @Autowired
     private BoardConverter boardConverter;
 
@@ -55,7 +50,7 @@ public class GuestController {
      public String getBoard(@RequestParam("stationId") Long stationId,
                             @RequestParam("date") String date, Map<String, Object> map) {
         try {
-            List<Board> board = boardService.getBoardForStation(stationId, date);
+            List<Board> board = passengerBoardService.getBoardForStation(stationId, date);
             Collections.sort(board, new Comparator<Board>() {
                 @Override
                 public int compare(Board o1, Board o2) {
@@ -68,21 +63,16 @@ public class GuestController {
             }
             map.put("boardList", boardStationDTOs);
             return "guest/board_row";
-        } catch (InvalidIdException e) {
-            map.put("errorList", Arrays.asList(e.getMessage()));
-            return "msg/error";
+        } catch (EntityNotFoundException e) {
+            map.put("errors", Arrays.asList(e.getMessage()));
+            return "msg";
         }
     }
 
     @RequestMapping(value = "/reqtrip/index")
     public String tripsIndex(Map<String, Object> map) {
         List<Station> stationList = stationService.getAllStations();
-        Collections.sort(stationList, new Comparator<Station>() {
-            @Override
-            public int compare(Station o1, Station o2) {
-                return o1.getTitle().compareToIgnoreCase(o2.getTitle());
-            }
-        });
+        Collections.sort(stationList);
 //        map.put("dto", new DefTripDTO());
         map.put("stationList", stationList);
         return "req_trips";
@@ -96,19 +86,37 @@ public class GuestController {
     @RequestMapping(value = "/reqtrip/get", method = RequestMethod.POST)
     public String getTrips(@ModelAttribute(value="dto") DefTripDTO defTripDTO, ModelMap map) {
         //TODO:validation
-        System.out.println(defTripDTO);
         try {
-            List<PairBoard> pairBoards = boardService.getDefTrips(defTripDTO);
+            List<PairBoard> pairBoards = passengerBoardService.getDefTrips(defTripDTO);
             Collections.sort(pairBoards);
             List<RespDefTripDTO> dtoList = new ArrayList<RespDefTripDTO>();
             for (PairBoard pairBoard : pairBoards) {
-                dtoList.add(boardConverter.convertToRespDefTripDTO(pairBoard, 0));
+                int freePlaces = passengerService.countFreePlaces(pairBoard.getDeparture(), pairBoard.getArrive());
+                dtoList.add(boardConverter.convertToRespDefTripDTO(pairBoard, freePlaces));
             }
             map.put("tripList", dtoList);
             return "guest/req_trips_row";
-        } catch (InvalidIdException e) {
+        } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
         return "";
+    }
+
+    @RequestMapping(value = "/ticket/buy", method = RequestMethod.POST)
+    @ResponseBody
+    public String buyTicket(@ModelAttribute BuyTicketDTO buyTicketRequestDTO) {
+        //TODO: dto validation
+        try {
+            System.out.println("buyTicketRequestDTO = " + buyTicketRequestDTO);
+            Ticket ticket = passengerService.buyTicket(buyTicketRequestDTO);
+            System.out.println("ticket.toString() = " + ticket.toString());
+            return ticket.toString();
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return "error " + e;
+        } catch (PassengerException e) {
+            e.printStackTrace();
+            return "error " + e;
+        }
     }
 }

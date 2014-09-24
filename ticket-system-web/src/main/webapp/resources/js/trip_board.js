@@ -164,6 +164,10 @@ var syncTime = function (boardId, depAr, memText) {
 };
 
 function validate(boardId, depAr) {
+    if (sbb_debug_js_validation_off != undefined) {
+        return '';
+    }
+
     var thisTime = getTime(boardId, depAr);
     var errorMessage = '';
     var isFirst = depAr == 'arrive' && $.inArray(boardId, idArray) === 0;
@@ -250,13 +254,3 @@ function alertError(errorMessage) {
 }
 
 
-function cellsToDate(dateText, timeText, offset) {
-    var year = parseInt(dateText.substring(0, 4));
-    var month = parseInt(dateText.substring(5, 7));
-    var day = parseInt(dateText.substring(8, 10));
-
-    var hour = parseInt(timeText.substring(0, 2));
-    var minute = parseInt(timeText.substring(3, 5));
-    return Date.UTC(year, month - 1, day, hour, minute) - offset * 60000;
-
-}

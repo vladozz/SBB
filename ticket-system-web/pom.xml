@@ -99,11 +99,11 @@
             <version>1.1.0.Final</version>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <version>1.0.1.Final</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -228,6 +228,7 @@
                 <configuration>
                     <warName>SBB</warName>
                     <outputDirectory>C:\glassfish4\glassfish\domains\domain1\autodeploy</outputDirectory>
+                    <!--<outputDirectory>C:\Tomcat\webapps</outputDirectory>-->
                     <!--<outputDirectory>C:\jboss\standalone\deployments</outputDirectory>-->
                 </configuration>
             </plugin>

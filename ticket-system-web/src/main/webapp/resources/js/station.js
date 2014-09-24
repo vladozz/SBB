@@ -52,6 +52,9 @@ function editModalStation(id, title, timeZone) {
 }
 
 function validateStationForm(inputTitle, inputTZ) {
+    if (sbb_debug_js_validation_off != undefined) {
+        return true;
+    }
 
     var title = inputTitle.value;
     if (title.length < 1 || title.length > 50) {

@@ -1,4 +1,4 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 
@@ -53,18 +53,12 @@
     </div>
 </form>
 
-<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-<%--<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.11.1.js"/>"></script>--%>
-<script type="text/javascript" src="<c:url value='/resources/js/bootstrap.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/bootstrap-dialog.js'/>"></script>
-
-
 <script type="text/javascript">
     function validateRegisterForm(email, password) {
         var $confirmPasswordField =  $('#registerForm').find('input[path="confirmPassword"]');
         var confirmPassword = $confirmPasswordField.val();
         var emailRegex = new RegExp('^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$', 'i');
-        var pswdRegex = (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/);
+
 
         if (!emailRegex.test(email)) {
             popupError('Invalid email');

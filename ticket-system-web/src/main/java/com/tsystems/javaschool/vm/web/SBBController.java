@@ -1,5 +1,6 @@
 package com.tsystems.javaschool.vm.web;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -11,9 +12,6 @@ public class SBBController {
 
     @RequestMapping("/index")
     public String mainPage(Map<String, Object> map) {
-
-
-
         return "index";
     }
 

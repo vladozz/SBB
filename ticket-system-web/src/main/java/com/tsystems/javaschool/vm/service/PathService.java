@@ -4,7 +4,7 @@ import com.tsystems.javaschool.vm.dao.PathDAO;
 import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
-import com.tsystems.javaschool.vm.exception.InvalidIndexException;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.PathException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class PathService {
     }
 
     @Transactional
-    public boolean editPath(Path path) {
+    public boolean editPath(Path path) throws EntityNotFoundException {
         Path newPath = pathDAO.findById(path.getId());
         if (checkLCI(newPath, path.getLastChange())) {
             newPath.setTitle(path.getTitle());
@@ -45,7 +45,7 @@ public class PathService {
     }
 
     private boolean checkLCI(Path path, Integer pathLCI) {
-        if (path == null || !pathLCI.equals(path.getLastChange())) {
+        if (!pathLCI.equals(path.getLastChange())) {
             return false;
         } else {
             path.incrementLastChange();
@@ -59,80 +59,31 @@ public class PathService {
     }
 
     @Transactional
-    public Path findById(Long pathId) {
+    public Path findById(Long pathId) throws EntityNotFoundException {
         return pathDAO.findById(pathId);
     }
 
     @Transactional
-    public Path addStationToPath(Long pathId, Long stationId, int index, Integer lci) throws PathException {
+    public Path addStationToPathSafe(Long pathId, Long stationId, Long stationBeforeInsertId, Integer lci) throws PathException, EntityNotFoundException {
         Path path = pathDAO.findById(pathId);
         Station station = stationDAO.findById(stationId);
-        if (path != null && station != null) {
-            if (checkLCI(path, lci)) {
-                return addStationToPath(path, station, index);
-            } else {
-                return null;
-            }
+
+        if (checkLCI(path, lci)) {
+            return addStationToPathSafe(path, station, stationBeforeInsertId);
         } else {
             throw new PathException("Last change index were updated!");
         }
+
     }
 
     /**
      * Метод, добавляющий станцию в маршрут (в середину или в конец)
      *
-     * @param path    маршрут
-     * @param station станция
-     * @param index   0 - добавление в конец, от 1...n(кол-во станций в маршруте) - вставка на место 1го...n-го элемента
-     *                со сдвигом всех последующих
-     */
-    private Path addStationToPath(Path path, Station station, int index) throws InvalidIndexException {
-        List<Station> stations = path.getStations();
-        if (index < 0 || index > stations.size()) {
-            throw new InvalidIndexException("Illegal index of station: " + "index = " + index
-                    + "stations.size() = " + stations.size() + "path = " + path + "station = " + station);
-        }
-        if (index == 0) {
-            stations.add(station);
-        } else {
-            List<Station> newStations = new ArrayList<Station>();
-            newStations.addAll(stations);
-            newStations.add(index - 1, station);
-
-            while (!stations.isEmpty()) {
-                stations.remove(stations.size() - 1);
-            }
-            //stations.removeAll(newStations);
-            pathDAO.update(path);
-            path.getStations().addAll(newStations);
-        }
-        pathDAO.update(path);
-        return path;
-    }
-
-    @Transactional
-    public Path addStationToPathSafe(Long pathId, Long stationId, Long stationBeforeInsertId, Integer lci) throws PathException {
-        Path path = pathDAO.findById(pathId);
-        Station station = stationDAO.findById(stationId);
-        if (path != null && station != null) {
-            if (checkLCI(path, lci)) {
-                return addStationToPathSafe(path, station, stationBeforeInsertId);
-            } else {
-                return null;
-            }
-        } else {
-            throw new PathException("Last change index were updated!");
-        }
-    }
-
-    /**
-     * Метод, добавляющий станцию в маршрут (в середину или в конец)
-     *
-     * @param path    маршрут
-     * @param station станция
+     * @param path                  маршрут
+     * @param station               станция
      * @param stationBeforeInsertId
      */
-    private Path addStationToPathSafe(Path path, Station station, Long stationBeforeInsertId) throws InvalidIndexException {
+    private Path addStationToPathSafe(Path path, Station station, Long stationBeforeInsertId) {
         List<Station> stations = path.getStations();
         if (stationBeforeInsertId == 0) {
             stations.add(station);
@@ -158,69 +109,22 @@ public class PathService {
         return path;
     }
 
-    /**
-     * @param pathId
-     * @param index  от 1...n(кол-во станций в маршруте) - удаление 1го...n-го элемента
-     *               со сдвигом всех последующих
-     */
-    @Transactional
-    public Path removeStationFromPath(Long pathId, int index, Integer lci) throws PathException {
-        Path path = pathDAO.findById(pathId);
 
-        if (path != null) {
-            if (checkLCI(path, lci)) {
-                return removeStationFromPath(path, index);
-            } else {
-                throw new PathException("Last change index were updated!");
-            }
-        } else {
-            return null;
-        }
-
-    }
-
-    /**
-     * @param path
-     * @param index от 1...n(кол-во станций в маршруте) - удаление 1го...n-го элемента
-     *              со сдвигом всех последующих
-     */
-    private Path removeStationFromPath(Path path, int index) throws InvalidIndexException {
-        List<Station> stations = path.getStations();
-        if (index <= 0 || index > stations.size()) {
-            throw new InvalidIndexException("Illegal index of station: " + "index = " + index
-                    + "stations.size() = " + stations.size() + "path = " + path);
-        }
-        List<Station> newStations = new ArrayList<Station>();
-        newStations.addAll(stations);
-        newStations.remove(index - 1);
-
-        while (!stations.isEmpty()) {
-            stations.remove(stations.size() - 1);
-        }
-
-        pathDAO.update(path);
-        path.getStations().addAll(newStations);
-
-        return path;
-    }
 
     /**
      * @param pathId
      * @param stationToRemoveId
      */
     @Transactional
-    public Path removeStationFromPathSafe(Long pathId, Long stationToRemoveId, Integer lci) throws PathException {
+    public Path removeStationFromPathSafe(Long pathId, Long stationToRemoveId, Integer lci) throws PathException, EntityNotFoundException {
         Path path = pathDAO.findById(pathId);
 
-        if (path != null) {
-            if (checkLCI(path, lci)) {
-                return removeStationFromPathSafe(path, stationToRemoveId);
-            } else {
-                throw new PathException("Last change index were updated!");
-            }
+        if (checkLCI(path, lci)) {
+            return removeStationFromPathSafe(path, stationToRemoveId);
         } else {
-            return null;
+            throw new PathException("Last change index were updated!");
         }
+
 
     }
 
@@ -228,7 +132,7 @@ public class PathService {
      * @param path
      * @param stationToRemoveId
      */
-    private Path removeStationFromPathSafe(Path path, Long stationToRemoveId) throws InvalidIndexException {
+    private Path removeStationFromPathSafe(Path path, Long stationToRemoveId) {
         List<Station> stations = path.getStations();
 
         List<Station> newStations = new ArrayList<Station>();
@@ -255,15 +159,13 @@ public class PathService {
         return pathDAO.findAll();
     }
 
-    public List<Station> getStationsOfPath(Long pathId) {
+    public List<Station> getStationsOfPath(Long pathId) throws EntityNotFoundException {
         Path path = pathDAO.findById(pathId);
-        if (path == null) {
-            //TODO: empty list or throw InvalidIdException
-            return new ArrayList<Station>();
-        } else {
-            return path.getStations();
-        }
+        return path.getStations();
+    }
 
+    public List<Station> getStationsOfPath(Path path) {
+        return path.getStations();
     }
 }
 

@@ -1,6 +1,7 @@
 package com.tsystems.javaschool.vm.dao;
 
 import com.tsystems.javaschool.vm.domain.Path;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
@@ -13,13 +14,13 @@ public class PathDAO extends CommonDAO<Path> {
         super(Path.class);
     }
 
-    public Path findByTitle(String title) {
+    public Path findByTitle(String title) throws EntityNotFoundException {
         String queryString = "SELECT p FROM Path p WHERE LOWER(p.title) = :title";
         Query query = entityManager.createQuery(queryString);
         query.setParameter("title", title.toLowerCase());
         List<Path> path = query.getResultList();
         if (path.isEmpty()) {
-            return null;
+            throw new EntityNotFoundException("Path", title);
         } else {
             return path.get(0);
         }

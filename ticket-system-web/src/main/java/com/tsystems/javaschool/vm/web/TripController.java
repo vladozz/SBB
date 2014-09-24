@@ -3,22 +3,21 @@ package com.tsystems.javaschool.vm.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tsystems.javaschool.vm.domain.Ticket;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.TripDTO;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.OutdateException;
+import com.tsystems.javaschool.vm.service.PassengerService;
 import com.tsystems.javaschool.vm.service.PathService;
 import com.tsystems.javaschool.vm.service.TrainService;
 import com.tsystems.javaschool.vm.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/trip")
@@ -32,6 +31,8 @@ public class TripController {
     private TripService tripService;
     @Autowired
     private ObjectMapper json;
+    @Autowired
+    private PassengerService passengerService;
 
     @RequestMapping("/index")
     public String listTrains(Map<String, Object> map) {
@@ -107,5 +108,20 @@ public class TripController {
             return "error " + e;
         }
         return "success";
+    }
+
+    @RequestMapping("/passengers/{tripId}")
+    public String getPassengers(@PathVariable("tripId") Long tripId, ModelMap map) {
+        try {
+            Trip trip = tripService.findById(tripId);
+            List<Ticket> tickets = passengerService.getTicketsOfTrip(tripId);
+            Collections.sort(tickets);
+            map.put("trip", trip);
+            map.put("ticketList", tickets);
+            return "trip/passengers";
+        } catch (EntityNotFoundException e) {
+            map.put("errors", Arrays.asList(e.getMessage()));
+            return "msg";
+        }
     }
 }

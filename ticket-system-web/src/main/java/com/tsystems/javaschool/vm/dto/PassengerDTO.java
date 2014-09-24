@@ -1,7 +1,8 @@
 package com.tsystems.javaschool.vm.dto;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.sql.Timestamp;
+
 
 public class PassengerDTO implements Serializable {
 
@@ -9,19 +10,19 @@ public class PassengerDTO implements Serializable {
     private Long id;
     private String firstName;
     private String lastName;
-    private Calendar birthDate;
+    private Long birthDate;
 
     public PassengerDTO() {
     }
 
-    public PassengerDTO(Long id, String firstName, String lastName, Calendar birthDate) {
+    public PassengerDTO(Long id, String firstName, String lastName, Long birthDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
     }
 
-    public PassengerDTO(String firstName, String lastName, Calendar birthDate) {
+    public PassengerDTO(String firstName, String lastName, Long birthDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
@@ -51,11 +52,11 @@ public class PassengerDTO implements Serializable {
         this.lastName = lastName;
     }
 
-    public Calendar getBirthDate() {
+    public Long getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Calendar birthDate) {
+    public void setBirthDate(Long birthDate) {
         this.birthDate = birthDate;
     }
 
