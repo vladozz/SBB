@@ -1,6 +1,24 @@
 var sbb_debug_js_validation_off;
 var pswdRegex = (/^.{5,20}$/);
 
+function popupInfo(message) {
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-top-right",
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+    toastr.info(message, "Info");
+}
+
 function popupError(message) {
     toastr.options = {
         "closeButton": true,
@@ -19,6 +37,25 @@ function popupError(message) {
     toastr.error(message, "Error");
 }
 
+function popupNoTimeoutError(message) {
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-top-right",
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "0",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+    toastr.error(message, "Error");
+}
+
+
 function popupSuccess(message) {
     toastr.options = {
         "closeButton": true,
@@ -35,6 +72,10 @@ function popupSuccess(message) {
         "hideMethod": "fadeOut"
     };
     toastr.success(message, "Success");
+}
+
+function operSuccess() {
+    popupSuccess('Operation success');
 }
 
 function alertError(errorMessage) {
@@ -116,7 +157,7 @@ function cellsToDate(dateText, timeText, minuteOffset) {
 
     var hour = 0;
     var minute = 0;
-    if(timeText != undefined) {
+    if (timeText != undefined) {
         hour = parseInt(timeText.substring(0, 2));
         minute = parseInt(timeText.substring(3, 5));
     }
@@ -127,4 +168,8 @@ function cellsToDate(dateText, timeText, minuteOffset) {
     }
 
     return dateUTC;
+}
+
+function defaultFor(arg, val) {
+    return typeof arg !== 'undefined' ? arg : val;
 }

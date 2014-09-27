@@ -35,20 +35,26 @@ function confirmDelete(id, title) {
 function addModalPath() {
 
     $('#myModalLabel').text('Add new path');
-    $('#inputId').attr('value', '');
+    $('#inputId').val('');
     $('#commonId').slideUp('fast');
-    $('#inputLC').attr('value', '');
+    $('#inputLC').val('');
     $('#commonLC').slideUp('fast');
-    $('#inputTitle').attr('value', '');
+    $('#inputTitle').val('');
+    $('#inputReturnTitle').val('');
     $('#submit').attr('onclick', 'addPath();').text('Add path');
 }
 
-function editModalPath(id, title, lastChange) {
+function editModalPath(id) {
+    var $row = $('#' + id);
+    var title = $row.find('.title').text();
+    var returnTitle = $row.find('.returnTitle').text();
+    var lastChange = $row.find('.lastChange').text();
     $('#myModalLabel').text('Edit path');
-    $('#inputId').attr('value', id);
+    $('#inputId').val(id);
     $('#commonId').slideDown('fast');
-    $('#inputTitle').attr('value', title);
-    $('#inputLC').attr('value', lastChange);
+    $('#inputTitle').val(title);
+    $('#inputReturnTitle').val(returnTitle);
+    $('#inputLC').val(lastChange);
     $('#commonLC').slideDown('fast');
     $('#submit').attr('onclick', 'editPath();').text('Edit path');
 }
@@ -57,7 +63,7 @@ function validatePathForm(inputTitle) {
     if (sbb_debug_js_validation_off != undefined) {
         return true;
     }
-    var title = inputTitle.value;
+    var title = inputTitle.val();
     if (title.length < 1 || title.length > 50) {
         showError("Title field must contain between 1 and 50 characters");
         inputTitle.focus();
@@ -71,77 +77,59 @@ function validatePathForm(inputTitle) {
 }
 
 function addPath() {
-    var inputTitle = document.getElementById("inputTitle");
+    var inputTitle = $("#inputTitle");
+    var inputReturnTitle = $("#inputReturnTitle");
     if (validatePathForm(inputTitle)) {
-        var title = inputTitle.value;
+        var title = inputTitle.val();
+        var returnTitle = inputReturnTitle.val();
 
         $.ajax({
             type: "post",
             url: "add",
-            data: "title=" + encodeURIComponent(title),
-            success: function (id) {
+            data: {title: title, returnTitle: returnTitle},
+            success: function (response) {
                 $('.close').click();
                 $('#close').click();
-                var inner = generateTableRow(id, title, 1);
-                var addHtml = "<tr id=\"" + id + "\">\n" + inner + "</tr>";
-                $('#listOfPaths').append(addHtml);
+                $('#listOfPaths').find('tbody').append(response);
+                operSuccess();
             },
-            error: function (data) {
-                alert('Error!' + data);
+            error: function (jdXHR) {
+                if (jdXHR.status != 400) {
+                    $('.close').click();
+                    $('#close').click();
+                }
+                popupError(jdXHR.status + " " + jdXHR.statusText);
             }
         });
     }
 }
 
-function generateTableRow(id, title, lastChange) {
-    return "<td>" + id + "</td>\n" +
-        "<td>" + title + "</td>\n" +
-        "<td>" + "" + "</td>\n" +
-        "<td>" + "" + "</td>\n" +
-        "<td>" + lastChange + "</td>\n" +
-        "<td><a href=\"/SBB/path/stations/" + id + "\">"+
-        "<button type=\"button\" class=\"btn btn-primary\">Stations</button> </a></td>\n" +
-        "<td><button type=\"button\" class=\"btn btn-warning\" data-toggle=\"modal\" " +
-        "data-target=\"#addPathModal\" onclick=\"editModalPath(" + id + ", '" + title + "', '"
-        + lastChange + "');\" >Edit</button></td>\n" +
-        "<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"confirmDelete(" + id +
-        ", '" + title + "');\">Delete</button></td>\n";
-}
-
-
 function editPath() {
-    var inputId = document.getElementById("inputId");
-    var inputTitle = document.getElementById("inputTitle");
-    var inputLC = document.getElementById("inputLC");
+    var inputId = $("#inputId");
+    var inputTitle = $("#inputTitle");
+    var inputReturnTitle = $("#inputReturnTitle");
+    var inputLC = $("#inputLC");
     if (validatePathForm(inputTitle)) {
-        var id = inputId.value;
-        var title = inputTitle.value;
-        var lastChange = inputLC.value;
+        var id = inputId.val();
+        var title = inputTitle.val();
+        var returnTitle = inputReturnTitle.val();
+        var lastChange = inputLC.val();
         $.ajax({
             type: "post",
             url: "edit",
-            data: "id=" + encodeURIComponent(id) + "&title=" + encodeURIComponent(title) + "&lastChange=" + encodeURIComponent(lastChange),
+            data: {id: id, title: title, returnTitle: returnTitle, lastChange: lastChange},
             success: function (resp) {
-                if (resp == 0) {
-                    BootstrapDialog.show({
-                        title: 'Error',
-                        message: 'Editing of this path is failed. Please reload page and try again.',
-                        buttons: [{
-                            label: 'OK',
-                            action: function() {
-                                location.reload();
-                            }
-                        }]
-                    });
-                } else {
+                $('.close').click();
+                $('#close').click();
+                $('#' + id).replaceWith(resp);
+                operSuccess();
+            },
+            error: function (jdXHR) {
+                if (jdXHR.status != 400) {
                     $('.close').click();
                     $('#close').click();
-                    var editHtml = generateTableRow(id, title, ++lastChange);
-                    $('#' + id).html(editHtml);
                 }
-            },
-            error: function () {
-                alert('Error!');
+                popupError(jdXHR.status + " " + jdXHR.statusText);
             }
         });
     }

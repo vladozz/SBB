@@ -32,4 +32,12 @@ public class TicketDAO extends CommonDAO<Ticket> {
         query.setParameter("tripId", tripId);
         return query.getResultList();
     }
+
+    public List<Ticket> getTicketsOfTripByPassenger(Trip trip, Long passengerId) {
+        String queryString = "SELECT DISTINCT t FROM Ticket t WHERE t.arrive.trip = :trip AND t.passenger.id = :passengerId";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("trip", trip);
+        query.setParameter("passengerId", passengerId);
+        return query.getResultList();
+    }
 }

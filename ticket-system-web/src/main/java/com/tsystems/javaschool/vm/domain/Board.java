@@ -4,6 +4,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "board")
@@ -25,6 +26,9 @@ public class Board extends SBBEntity {
     @Column(name = "departure_time")
     @Type(type = "timestamp")
     private Timestamp departureTime;
+
+
+
 
     public Board() {
     }

@@ -26,7 +26,7 @@
                     <li><a href="<c:url value="/station" /> ">Stations</a></li>
                     <li><a href="<c:url value="/path" /> ">Paths</a></li>
                     <li><a href="<c:url value="/trip" /> ">Trips</a></li>
-                    <li><a href="<c:url value="/passenger" /> ">Passenger</a></li>
+                    <%--<li><a href="<c:url value="/passenger" /> ">Passenger</a></li>--%>
                 </sec:authorize>
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                     <li><a href="<c:url value="/user" /> ">Users</a></li>

@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 public class LoginService implements UserDetailsService {
     private static final Logger LOG = Logger.getLogger(LoginService.class);
+
     @Autowired
     private UserDAO userDAO;
 
@@ -29,9 +30,7 @@ public class LoginService implements UserDetailsService {
                     Arrays.asList(new SimpleGrantedAuthority(user.getRole().getTitle()));
             return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), authorities);
         } catch (EntityNotFoundException e) {
-            UsernameNotFoundException e1 = new UsernameNotFoundException("User " + username + " not found");
-            e1.initCause(e);
-            throw e1;
+            throw new UsernameNotFoundException("User " + username + " not found", e);
         }
     }
 }

@@ -1,11 +1,14 @@
 package com.tsystems.javaschool.vm.web;
 
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tsystems.javaschool.vm.converter.TripConverter;
 import com.tsystems.javaschool.vm.domain.Ticket;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.TripDTO;
+import com.tsystems.javaschool.vm.exception.CascadeException;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.OutdateException;
 import com.tsystems.javaschool.vm.service.PassengerService;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -30,9 +34,11 @@ public class TripController {
     @Autowired
     private TripService tripService;
     @Autowired
+    private PassengerService passengerService;
+    @Autowired
     private ObjectMapper json;
     @Autowired
-    private PassengerService passengerService;
+    private TripConverter tripConverter;
 
     @RequestMapping("/index")
     public String listTrains(Map<String, Object> map) {
@@ -48,13 +54,11 @@ public class TripController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public String addTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) {
+    public String addTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId,
+                          @RequestParam("forward") Boolean forward) {
         try {
-            Trip trip = tripService.addTrip(pathId, trainId);
-            TripDTO tripDTO = new TripDTO(trip.getId(),
-                    trip.getTrain().getId(), trip.getTrain().getNumber(),
-                    trip.getPath().getId(), trip.getPath().getTitle(), trip.getLastChange());
-            return json.writeValueAsString(tripDTO);
+            Trip trip = tripService.addTrip(pathId, trainId, forward);
+            return json.writeValueAsString(tripConverter.convertToTripDTO(trip));
         } catch (Exception e) {
             return "error " + e.toString();
         }
@@ -62,38 +66,30 @@ public class TripController {
 
     @RequestMapping(value = "/select", method = RequestMethod.POST)
     @ResponseBody
-    public String selectTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) {
+    public String selectTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) throws JsonProcessingException {
 
         List<Trip> trips = tripService.getTripsByPathAndTrain(pathId, trainId);
 
         List<TripDTO> tripDTOs = new ArrayList<TripDTO>();
         for (Trip trip : trips) {
-            TripDTO tripDTO = new TripDTO(trip.getId(),
-                    trip.getTrain().getId(), trip.getTrain().getNumber(),
-                    trip.getPath().getId(), trip.getPath().getTitle(), trip.getLastChange());
+            TripDTO tripDTO = tripConverter.convertToTripDTO(trip);
             tripDTOs.add(tripDTO);
+            System.out.println(tripDTO);
         }
 
-        try {
-            return json.writeValueAsString(tripDTOs);
-        } catch (JsonProcessingException e) {
-            return "error " + e.toString();
-        }
+        return json.writeValueAsString(tripDTOs);
+
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public
     @ResponseBody
-    String editTrip(@RequestParam("trip") String tripJSON) {
-        try {
+    String editTrip(@RequestParam("trip") String tripJSON) throws EntityNotFoundException, CascadeException, OutdateException, IOException {
+
             TripDTO tripDTO = json.readValue(tripJSON, TripDTO.class);
-            tripService.editTrip(tripDTO.getId(), tripDTO.getPathId(), tripDTO.getTrainId(), tripDTO.getLastChange());
+            tripService.editTrip(tripDTO.getId(), tripDTO.getPathId(), tripDTO.getTrainId(), tripDTO.isForward(), tripDTO.getLastChange());
             return "success";
-        } catch (OutdateException e) {
-            return "outdate " + e;
-        } catch (Exception e) {
-            return "error " + e;
-        }
+
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)

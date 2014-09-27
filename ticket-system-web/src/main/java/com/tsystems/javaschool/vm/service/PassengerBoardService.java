@@ -50,9 +50,4 @@ public class PassengerBoardService {
         return boardDAO.getBoard(departureStation, arriveStation, departureAfter, arriveBefore);
     }
 
-    public List<PairBoard> getDefTrips(Long departureStationId, Long arriveStationId, Timestamp departureAfter, Timestamp arriveBefore) {
-
-        return boardDAO.getBoard(departureStationId, arriveStationId, departureAfter, arriveBefore);
-    }
-
 }

@@ -11,6 +11,7 @@ create table train (
 create table path (
 	id bigint not null auto_increment primary key,
 	title varchar(50),
+	return_title varchar(50),
 	last_change int default 1
 ) engine = InnoDB;
 
@@ -86,6 +87,7 @@ create table hibernate_sequences (
 ) engine = InnoDB;
 
 insert role set id = -2, title = "ROLE_ADMIN";
+insert role set id = -3, title = "MANAGER";
 insert role set id = -4, title = "ROLE_USER";
 insert user set id = -1, login = "admin", pswd = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", role_id = -2;
 
@@ -108,8 +110,8 @@ insert into path_station (path_id, station_id) values (0, 0), (0, 0);
 update user set pswd = "d033e22ae348aeb5660fc2140aec35850c4da997" where id = -1;
 update user set pswd ="8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" where id = -1;
 select * from user, role where role_id = role.id;
-alter table path modify last_change int default 1;
+alter table trip add forward bool;
 alter table train add last_change int default 1;
 alter table path_station drop stand_time;
-update trip set last_change = 1 where id > 0;
-select * from role;
+update trip set forward = true where id > 0;
+select * from trip;

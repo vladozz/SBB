@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -39,13 +40,13 @@ public class BoardService {
         if (!checkLCI(trip, lci)) {
             throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
         }
-        if (!trip.getBoardList().isEmpty()) {
+        if (!boardDAO.getBoardForTrip(trip).isEmpty()) {
             throw new TripException("Trip already has board!");
         }
 
         List<Station> stations = trip.getPath().getStations();
         if (stations.isEmpty()) {
-            throw new EmptyListException("Can't create board for trip which path has empty list of stations." +
+            throw new EmptyListException("Can't create board for trip which path has less than 2 of stations." +
                     "Trip id: " + trip.getId() + "; path: " + trip.getPath());
         }
 
@@ -54,14 +55,20 @@ public class BoardService {
         Timestamp timestamp = new Timestamp(dateTime.getMillis());
         for (Station station : stations) {
             Board boardLine = new Board(trip, station, timestamp, timestamp);
-            boardDAO.create(boardLine);
             board.add(boardLine);
+        }
+        if (!trip.isForward()) {
+            Collections.reverse(board);
+        }
+        for (Board boardLine : board) {
+            boardDAO.create(boardLine);
         }
         return board;
     }
 
     @Transactional
     public String changeBoard(BoardTripDTO[] boardTripDTOs) throws EntityNotFoundException {
+        //TODO: validation!
         List<Board> boardList = new ArrayList<Board>();
         StringBuilder errorList = new StringBuilder();
         int errorCount = 0;

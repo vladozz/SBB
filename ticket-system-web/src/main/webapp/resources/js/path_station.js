@@ -2,48 +2,43 @@
  * Created by Vlad on 13.09.2014.
  */
 function addStationToPath() {
+    var $inputStation = $('#inputStation');
+    if ($inputStation.html().trim() === '') {
+        popupError('No station to add');
+        return;
+    }
+
     var pathId = $('#pathSelect').find('option:selected').attr('value');
-    var stationId = $('#inputStation').find('option:selected').attr('value');
+    var stationId = $inputStation.find('option:selected').attr('value');
     var stationBeforeInsertId = $('#inputIndex').find('option:selected').attr('value');
     var lci = $('#lci').text();
 
-    $.post('/SBB/path/stations',
-        {
+    $.ajax({
+        type: "post",
+        url: '/SBB/path/stations',
+        data: {
             pathId: pathId,
             stationId: stationId,
             stationBeforeInsertId: stationBeforeInsertId,
             lci: lci
         },
-        function (data) {
-            if (data == "false") {
-                BootstrapDialog.show({
-                    title: 'Update error!',
-                    message: 'You have irrelevant version of page. Please reload the page and try again',
-                    buttons: [
-                        {
-                            label: 'Reload',
-                            action: function () {
-                                location.reload();
-                            }
-                        }
-                    ]
-                });
+
+        success: function (response) {
+            operSuccess();
+            if (stationBeforeInsertId == 0) {
+                $('#listOfStations').find('tbody').append(response);
             } else {
-                BootstrapDialog.show({
-                    title: 'Update success!',
-                    message: 'Update success',
-                    buttons: [
-                        {
-                            label: 'OK',
-                            action: function (dialog) {
-                                moveOptionAdd(stationId, stationBeforeInsertId);
-                                dialog.close();
-                            }
-                        }
-                    ]
-                });
+                $('#' + stationBeforeInsertId).before(response);
             }
-        });
+            moveOptionAdd(stationId, stationBeforeInsertId);
+        },
+        error: function (jdXHR) {
+            if (jdXHR.status != 400) {
+                $('.close').click();
+                $('#close').click();
+            }
+            popupError(jdXHR.status + " " + jdXHR.statusText);
+        }});
 }
 
 function go() {
@@ -57,39 +52,22 @@ function toggleAddForm() {
 
 function removeStationFromPath(pathId, stationId) {
     var lci = $('#lci').text();
-    $.post('/SBB/path/stations/remove', { pathId: pathId, stationId: stationId, lci: lci }, function (data) {
-        if (data == "false") {
-            BootstrapDialog.show({
-                title: 'Update error!',
-                message: 'You have irrelevant version of page. Please reload the page and try again',
-                buttons: [
-                    {
-                        label: 'Reload',
-                        action: function () {
-                            location.reload();
-                        }
-                    }
-                ]
-            });
-        } else {
-            BootstrapDialog.show({
-                title: 'Update success!',
-                message: 'Update success',
-                buttons: [
-                    {
-                        label: 'OK',
-                        action: function (dialog) {
-                            moveOptionDelete(stationId);
-                            dialog.close();
-                        }
-                    }
-                ]
-            });
-        }
-    });
+    $.ajax({
+        type: 'post',
+        url: '/SBB/path/stations/remove',
+        data: { pathId: pathId, stationId: stationId, lci: lci },
+        success: function () {
+            operSuccess();
+            moveOptionDelete(stationId);
+        },
+        error: function (jdXHR) {
+            popupError(jdXHR.status + " " + jdXHR.statusText);
+        }});
 }
 
-function confirmRemoveStationFromPath(pathId, station, stationId) {
+function confirmRemoveStationFromPath(stationId) {
+    var pathId = $('#pathId').text();
+    var station = $('#' + stationId).find('.title').val();
     BootstrapDialog.show({
         title: 'Confirm removing',
         message: 'Do you confirm removing station ' + station + ' from path with id: ' + pathId + '?',
@@ -113,41 +91,50 @@ function confirmRemoveStationFromPath(pathId, station, stationId) {
 
 function moveOptionAdd(stationId, stationBeforeInsertId) {
     var option = $('#inputStation').find("[value='" + stationId + "']");
-    var optionBefore = $('#inputIndex').find("[value='" + stationBeforeInsertId + "']");
+    var $inputIndex = $('#inputIndex');
+    var optionBefore = $inputIndex.find("[value='" + stationBeforeInsertId + "']");
     optionBefore.before(option.clone());
     var stationTitle = option.text();
     option.remove();
-    $('#inputIndex').find("[value='0']").attr('selected', true);
+    $inputIndex.find("[value='0']").attr('selected', true);
     var newRow = createRow(stationId, stationTitle);
-    if (stationBeforeInsertId == 0) {
-        $('#listOfStations').append(newRow);
-    } else {
-        $('#' + stationBeforeInsertId).before(newRow);
-    }
-    $('#lci').text(parseInt($('#lci').text()) + 1);
+
+    var $lci = $('#lci');
+    $lci.text(parseInt($lci.text()) + 1);
 }
 
 function createRow(stationId, stationTitle) {
-    var pathId = $('#pathId').text();
+//    var pathId = $('#pathId').text();
     var html = "<tr id=\"" + stationId + "\"><td class=\"id\">" + stationId + "</td><td class=\"title\">" + stationTitle + "</td>" +
-        "<td class=\"remove\"><button class=\"btn btn-warning\" " +
-        "onclick=\"confirmRemoveStationFromPath(" + pathId + ", '" + stationTitle + "' , " + stationId +
-        ");\">Remove</button></td></tr>";
+        "<td><button class=\"btn btn-warning\" " +
+        "onclick=\"confirmRemoveStationFromPath(" + stationId + ");\">Remove</button></td></tr>";
     return html;
 }
 
 function moveOptionDelete(stationId) {
+
     var option = $('#inputIndex').find("[value='" + stationId + "']");
 
-    $('#inputStation').find("option").each(function () {
-        if ($(this).text() > option.text()) {
-            $(this).before(option.clone());
-            return false;
-        }
-    });
+    var $inputStation = $('#inputStation');
+    if ($inputStation.html().trim() === '') {
+        $inputStation.append(option.clone());
+    } else {
+        var added = false;
+        $inputStation.find("option").each(function () {
+            if ($(this).text() > option.text()) {
+                $(this).before(option.clone());
+                added = true;
+                return false;
+            }
+            if (!added) {
+                $inputStation.append(option.clone());
+            }
+        });
+    }
     option.remove();
     $('#' + stationId).remove();
 
-    $('#lci').text(parseInt($('#lci').text()) + 1);
+    var $lci = $('#lci');
+    $lci.text(parseInt($lci.text()) + 1);
 
 }

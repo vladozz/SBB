@@ -32,6 +32,9 @@
     <br/>
 </c:if>
 
+<label for="trainSelect" class="control-label col-sm-1">Forward</label>
+<input type="checkbox" id="forward"/>
+
 <div class="panel panel-default">
     <div class="panel-heading" align="center">List of trips</div>
     <div class="table-responsive">

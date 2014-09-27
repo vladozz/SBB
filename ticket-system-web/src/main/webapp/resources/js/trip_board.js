@@ -61,21 +61,30 @@ function createRow(boardLine) {
     var row = $tr.clone().attr("id", boardId);
 
     idArray.push(boardId);
+
     $.each(boardLine, function (key, value) {
 
-        var $cell;
-        if (key == "minuteOffset") {
-            $cell = $hidden.clone();
+        var $cell = $td.clone();
+//        if (key == "minuteOffset") {
+//            $cell = $hidden.clone();
+//        } else {
+//            $cell = $td.clone();
+//        }
+        if (key == 'minuteOffset') {
+            $cell.text(getTZ(value)).append($hidden.clone().addClass(key).text(value));
         } else {
-            $cell = $td.clone();
+            $cell.attr('class', key).text(value);
         }
-        $cell.attr('class', key).text(value);
         row.append($cell);
         if ($.inArray(key, mutable) != -1) {
             addClickListener($cell);
         }
     });
     return row;
+
+    function getTZ(value) {
+        return 'GMT' + (value >= 0 ? '+' : '') + value / 60;
+    }
 }
 
 function addClickListener($cell) {
@@ -85,6 +94,12 @@ function addClickListener($cell) {
         var $inp = makeInputCell($cell);
         $cell.html($inp);
         $inp.focus();
+    });
+    $cell.dblclick(function () {
+        if ($cell.attr('class').contains('Time')) {
+            alert($cell.attr('class'));
+        }
+//        var errMes = validate()
     });
 }
 
@@ -131,7 +146,7 @@ var syncDate = function (boardId, depAr, memText) {
     var $inp = $cell.find('input');
     var newText = $inp.val();
     if (newText == '') {
-        alertError("Invalid date");
+        popupError("Invalid date");
         newText = memText;
     }
     $cell.text(newText);
@@ -145,26 +160,31 @@ var syncTime = function (boardId, depAr, memText) {
     var $inp = $cell.find('input');
     var newText = $inp.val();
     if (newText == '') {
-        alertError("Invalid time");
+        popupError("Invalid time");
         newText = memText;
     }
     $cell.text(newText);
     addClickListener($cell);
     var errMes = validate(boardId, depAr);
     if (errMes !== '') {
-        BootstrapDialog.show({
-            title: 'Error',
-            message: errMes,
-            type: BootstrapDialog.TYPE_DANGER,
-            onhidden: function () {
-                $('#' + boardId + " ." + depAr + "Date").click()
-            }
-        });
+        popupNoTimeoutError(errMes);
+        $cell.css({'color': 'red'});
+//        BootstrapDialog.show({
+//            title: 'Error',
+//            message: errMes,
+//            type: BootstrapDialog.TYPE_DANGER,
+//            onhidden: function () {
+//                $('#' + boardId + " ." + depAr + "Date").click()
+//            }
+//        });
+    } else {
+        $cell.css({'color' : 'black'})
     }
 };
 
 function validate(boardId, depAr) {
     if (sbb_debug_js_validation_off != undefined) {
+        popupInfo("Debug mode on! JS validation is off");
         return '';
     }
 
@@ -202,13 +222,12 @@ function validate(boardId, depAr) {
             }
         }
     }
-    if (errorMessage.length == 0) {
+    if (true || errorMessage.length == 0) {
         var standTime = depAr == 'arrive' ? nextTime - thisTime : thisTime - prevTime;
         standTime /= 60000;
         $('#' + boardId + ' .standTime').text(standTime);
     }
     return errorMessage;
-
 }
 
 function getTime(boardId, depAr) {
@@ -218,6 +237,10 @@ function getTime(boardId, depAr) {
 }
 
 function updateBoard() {
+    if (!validateAll()) {
+        return;
+    }
+
     var board = [];
     $('#boardTable').find('.remove').each(function () {
         var boardString = {};
@@ -236,21 +259,29 @@ function updateBoard() {
         {board: board},
         function(response) {
             if (!isError(response)) {
-                BootstrapDialog.alert("Update success");
+                popupSuccess("Update success");
                 getBoard();
             }
         }
     );
 }
 
-
-
-function alertError(errorMessage) {
-    BootstrapDialog.show({
-        title: 'Error',
-        message: errorMessage,
-        type: BootstrapDialog.TYPE_DANGER
+function validateAll() {
+    if (sbb_debug_js_validation_off != undefined) {
+        popupInfo("Debug mode on! JS validation is off");
+        return true;
+    }
+    var errorCount = 0;
+    $.each(idArray, function(id) {
+        $.each(['departure', 'arrive'], function(depAr){
+        var errMes = validate(id, 'depAr');
+        if (errMes !== '') {
+            errorCount++;
+            popupNoTimeoutError('Lne ' + id + ': ' + errMes);
+        }
     });
+    return errorCount == 0;
 }
+
 
 

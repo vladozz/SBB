@@ -1,9 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>--%>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.js"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/bootstrap.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/bootstrap-dialog.js'/>"></script>
-
 
 <div class="col-lg-3">
 

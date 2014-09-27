@@ -24,8 +24,8 @@ public class UserHelper {
             return code.toString();
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("Hash sha-256 exception!", e);
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     //TODO: change 3 to 10

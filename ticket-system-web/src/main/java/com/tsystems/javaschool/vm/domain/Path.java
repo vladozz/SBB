@@ -9,6 +9,9 @@ public class Path extends SBBEntity {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "return_title")
+    private String returnTitle;
+
     @Column(name = "last_change")
     private Integer lastChange;
 
@@ -18,9 +21,6 @@ public class Path extends SBBEntity {
             joinColumns = {@JoinColumn(name = "path_id")},
             inverseJoinColumns = {@JoinColumn(name = "station_id")})
     private List<Station> stations;
-
-    @OneToMany(mappedBy = "path")
-    private List<Trip> trips;
 
 
 
@@ -39,8 +39,20 @@ public class Path extends SBBEntity {
         return title;
     }
 
+    public String getTitle(boolean forward) {
+        return forward ? title : returnTitle;
+    }
+
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getReturnTitle() {
+        return returnTitle;
+    }
+
+    public void setReturnTitle(String returnTitle) {
+        this.returnTitle = returnTitle;
     }
 
     public List<Station> getStations() {
@@ -49,10 +61,6 @@ public class Path extends SBBEntity {
 
     public void setStations(List<Station> stations) {
         this.stations = stations;
-    }
-
-    public List<Trip> getTrips() {
-        return trips;
     }
 
     public Integer getLastChange() {

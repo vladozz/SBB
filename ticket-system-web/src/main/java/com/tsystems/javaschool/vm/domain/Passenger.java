@@ -10,7 +10,7 @@ import java.util.TimeZone;
 
 @Entity
 @Table(name="passenger")
-public class Passenger extends SBBEntity implements Comparable<Passenger> {
+public class Passenger extends SBBEntity {
     @Column(name="first_name")
     private String firstName;
 
@@ -20,8 +20,6 @@ public class Passenger extends SBBEntity implements Comparable<Passenger> {
     @Column(name="birthdate")
     private Calendar birthDate;
 
-    @OneToMany(mappedBy = "passenger")
-    private List<Ticket> tickets;
 
     public Passenger() {
     }
@@ -56,14 +54,6 @@ public class Passenger extends SBBEntity implements Comparable<Passenger> {
         this.birthDate = birthDate;
     }
 
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }
-
 
 
     @Override
@@ -77,12 +67,14 @@ public class Passenger extends SBBEntity implements Comparable<Passenger> {
     }
 
     @Override
-    public int compareTo(Passenger that) {
+    public int compareTo(SBBEntity sbbEntity) {
+        Passenger that = ((Passenger) sbbEntity);
+
         int result = this.lastName.compareToIgnoreCase(that.lastName);
         if (result == 0) {
             result = this.firstName.compareToIgnoreCase(that.getFirstName());
             if (result == 0) {
-                result = - this.birthDate.compareTo(that.birthDate);
+                result = -this.birthDate.compareTo(that.birthDate);
             }
         }
         return result;

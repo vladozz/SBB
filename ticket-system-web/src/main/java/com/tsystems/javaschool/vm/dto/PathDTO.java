@@ -6,6 +6,7 @@ public class PathDTO implements Serializable {
     private static final long serialVersionUID = -2482485965854484693L;
     private Long id;
     private String title;
+    private String returnTitle;
     //    private List<String> stations;
     private String beginStation;
     private String endStation;
@@ -16,25 +17,20 @@ public class PathDTO implements Serializable {
     public PathDTO() {
     }
 
-    public PathDTO(Long id, String title) {
+    public PathDTO(Long id, String title, String returnTitle) {
         this.id = id;
         this.title = title;
     }
 
-    public PathDTO(Long id, String title, String beginStation, String endStation, Integer lastChange) {
+    public PathDTO(Long id, String title, String returnTitle,String beginStation, String endStation, Integer lastChange) {
         this.id = id;
         this.title = title;
+        this.returnTitle = returnTitle;
         this.beginStation = beginStation;
         this.endStation = endStation;
         this.lastChange = lastChange;
     }
 
-    public PathDTO(Long id, String title, String beginStation, String endStation) {
-        this.id = id;
-        this.title = title;
-        this.beginStation = beginStation;
-        this.endStation = endStation;
-    }
 
     public Long getId() {
         return id;
@@ -50,6 +46,14 @@ public class PathDTO implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getReturnTitle() {
+        return returnTitle;
+    }
+
+    public void setReturnTitle(String returnTitle) {
+        this.returnTitle = returnTitle;
     }
 
     public String getBeginStation() {

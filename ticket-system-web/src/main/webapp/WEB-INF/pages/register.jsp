@@ -1,9 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"/>
-
 <form role="form" class="form-horizontal col-sm-6 jumbotron" id="registerForm" method="post"
       onsubmit="validateRegisterForm()"
       action="<c:url value="/register"/> ">

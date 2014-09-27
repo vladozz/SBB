@@ -70,16 +70,7 @@
                 </tr>
                 <c:if test="${!empty pathStationList}">
                 <c:forEach items="${pathStationList}" var="station">
-                    <tr id="${station.id}">
-                        <td class="id">${station.id}</td>
-                        <td class="title">${station.title}</td>
-                        <td class="remove">
-                            <button class="btn btn-warning"
-                                    onclick="confirmRemoveStationFromPath(${pathId}, '${station.title}' ,${station.id});">
-                                Remove
-                            </button>
-                        </td>
-                    </tr>
+                    <%@include file="path_station_row.jsp"%>
                 </c:forEach>
                 </c:if>
             </table>

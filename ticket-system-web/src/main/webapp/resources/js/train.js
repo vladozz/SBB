@@ -50,7 +50,6 @@ function editModalTrain(id, number, placesQty) {
 }
 
 function validateTrainForm(inputNumber, inputPQ) {
-    alert(sbb_debug_js_validation_off);
     if (sbb_debug_js_validation_off != undefined) {
         return true;
     }

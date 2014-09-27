@@ -1,15 +1,11 @@
 package com.tsystems.javaschool.vm.service;
 
+import com.tsystems.javaschool.vm.dao.BoardDAO;
 import com.tsystems.javaschool.vm.dao.PathDAO;
 import com.tsystems.javaschool.vm.dao.TrainDAO;
 import com.tsystems.javaschool.vm.dao.TripDAO;
-import com.tsystems.javaschool.vm.domain.Path;
-import com.tsystems.javaschool.vm.domain.Train;
-import com.tsystems.javaschool.vm.domain.Trip;
-import com.tsystems.javaschool.vm.exception.EmptyListException;
-import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
-import com.tsystems.javaschool.vm.exception.OutdateException;
-import com.tsystems.javaschool.vm.exception.SBBException;
+import com.tsystems.javaschool.vm.domain.*;
+import com.tsystems.javaschool.vm.exception.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +22,10 @@ public class TripService {
     private TrainDAO trainDAO;
     @Autowired
     private TripDAO tripDAO;
+    @Autowired
+    private BoardDAO boardDAO;
+    @Autowired
+    private PassengerService passengerService;
 
     public TripService() {
     }
@@ -35,14 +35,13 @@ public class TripService {
     }
 
     @Transactional
-    public Trip addTrip(Long pathId, Long trainId) throws SBBException {
+    public Trip addTrip(Long pathId, Long trainId, Boolean forward) throws SBBException {
         Path path = pathDAO.findById(pathId);
         Train train = trainDAO.findById(trainId);
         if (path.getStations().size() < 2) {
-            throw new EmptyListException("You can't create trip with empty list of stations. Path:" + path);
+            throw new EmptyListException("You can't create trip with path which has less than 2 stations. Path:" + path);
         }
-        Trip trip = new Trip(path, train);
-        trip.setLastChange(1);
+        Trip trip = new Trip(path, train, forward);
         tripDAO.create(trip);
         return trip;
     }
@@ -51,21 +50,42 @@ public class TripService {
         if (!tripLCI.equals(trip.getLastChange())) {
             return false;
         } else {
+            tripDAO.detach(trip);
             trip.incrementLastChange();
             return true;
         }
     }
 
+
     @Transactional
-    public Trip editTrip(Long tripId, Long pathId, Long trainId, Integer lci) throws OutdateException, EntityNotFoundException {
+    public Trip editTrip(Long tripId, Long pathId, Long trainId, Boolean forward, Integer lci)
+            throws OutdateException, EntityNotFoundException, CascadeException {
+
         Trip trip = tripDAO.findById(tripId);
-        Path path = pathDAO.findById(pathId);
-        Train train = trainDAO.findById(trainId);
 
         if (!checkLCI(trip, lci)) {
             throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
         }
+
+        Path path = pathDAO.findById(pathId);
+        Train train = trainDAO.findById(trainId);
+        List<Board> boardList = boardDAO.getBoardForTrip(trip);
+
+        if (!boardList.isEmpty()) {
+            if (!trip.getPath().equals(path) || !trip.isForward().equals(forward)) {
+                throw new CascadeException("You can't edit route of trip which has board list");
+            }
+
+            int delta = train.getPlacesQty() - trip.getTrain().getPlacesQty();
+            if (delta < 0 &&
+                    passengerService.countFreePlaces(boardList.get(0), boardList.get(boardList.size() - 1)) < -delta) {
+                throw new CascadeException("You can't edit train of trip because its quantity of places is less" +
+                        " than count of tickets");
+            }
+        }
+
         trip.setPath(path);
+        trip.setForward(forward);
         trip.setTrain(train);
         tripDAO.update(trip);
         return trip;
@@ -74,7 +94,9 @@ public class TripService {
     @Transactional
     public void removeTrip(Long tripId, Integer lci) throws SBBException {
         Trip trip = tripDAO.findById(tripId);
-
+        if (!boardDAO.getBoardForTrip(trip).isEmpty()) {
+            throw new CascadeException("You can't delete trip which has board list");
+        }
         if (!checkLCI(trip, lci)) {
             throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
         }

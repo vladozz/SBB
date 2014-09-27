@@ -5,6 +5,7 @@ import com.tsystems.javaschool.vm.dao.StationDAO;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
+import com.tsystems.javaschool.vm.exception.OutdateException;
 import com.tsystems.javaschool.vm.exception.PathException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -33,18 +35,21 @@ public class PathService {
     }
 
     @Transactional
-    public boolean editPath(Path path) throws EntityNotFoundException {
+    public Path editPath(Path path) throws EntityNotFoundException, OutdateException {
         Path newPath = pathDAO.findById(path.getId());
         if (checkLCI(newPath, path.getLastChange())) {
             newPath.setTitle(path.getTitle());
+            newPath.setReturnTitle(path.getReturnTitle());
             pathDAO.update(newPath);
-            return true;
+            return newPath;
         } else {
-            return false;
+            throw new OutdateException();
         }
     }
 
     private boolean checkLCI(Path path, Integer pathLCI) {
+        System.out.println("path = " + path);
+        System.out.println("pathLCI = " + pathLCI);
         if (!pathLCI.equals(path.getLastChange())) {
             return false;
         } else {
@@ -64,14 +69,17 @@ public class PathService {
     }
 
     @Transactional
-    public Path addStationToPathSafe(Long pathId, Long stationId, Long stationBeforeInsertId, Integer lci) throws PathException, EntityNotFoundException {
+    public Station addStationToPathSafe(Long pathId, Long stationId, Long stationBeforeInsertId, Integer lci)
+            throws OutdateException, EntityNotFoundException {
+
         Path path = pathDAO.findById(pathId);
         Station station = stationDAO.findById(stationId);
 
         if (checkLCI(path, lci)) {
-            return addStationToPathSafe(path, station, stationBeforeInsertId);
+            addStationToPathSafe(path, station, stationBeforeInsertId);
+            return station;
         } else {
-            throw new PathException("Last change index were updated!");
+            throw new OutdateException("Last change index were updated!");
         }
 
     }
@@ -116,13 +124,13 @@ public class PathService {
      * @param stationToRemoveId
      */
     @Transactional
-    public Path removeStationFromPathSafe(Long pathId, Long stationToRemoveId, Integer lci) throws PathException, EntityNotFoundException {
+    public Path removeStationFromPathSafe(Long pathId, Long stationToRemoveId, Integer lci) throws OutdateException, EntityNotFoundException {
         Path path = pathDAO.findById(pathId);
 
         if (checkLCI(path, lci)) {
             return removeStationFromPathSafe(path, stationToRemoveId);
         } else {
-            throw new PathException("Last change index were updated!");
+            throw new OutdateException("Last change index were updated!");
         }
 
 
@@ -160,12 +168,24 @@ public class PathService {
     }
 
     public List<Station> getStationsOfPath(Long pathId) throws EntityNotFoundException {
-        Path path = pathDAO.findById(pathId);
-        return path.getStations();
+        return getStationsOfPath(pathId, true);
     }
 
     public List<Station> getStationsOfPath(Path path) {
-        return path.getStations();
+        return getStationsOfPath(path, true);
+    }
+
+    public List<Station> getStationsOfPath(Long pathId, boolean forward) throws EntityNotFoundException {
+        Path path = pathDAO.findById(pathId);
+        return getStationsOfPath(path, forward);
+    }
+
+    public List<Station> getStationsOfPath(Path path, boolean forward) {
+        List<Station> stations = path.getStations();
+        if (!forward) {
+            Collections.reverse(stations);
+        }
+        return stations;
     }
 }
 

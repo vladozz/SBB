@@ -14,16 +14,17 @@ public class Trip extends SBBEntity{
     private Train train;
     @Column(name = "last_change")
     private Integer lastChange;
-
-    @OneToMany(mappedBy = "trip")
-    private List<Board> boardList;
+    @Column(name = "forward")
+    private Boolean forward;
 
     public Trip() {
     }
 
-    public Trip(Path path, Train train) {
+    public Trip(Path path, Train train, Boolean forward) {
         this.path = path;
         this.train = train;
+        this.forward = forward;
+        lastChange = 1;
     }
 
     public Path getPath() {
@@ -42,10 +43,6 @@ public class Trip extends SBBEntity{
         this.train = train;
     }
 
-    public List<Board> getBoardList() {
-        return boardList;
-    }
-
     public Integer getLastChange() {
         return lastChange;
     }
@@ -54,43 +51,26 @@ public class Trip extends SBBEntity{
         this.lastChange = lastChange;
     }
 
+    public Boolean isForward() {
+        return forward;
+    }
+
+    public void setForward(Boolean forward) {
+        this.forward = forward;
+    }
+
     public void incrementLastChange() {
         lastChange++;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Trip)) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-
-        Trip trip = (Trip) o;
-
-        return path.equals(trip.path) && train.equals(trip.train);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + path.hashCode();
-        result = 31 * result + train.hashCode();
-        return result;
-    }
 
     @Override
     public String toString() {
         return "Trip{" +
-                "id=" + id +
-                ", path=" + path +
+                "path=" + path +
                 ", train=" + train +
-                '}';
+                ", lastChange=" + lastChange +
+                ", forward=" + forward;
     }
 }
 

@@ -8,12 +8,12 @@
 
     <link href="<c:url value='/resources/css/bootstrap.css'/>" rel="stylesheet"/>
     <link href="<c:url value='/resources/css/bootstrap-dialog.css'/>" rel="stylesheet"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
+    <link href="<c:url value='/resources/css/toastr.min.css'/>" rel="stylesheet"/>
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="<c:url value='/resources/js/jquery-1.11.1.js' />"></script>
     <script type="text/javascript" src="<c:url value='/resources/js/bootstrap.min.js' />"></script>
     <script type="text/javascript" src="<c:url value='/resources/js/bootstrap-dialog.js'/>"></script>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript" src="<c:url value='/resources/js/toastr.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/resources/js/alerts.js'/>"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

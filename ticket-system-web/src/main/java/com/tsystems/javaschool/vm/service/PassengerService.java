@@ -50,7 +50,7 @@ public class PassengerService {
         int begin = stations.indexOf(departure.getStation());
         int end = stations.indexOf(arrive.getStation());
         int max = 0;
-        int[] fillness = new int[end - begin];
+        //int[] fillness = new int[end - begin];
         for (int i = begin; i < end; i++) {
             int c = 0;
             //todo: optimize
@@ -60,7 +60,7 @@ public class PassengerService {
                     c++;
                 }
             }
-            fillness[i - begin] = c;
+            //fillness[i - begin] = c;
             if (c > max) {
                 max = c;
             }
@@ -68,15 +68,26 @@ public class PassengerService {
         return trip.getTrain().getPlacesQty() - max;
     }
 
-    public boolean isPassengerOnTrip(Passenger passenger, Trip trip) {
-        List<Ticket> tickets = ticketDAO.getTicketsOfTrip(trip);
+//    public int countFreePlacesOpt(Board departure, Board arrive) {
+//
+//        Trip trip = departure.getTrip();
+//        List<Board> fullBoard = trip.getBoardList();
+//        Map<Long, Integer> indexMap = new HashMap<Long, Integer>();
+//        for (int i = 0; i < fullBoard.size(); i++) {
+//            indexMap.put(fullBoard.get(i).getId(), i);
+//        }
+//
+//        int c = 0;
+//        int max = 0;
+//        for (int i = 0; i < fullBoard.size() - 1; i++) {
+//            c += fullBoard.get(i).getDepartures().size() - fullBoard.get(i + 1).getArrives().size();
+//            max = Math.max(max, c);
+//        }
+//        return trip.getTrain().getPlacesQty() - max;
+//    }
 
-        for (Ticket t : tickets) {
-            if (t.getPassenger().equals(passenger)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isPassengerOnTrip(Passenger passenger, Trip trip) {
+        return !ticketDAO.getTicketsOfTripByPassenger(trip, passenger.getId()).isEmpty();
     }
 
     public boolean canBuyTicket(Passenger passenger, Board departure, Board arrive)

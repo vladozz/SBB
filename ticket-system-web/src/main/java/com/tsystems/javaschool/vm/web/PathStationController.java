@@ -4,11 +4,13 @@ package com.tsystems.javaschool.vm.web;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
+import com.tsystems.javaschool.vm.exception.OutdateException;
 import com.tsystems.javaschool.vm.exception.PathException;
 import com.tsystems.javaschool.vm.service.PathService;
 import com.tsystems.javaschool.vm.service.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -47,17 +49,13 @@ public class PathStationController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    @ResponseBody
     public String addStationToPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
                                    @RequestParam("stationBeforeInsertId") Long stationBeforeInsertId,
-                                   @RequestParam("lci") Integer lci, Map<String, Object> map) throws EntityNotFoundException {
-        System.out.println("addStationToPath");
-        try {
-            pathService.addStationToPathSafe(pathId, stationId, stationBeforeInsertId, lci);
-        } catch (PathException e) {
-            return "false";
-        }
-        return "true";
+                                   @RequestParam("lci") Integer lci, ModelMap map) throws EntityNotFoundException, OutdateException {
+
+        Station station = pathService.addStationToPathSafe(pathId, stationId, stationBeforeInsertId, lci);
+        map.put("station", station);
+        return "path_station_row";
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
@@ -66,16 +64,9 @@ public class PathStationController {
                                         @RequestParam("lci") Integer lci, Map<String, Object> map) throws EntityNotFoundException {
         try {
             pathService.removeStationFromPathSafe(pathId, stationId, lci);
-        } catch (PathException e) {
+        } catch (OutdateException e) {
             return "false";
         }
         return "true";
     }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public String handleEntityNotFoundException(EntityNotFoundException e) {
-        System.out.println("from handler " + e);
-        return "from handler " + e;
-    }
-
 }

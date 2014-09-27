@@ -1,9 +1,6 @@
 package com.tsystems.javaschool.vm.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -27,6 +24,8 @@ public class Train extends SBBEntity {
 
     @OneToMany(mappedBy = "train")
     List<Trip> trips;
+
+
 
     public Train() {
 
@@ -52,6 +51,8 @@ public class Train extends SBBEntity {
     public void setPlacesQty(Short placesQty) {
         this.placesQty = placesQty;
     }
+
+
 
     public List<Trip> getTrips() {
         return trips;

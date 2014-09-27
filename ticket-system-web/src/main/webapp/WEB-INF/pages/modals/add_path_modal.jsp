@@ -33,6 +33,13 @@
                             <form:input path="title" type="text" class="form-control" id="inputTitle" placeholder=""/>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="inputReturnTitle" class="col-sm-3 control-label">Number</label>
+
+                        <div class="col-sm-9">
+                            <form:input path="returnTitle" type="text" class="form-control" id="inputReturnTitle" placeholder=""/>
+                        </div>
+                    </div>
                     <div class="form-group" id="commonLC">
                         <label for="inputLC" class="col-sm-3 control-label">Last change index</label>
 

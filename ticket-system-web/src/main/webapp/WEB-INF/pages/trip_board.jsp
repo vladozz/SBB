@@ -19,12 +19,13 @@
                 <th>Line ID</th>
                 <th>Trip ID</th>
                 <th>Station title</th>
+                <th>GMT</th>
                 <th>Arrive date</th>
                 <th>Arrive time</th>
                 <th>Departure date</th>
                 <th>Departure time</th>
                 <th>Stand time</th>
-                <th width="10%">Delete</th>
+                <%--<th width="10%">Delete</th>--%>
             </tr>
 
         </table>
