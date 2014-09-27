@@ -279,7 +279,7 @@ function validateAll() {
             errorCount++;
             popupNoTimeoutError('Lne ' + id + ': ' + errMes);
         }
-    });
+    })});
     return errorCount == 0;
 }
 

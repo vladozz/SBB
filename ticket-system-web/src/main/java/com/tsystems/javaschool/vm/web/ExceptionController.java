@@ -36,7 +36,7 @@ public class ExceptionController {
         return modelAndView;
     }
 
-   /* @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value = Exception.class)
     public ModelAndView AllExceptionHandler(Exception e) {
         LOG.error(prepareMessage(e));
         ModelAndView modelAndView = new ModelAndView("msg");
@@ -52,7 +52,7 @@ public class ExceptionController {
         modelAndView.addObject("status", "error");
         modelAndView.addObject("messages", "Internal Server Error");
         return modelAndView;
-    }*/
+    }
 
     public String prepareMessage(Throwable e) {
         StringWriter errors = new StringWriter();
