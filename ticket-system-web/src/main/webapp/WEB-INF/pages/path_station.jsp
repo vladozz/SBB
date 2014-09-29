@@ -8,7 +8,7 @@
 <script type="text/javascript" src="<c:url value='/resources/js/path_station.js'/> "></script>
 <br/><br/>
 
-<div style="display: none" id="lci">${lastChange}</div>
+<div style="display: none" id="version">${version}</div>
 <div style="display: none" id="pathId">${pathId}</div>
 <c:if test="${!empty pathList}">
     <label for="pathSelect" class="control-label col-sm-1">Path list</label>

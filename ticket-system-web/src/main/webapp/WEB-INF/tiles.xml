@@ -59,4 +59,8 @@
         <put-attribute name="body" value="/WEB-INF/pages/req_trips.jsp" />
     </definition>
 
+    <definition name="404" extends="common">
+        <put-attribute name="body" value="/WEB-INF/pages/error/404.jsp" />
+    </definition>
+
 </tiles-definitions>

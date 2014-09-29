@@ -58,14 +58,10 @@ public class TripService {
 
 
     @Transactional
-    public Trip editTrip(Long tripId, Long pathId, Long trainId, Boolean forward, Integer lci)
+    public Trip editTrip(Long tripId, Long pathId, Long trainId, Boolean forward, Integer version)
             throws OutdateException, EntityNotFoundException, CascadeException {
 
         Trip trip = tripDAO.findById(tripId);
-
-        if (!checkLCI(trip, lci)) {
-            throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
-        }
 
         Path path = pathDAO.findById(pathId);
         Train train = trainDAO.findById(trainId);
@@ -87,20 +83,18 @@ public class TripService {
         trip.setPath(path);
         trip.setForward(forward);
         trip.setTrain(train);
+        trip.setVersion(version);
         tripDAO.update(trip);
         return trip;
     }
 
     @Transactional
-    public void removeTrip(Long tripId, Integer lci) throws SBBException {
+    public void removeTrip(Long tripId, Integer version) throws SBBException {
         Trip trip = tripDAO.findById(tripId);
         if (!boardDAO.getBoardForTrip(trip).isEmpty()) {
             throw new CascadeException("You can't delete trip which has board list");
         }
-        if (!checkLCI(trip, lci)) {
-            throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
-        }
-        tripDAO.delete(tripId);
+        tripDAO.delete(tripId, version);
     }
 
     public List<Trip> getTripsByPathAndTrain(Long pathId, Long trainId) {

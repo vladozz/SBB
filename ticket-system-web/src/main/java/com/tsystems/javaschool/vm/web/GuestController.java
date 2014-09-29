@@ -8,6 +8,7 @@ import com.tsystems.javaschool.vm.exception.PassengerException;
 import com.tsystems.javaschool.vm.service.PassengerBoardService;
 import com.tsystems.javaschool.vm.service.PassengerService;
 import com.tsystems.javaschool.vm.service.StationService;
+import com.tsystems.javaschool.vm.validator.LongValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,6 +27,9 @@ public class GuestController {
 
     @Autowired
     private BoardConverter boardConverter;
+
+    @Autowired
+    private LongValidator longValidator;
 
     @RequestMapping(value = "/board/index")
     public String boardIndex(Map<String, Object> map) {
@@ -46,27 +50,25 @@ public class GuestController {
         return "redirect:/board/index";
     }
 
-    @RequestMapping(value = "/board/get" , method = RequestMethod.POST)
-     public String getBoard(@RequestParam("stationId") Long stationId,
-                            @RequestParam("date") String date, Map<String, Object> map) {
-        try {
-            List<Board> board = passengerBoardService.getBoardForStation(stationId, date);
-            Collections.sort(board, new Comparator<Board>() {
-                @Override
-                public int compare(Board o1, Board o2) {
-                    return o1.getArriveTime().compareTo(o2.getArriveTime());
-                }
-            });
-            List<BoardStationDTO> boardStationDTOs = new ArrayList<BoardStationDTO>();
-            for (Board b : board) {
-                boardStationDTOs.add(boardConverter.convertToBoardStationDTO(b));
+    @RequestMapping(value = "/board/get", method = RequestMethod.POST)
+    public String getBoard(@RequestParam("stationId") Long stationId,
+                           @RequestParam("date") String date, Map<String, Object> map) throws EntityNotFoundException {
+
+
+        List<Board> board = passengerBoardService.getBoardForStation(stationId, date);
+        Collections.sort(board, new Comparator<Board>() {
+            @Override
+            public int compare(Board o1, Board o2) {
+                return o1.getArriveTime().compareTo(o2.getArriveTime());
             }
-            map.put("boardList", boardStationDTOs);
-            return "guest/board_row";
-        } catch (EntityNotFoundException e) {
-            map.put("errors", Arrays.asList(e.getMessage()));
-            return "msg";
+        });
+        List<BoardStationDTO> boardStationDTOs = new ArrayList<BoardStationDTO>();
+        for (Board b : board) {
+            boardStationDTOs.add(boardConverter.convertToBoardStationDTO(b));
         }
+        map.put("boardList", boardStationDTOs);
+        return "guest/board_row";
+
     }
 
     @RequestMapping(value = "/reqtrip/index")
@@ -84,7 +86,7 @@ public class GuestController {
     }
 
     @RequestMapping(value = "/reqtrip/get", method = RequestMethod.POST)
-    public String getTrips(@ModelAttribute(value="dto") DefTripDTO defTripDTO, ModelMap map) {
+    public String getTrips(@ModelAttribute(value = "dto") DefTripDTO defTripDTO, ModelMap map) {
         //TODO:validation
         try {
             List<PairBoard> pairBoards = passengerBoardService.getDefTrips(defTripDTO);

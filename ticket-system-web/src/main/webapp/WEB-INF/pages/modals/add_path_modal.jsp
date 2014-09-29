@@ -27,24 +27,17 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputTitle" class="col-sm-3 control-label">Number</label>
+                        <label for="inputTitle" class="col-sm-3 control-label">Title</label>
 
                         <div class="col-sm-9">
                             <form:input path="title" type="text" class="form-control" id="inputTitle" placeholder=""/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputReturnTitle" class="col-sm-3 control-label">Number</label>
+                        <label for="inputReturnTitle" class="col-sm-3 control-label">Return title</label>
 
                         <div class="col-sm-9">
                             <form:input path="returnTitle" type="text" class="form-control" id="inputReturnTitle" placeholder=""/>
-                        </div>
-                    </div>
-                    <div class="form-group" id="commonLC">
-                        <label for="inputLC" class="col-sm-3 control-label">Last change index</label>
-
-                        <div class="col-sm-9">
-                            <form:input path="lastChange" type="text" class="form-control" id="inputLC" placeholder="" readonly="true"/>
                         </div>
                     </div>
 

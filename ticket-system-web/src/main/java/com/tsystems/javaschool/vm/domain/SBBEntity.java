@@ -18,6 +18,29 @@ public abstract class SBBEntity implements Comparable<SBBEntity> {
         this.id = id;
     }
 
+    @Version
+    @Column(name = "version")
+    protected Integer version = 1;
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+
+    @Column(name = "deleted")
+    protected Boolean deleted = false;
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     @Override
     public boolean equals(Object o) {

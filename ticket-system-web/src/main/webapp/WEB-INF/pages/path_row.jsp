@@ -1,14 +1,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <tr id="${path.id}">
     <td class="id">${path.id}</td>
     <td class="title">${path.title}</td>
     <td class="returnTitle">${path.returnTitle}</td>
-    <td class="beginStation">${path.beginStation}</td>
-    <td class="endStation">${path.endStation}</td>
-    <td class="lastChange">${path.lastChange}</td>
+    <td class="version hidden">${path.version}</td>
+    <td class="beginStation">
+        <c:if test="${!empty path.stations}">${path.stations[0].title}</c:if>
+    </td>
+    <td class="endStation">
+        <c:if test="${!empty path.stations}">${path.stations[fn:length(path.stations) - 1].title}</c:if>
+    </td>
     <td>
         <a href="<c:url value="/path/stations/"/>${path.id}">
-        <button type="button" class="btn btn-primary">Stations</button>
+            <button type="button" class="btn btn-primary">Stations</button>
         </a>
     </td>
     <td>

@@ -1,5 +1,5 @@
-function confirmDelete(id, title) {
-
+function confirmDelete(id) {
+    var title = $('#' + id + ' .title').text();
     BootstrapDialog.show({
         title: 'Confirm delete operation',
         message: "Do you confirm removing the station with id " + id + " and title " + title + "?",
@@ -8,14 +8,17 @@ function confirmDelete(id, title) {
                 label: 'Delete',
                 action: function (dialog) {
                     $.ajax({
-                        url: "delete/" + id,
-                        success: function () {
+                        url: "delete",
+                        type: 'post',
+                        data: {id: id, version: $('#' + id + ' .version').text()},
+                        success: function (response) {
                             $('#' + id).remove();
-                            dialog.setMessage('Delete success');
                             dialog.close();
+                            popupSuccess(response);
                         },
-                        error: function (error) {
-                            dialog.setMessage(error);
+                        error: function (jdXHR) {
+                            dialog.close();
+                            popupjdXHRError(jdXHR);
                         }
                     });
                 }
@@ -34,20 +37,21 @@ function confirmDelete(id, title) {
 function addModalStation() {
 
     $('#myModalLabel').text('Add new station');
-    $('#inputId').attr('value', '');
+    $('#inputId').val();
     $('#commonId').slideUp('fast');
-    $('#inputTitle').attr('value', '');
+    $('#inputTitle').val();
     $("#inputTZ").find("[value='GMT']").attr('selected', true);
     $('#submit').attr('onclick', 'addStation();').text('Add station');
 }
 
-function editModalStation(id, title, timeZone) {
+function editModalStation(id) {
+    var ptr = '#' + id + ' ';
     $('#myModalLabel').text('Edit station');
-    $('#inputId').attr('value', id);
+    $('#inputId').val(id);
     $('#commonId').slideDown('fast');
-    $('#inputTitle').attr('value', title);
-   // $('select option:selected').attr('selected', false);
-    $("#inputTZ").find("[value='"+ timeZone + "']").attr('selected', true);
+    $('#inputTitle').val($(ptr + '.title').text());
+    // $('select option:selected').attr('selected', false);
+    $("#inputTZ").find("[value='" + $(ptr + '.timeZone').text() + "']").attr('selected', true);
     $('#submit').attr('onclick', 'editStation();').text('Edit station');
 }
 
@@ -56,7 +60,7 @@ function validateStationForm(inputTitle, inputTZ) {
         return true;
     }
 
-    var title = inputTitle.value;
+    var title = inputTitle.val();
     if (title.length < 1 || title.length > 50) {
         showError("Title field must contain between 1 and 50 characters");
         inputTitle.focus();
@@ -70,62 +74,48 @@ function validateStationForm(inputTitle, inputTZ) {
 }
 
 function addStation() {
-    var inputTitle = document.getElementById("inputTitle");
-    var inputTZ = document.getElementById("inputTZ");
+    var inputTitle = $("#inputTitle");
+    var inputTZ = $("#inputTZ");
     if (validateStationForm(inputTitle, inputTZ)) {
-        var title = inputTitle.value;
-        var timeZone = inputTZ.value;
+        var title = inputTitle.val();
+        var timeZone = inputTZ.val();
 
         $.ajax({
             type: "post",
             url: "add",
-            data: "title=" + encodeURIComponent(title) + "&timeZone=" + encodeURIComponent(timeZone),
-            success: function (id) {
+            data: {title: title, timeZone: timeZone},
+            success: function (response) {
                 $('.close').click();
                 $('#close').click();
-                var inner = generateTableRow(id, title, timeZone);
-                var addHtml = "<tr id=\"" + id + "\">\n" + inner + "</tr>";
-                $('#listOfStations').append(addHtml);
+                $('#listOfStations').append(response);
             },
-            error: function (data) {
-                alert('Error!' + data);
+            error: function (jdXHR) {
+                popupjdXHRError(jdXHR);
             }
         });
     }
 }
 
-function generateTableRow(id, title, timeZone) {
-    return "<td>" + id + "</td>\n" +
-        "<td>" + title + "</td>\n" +
-        "<td>" + timeZone + "</td>\n" +
-        "<td><button type=\"button\" class=\"btn btn-warning\" data-toggle=\"modal\" " +
-        "data-target=\"#addStationModal\" onclick=\"editModalStation(" + id + ", '" + title + "', '"
-        + timeZone + "');\" >Edit</button></td>\n" +
-        "<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"confirmDelete(" + id +
-        ", '" + title + "');\">Delete</button></td>\n";
-}
-
-
 function editStation() {
-    var inputId = document.getElementById("inputId");
-    var inputTitle = document.getElementById("inputTitle");
-    var inputTZ = document.getElementById("inputTZ");
+    var inputId = $("#inputId");
+    var inputTitle = $("#inputTitle");
+    var inputTZ = $("#inputTZ");
     if (validateStationForm(inputTitle, inputTZ)) {
-        var id = inputId.value;
-        var title = inputTitle.value;
-        var timeZone = inputTZ.value;
+        var id = inputId.val();
+        var title = inputTitle.val();
+        var timeZone = inputTZ.val();
+        var version = $('#' + id + ' .version').text();
         $.ajax({
             type: "post",
             url: "edit",
-            data: "id=" + encodeURIComponent(id) + "&title=" + encodeURIComponent(title) + "&timeZone=" + encodeURIComponent(timeZone),
-            success: function () {
+            data: {id: id, title: title, timeZone: timeZone, version: version},
+            success: function (response) {
                 $('.close').click();
                 $('#close').click();
-                var editHtml = generateTableRow(id, title, timeZone);
-                $('#' + id).html(editHtml);
+                $('#' + id).replaceWith(response);
             },
-            error: function () {
-                alert('Error!');
+            error: function (jdXHR) {
+                popupjdXHRError(jdXHR);
             }
         });
     }

@@ -1,29 +1,32 @@
-function confirmDelete(id, number) {
-
+function confirmDelete(id) {
+    var number = $('#' + id + ' .number').text();
     BootstrapDialog.show({
-        title: 'Confirm delete operation',
+        title: 'Confirm remove operation',
         message: "Do you confirm removing the train with id " + id + " and number " + number + "?",
         buttons: [
             {
-                label: 'Delete',
+                label: 'Confirm',
                 action: function (dialog) {
                     $.ajax({
-                        url: "delete/" + id,
-                        success: function () {
+                        url: "delete",
+                        data: {id: id, version: $('#' + id + ' .version').text()},
+                        type: 'post',
+                        success: function (response) {
                             $('#' + id).remove();
-                            dialog.setMessage('Delete success');
                             dialog.close();
+                            popupSuccess(response);
                         },
-                        error: function (error) {
-                            dialog.setMessage(error);
+                        error: function (jdXHR) {
+                            dialog.close();
+                            popupjdXHRError(jdXHR);
                         }
                     });
                 }
             },
             {
                 label: 'Cancel',
-                action: function () {
-                    this.close();
+                action: function (dialog) {
+                    dialog.close();
                 }
             }
         ]
@@ -33,19 +36,20 @@ function confirmDelete(id, number) {
 
 function addModalTrain() {
     $('#myModalLabel').text('Add new train');
-    $('#inputId').attr('value', '');
+    $('#inputId').val('');
     $('#commonId').slideUp('fast');
-    $('#inputNumber').attr('value', '');
-    $('#inputPQ').attr('value', '');
-    $('#submit').attr('onclick', 'addTrain();').text('Add train');
+    $('#inputNumber').val('');
+    $('#inputPQ').val('');
+    $('#submit').text('Add train').attr('onclick', 'addTrain();');
 }
 
-function editModalTrain(id, number, placesQty) {
+function editModalTrain(id) {
+    var ptr = '#' + id + ' ';
     $('#myModalLabel').text('Edit train');
-    $('#inputId').attr('value', id);
+    $('#inputId').val(id);
     $('#commonId').slideDown('fast');
-    $('#inputNumber').attr('value', number);
-    $('#inputPQ').attr('value', placesQty);
+    $('#inputNumber').val($(ptr + '.number').text());
+    $('#inputPQ').val($(ptr + '.placesQty').text());
     $('#submit').attr('onclick', 'editTrain();').text('Edit train');
 }
 
@@ -53,14 +57,14 @@ function validateTrainForm(inputNumber, inputPQ) {
     if (sbb_debug_js_validation_off != undefined) {
         return true;
     }
-    var number = inputNumber.value;
+    var number = inputNumber.val();
     if (number.length < 1 || number.length > 30) {
         showError("Number field must contain between 1 and 30 characters");
         inputNumber.focus();
         return false;
     }
 
-    var placesQty = inputPQ.value;
+    var placesQty = inputPQ.val();
     if (placesQty.length < 1) {
         showError("Quantity of places field cannot be empty!");
         inputPQ.focus();
@@ -68,10 +72,10 @@ function validateTrainForm(inputNumber, inputPQ) {
     } else if (!(placesQty >= 0 || placesQty <= 0)) {
         //if field is not number (for number this condition is always false)
         showError("Quantity of places field must be numeric");
-        inputPQ.value = "";
+        inputPQ.val('');
         inputPQ.focus();
         return false;
-    } else if (!(placesQty > 0 && placesQty <= 2000)) {
+    } else if (!(placesQty > 0 && placesQty <= 5000)) {
         showError("Quantity of places field must be between 1 and 2000");
         inputPQ.focus();
         return false;
@@ -83,12 +87,11 @@ function validateTrainForm(inputNumber, inputPQ) {
 }
 
 function addTrain() {
-    var inputNumber = document.getElementById("inputNumber");
-    var inputPQ = document.getElementById("inputPQ");
+    var inputNumber = $("#inputNumber");
+    var inputPQ = $("#inputPQ");
     if (validateTrainForm(inputNumber, inputPQ)) {
-        var number = inputNumber.value;
-        var placesQty = inputPQ.value;
-
+        var number = inputNumber.val();
+        var placesQty = inputPQ.val();
         $.ajax({
             type: "post",
             url: "add",
@@ -96,59 +99,37 @@ function addTrain() {
             success: function (response) {
                 $('.close').click();
                 $('#close').click();
-                if (isError(response)) {
-                    return;
-                }
-                var id = response;
-                var inner = generateTableRow(id, number, placesQty);
-                var addHtml = "<tr id=\"" + id + "\">\n" + inner + "</tr>";
-                $('#listOfTrains').append(addHtml);
+
+                $('#listOfTrains').append(response);
             },
-            error: function (data, textStatus, errorThrown) {
-                var message = '';
-                message += data.status + '\n';
-                message += data.statusText + '\n';
-                $.each(data, function (key, value) {
-                    alert(key + ' = ' + value);
-                });
-                alert(message);
+            error: function (jdXHR) {
+                popupjdXHRError(jdXHR);
             }
         });
     }
 }
 
-function generateTableRow(id, number, placesQty) {
-    return "<td>" + id + "</td>\n" +
-        "<td>" + number + "</td>\n" +
-        "<td>" + placesQty + "</td>\n" +
-        "<td><button type=\"button\" class=\"btn btn-warning\" data-toggle=\"modal\" " +
-        "data-target=\"#addTrainModal\" onclick=\"editModalTrain(" + id + ", '" + number + "', ' "
-        + placesQty + "');\" >Edit</button></td>\n" +
-        "<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"confirmDelete(" + id +
-        ", '" + number + "');\">Delete</button></td>\n";
-}
-
 
 function editTrain() {
-    var inputId = document.getElementById("inputId");
-    var inputNumber = document.getElementById("inputNumber");
-    var inputPQ = document.getElementById("inputPQ");
+    var inputId = $("#inputId");
+    var inputNumber =$("#inputNumber");
+    var inputPQ = $("#inputPQ");
     if (validateTrainForm(inputNumber, inputPQ)) {
-        var id = inputId.value;
-        var number = inputNumber.value;
-        var placesQty = inputPQ.value;
+        var id = inputId.val();
+        var number = inputNumber.val();
+        var placesQty = inputPQ.val();
+        var version = $('#' + id + ' .version').text();
         $.ajax({
             type: "post",
             url: "edit",
-            data: "id=" + encodeURIComponent(id) + "&number=" + encodeURIComponent(number) + "&placesQty=" + encodeURIComponent(placesQty),
-            success: function () {
+            data: {id: id, number: number, placesQty: placesQty, version: version},
+            success: function (response) {
                 $('.close').click();
                 $('#close').click();
-                var editHtml = generateTableRow(id, number, placesQty);
-                $('#' + id).html(editHtml);
+                $('#' + id).replaceWith(response);
             },
-            error: function () {
-                alert('Error!');
+            error: function (jdXHR) {
+                popupjdXHRError(jdXHR);
             }
         });
     }

@@ -24,13 +24,12 @@ function createBoard() {
     $.post('/SBB/trip/board/create',
         {tripId: tripId, lci: lci, date: date},
         function (response) {
-            if (isError(response)) {
-                return;
-            }
             var board = $.parseJSON(response);
             fillBoardTable(board);
         }
-    );
+    ).error(function(jdXHR) {
+            popupjdXHRError(jdXHR);
+        });
 }
 
 function fillBoardTable(board) {
@@ -46,14 +45,12 @@ function getBoard() {
     $.post('/SBB/trip/board/select',
         {tripId: tripId},
         function (response) {
-            if (isError(response)) {
-                return;
-            }
-
             var board = $.parseJSON(response);
             fillBoardTable(board);
         }
-    );
+    ).error(function(jdXHR) {
+            popupjdXHRError(jdXHR);
+        });
 }
 
 function createRow(boardLine) {
@@ -63,13 +60,7 @@ function createRow(boardLine) {
     idArray.push(boardId);
 
     $.each(boardLine, function (key, value) {
-
         var $cell = $td.clone();
-//        if (key == "minuteOffset") {
-//            $cell = $hidden.clone();
-//        } else {
-//            $cell = $td.clone();
-//        }
         if (key == 'minuteOffset') {
             $cell.text(getTZ(value)).append($hidden.clone().addClass(key).text(value));
         } else {
@@ -94,12 +85,6 @@ function addClickListener($cell) {
         var $inp = makeInputCell($cell);
         $cell.html($inp);
         $inp.focus();
-    });
-    $cell.dblclick(function () {
-        if ($cell.attr('class').contains('Time')) {
-            alert($cell.attr('class'));
-        }
-//        var errMes = validate()
     });
 }
 
@@ -178,7 +163,7 @@ var syncTime = function (boardId, depAr, memText) {
 //            }
 //        });
     } else {
-        $cell.css({'color' : 'black'})
+        $cell.css({'color': 'black'})
     }
 };
 
@@ -236,7 +221,7 @@ function getTime(boardId, depAr) {
     return cellsToDate($(ptr + 'Date').text(), $(ptr + 'Time').text(), $(idPtr + ' .minuteOffset').text())
 }
 
-function updateBoard() {
+function editBoard() {
     if (!validateAll()) {
         return;
     }
@@ -246,8 +231,8 @@ function updateBoard() {
         var boardString = {};
         boardString.boardId = parseInt($(this).attr('id'));
 
-        $(this).find('td').each( function(){
-        var clazz = $(this).attr('class');
+        $(this).find('td').each(function () {
+            var clazz = $(this).attr('class');
             if ($.inArray(clazz, mutable) != -1) {
                 boardString[clazz] = $(this).text();
             }
@@ -257,13 +242,13 @@ function updateBoard() {
     board = JSON.stringify(board);
     $.post('/SBB/trip/board/edit',
         {board: board},
-        function(response) {
-            if (!isError(response)) {
-                popupSuccess("Update success");
+        function (response) {
+                popupSuccess(response.trim());
                 getBoard();
-            }
         }
-    );
+    ).error(function (jdXHR) {
+            popupjdXHRError(jdXHR);
+        });
 }
 
 function validateAll() {
@@ -272,14 +257,15 @@ function validateAll() {
         return true;
     }
     var errorCount = 0;
-    $.each(idArray, function(id) {
-        $.each(['departure', 'arrive'], function(depAr){
-        var errMes = validate(id, 'depAr');
-        if (errMes !== '') {
-            errorCount++;
-            popupNoTimeoutError('Lne ' + id + ': ' + errMes);
-        }
-    })});
+    $.each(idArray, function (id) {
+        $.each(['departure', 'arrive'], function (depAr) {
+            var errMes = validate(id, 'depAr');
+            if (errMes !== '') {
+                errorCount++;
+                popupNoTimeoutError('Lne ' + id + ': ' + errMes);
+            }
+        })
+    });
     return errorCount == 0;
 }
 

@@ -45,7 +45,7 @@
                 <th>Path Title</th>
                 <th>Train ID</th>
                 <th>Train Number</th>
-                <th>LCI</th>
+                <th>Version</th>
                 <th>Departure date</th>
                 <th>Arrive date</th>
                 <th>Board</th>

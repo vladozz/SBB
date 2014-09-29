@@ -14,7 +14,7 @@ public class TripDAO extends CommonDAO<Trip> {
     }
 
     public List<Trip> filterTrips(Long pathId, Long trainId) {
-        String queryString = "Select t from Trip t WHERE t.train.id = :trainId and t.path.id = :pathId";
+        String queryString = "Select t from Trip t WHERE t.train.id = :trainId and t.path.id = :pathId and t.deleted = false";
         Query query = entityManager.createQuery(queryString);
         query.setParameter("trainId", trainId);
         query.setParameter("pathId", pathId);
@@ -22,14 +22,14 @@ public class TripDAO extends CommonDAO<Trip> {
     }
 
     public List<Trip> filterTripsByTrain(Long trainId) {
-        String queryString = "Select t from Trip t WHERE t.train.id = :trainId";
+        String queryString = "Select t from Trip t WHERE t.train.id = :trainId and t.deleted = false";
         Query query = entityManager.createQuery(queryString);
         query.setParameter("trainId", trainId);
         return query.getResultList();
     }
 
     public List<Trip> filterTripsByPath(Long pathId) {
-        String queryString = "Select t from Trip t WHERE t.path.id = :pathId";
+        String queryString = "Select t from Trip t WHERE t.path.id = :pathId and t.deleted = false";
         Query query = entityManager.createQuery(queryString);
         query.setParameter("pathId", pathId);
         return query.getResultList();

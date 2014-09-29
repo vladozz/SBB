@@ -41,7 +41,7 @@ public class PathStationController {
             }
         });
         map.put("pathId", pathId);
-        map.put("lastChange", pathService.findById(pathId).getLastChange());
+        map.put("version", pathService.findById(pathId).getVersion());
         map.put("pathList", pathList);
         map.put("pathStationList", pathStationList);
         map.put("stationList", stationList);
@@ -51,9 +51,9 @@ public class PathStationController {
     @RequestMapping(method = RequestMethod.POST)
     public String addStationToPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
                                    @RequestParam("stationBeforeInsertId") Long stationBeforeInsertId,
-                                   @RequestParam("lci") Integer lci, ModelMap map) throws EntityNotFoundException, OutdateException {
+                                   @RequestParam("version") Integer version, ModelMap map) throws EntityNotFoundException, OutdateException {
 
-        Station station = pathService.addStationToPathSafe(pathId, stationId, stationBeforeInsertId, lci);
+        Station station = pathService.addStationToPathSafe(pathId, stationId, stationBeforeInsertId, version);
         map.put("station", station);
         return "path_station_row";
     }
@@ -61,12 +61,9 @@ public class PathStationController {
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     @ResponseBody
     public String removeStationFromPath(@RequestParam("pathId") Long pathId, @RequestParam("stationId") Long stationId,
-                                        @RequestParam("lci") Integer lci, Map<String, Object> map) throws EntityNotFoundException {
-        try {
-            pathService.removeStationFromPathSafe(pathId, stationId, lci);
-        } catch (OutdateException e) {
-            return "false";
-        }
-        return "true";
+                                        @RequestParam("version") Integer version, Map<String, Object> map) throws EntityNotFoundException, OutdateException {
+
+        pathService.removeStationFromPathSafe(pathId, stationId, version);
+        return "Success operation";
     }
 }

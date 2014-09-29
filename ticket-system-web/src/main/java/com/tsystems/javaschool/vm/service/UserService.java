@@ -30,7 +30,7 @@ public class UserService {
     private UserHelper userHelper;
 
     @Transactional
-    public User addUser(String login, String password, Long roleId) throws SBBException {
+    public User addUser(String login, String password, Long roleId) throws LoginAlreadyExistException, EntityNotFoundException {
         if (userDAO.ifExists(login)) {
             throw new LoginAlreadyExistException("User with login " + login + " already exists. Choose another login");
         }
@@ -47,7 +47,7 @@ public class UserService {
         if (userDAO.ifExists(email)) {
             throw new LoginAlreadyExistException("User with email " + email + " already exists. Choose another login.");
         }
-        List<Role> roleUser = roleDAO.findByTitle("ROLE_USER");
+        List<Role> roleUser = roleDAO.findByTitle("USER");
         String passwordHash = userHelper.sha256(password);
         User user = new User(email, passwordHash, roleUser.get(0));
         userDAO.create(user);
@@ -76,7 +76,7 @@ public class UserService {
 
     @Transactional
     public void removeUser(Long userId) {
-        userDAO.delete(userId);
+        userDAO.delete(userId, 0);
     }
 
     public List<User> getAllUsers() {

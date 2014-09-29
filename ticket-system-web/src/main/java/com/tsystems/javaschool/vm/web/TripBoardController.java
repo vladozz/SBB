@@ -1,21 +1,27 @@
 package com.tsystems.javaschool.vm.web;
 
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.javaschool.vm.converter.BoardConverter;
 import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
-import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
-import com.tsystems.javaschool.vm.exception.OutdateException;
-import com.tsystems.javaschool.vm.exception.SBBException;
+import com.tsystems.javaschool.vm.exception.*;
+import com.tsystems.javaschool.vm.helper.ResponseHelper;
 import com.tsystems.javaschool.vm.service.BoardService;
 import com.tsystems.javaschool.vm.service.PassengerService;
 import com.tsystems.javaschool.vm.service.TripService;
+import com.tsystems.javaschool.vm.validator.DateTimeStringValidator;
+import com.tsystems.javaschool.vm.validator.LongValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,15 +31,23 @@ import java.util.Map;
 public class TripBoardController {
 
     @Autowired
-    private ObjectMapper json;
-    @Autowired
-    private BoardConverter boardConverter;
-    @Autowired
     private TripService tripService;
     @Autowired
     private BoardService boardService;
     @Autowired
     private PassengerService passengerService;
+
+
+    @Autowired
+    private ObjectMapper json;
+    @Autowired
+    private BoardConverter boardConverter;
+    @Autowired
+    private LongValidator longValidator;
+    @Autowired
+    private DateTimeStringValidator dateTimeValidator;
+    @Autowired
+    private ResponseHelper responseHelper;
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -50,57 +64,60 @@ public class TripBoardController {
     public
     @ResponseBody
     String createBoard(@RequestParam("tripId") Long tripId, @RequestParam("lci") Integer lci,
-                       @RequestParam("date") String date) {
+                       @RequestParam("date") String date)
+            throws JsonProcessingException, TripException, EmptyListException, OutdateException, EntityNotFoundException {
 
-        try {
-            List<Board> board = boardService.createEmptyBoard(tripId, date, lci);
-            List<BoardTripDTO> boardDTOs = new ArrayList<BoardTripDTO>();
-            for (Board b : board) {
-                boardDTOs.add(boardConverter.convertToBoardTripDTO(b));
-            }
-            return json.writeValueAsString(boardDTOs);
-        } catch (OutdateException e) {
-            return "outdate " + e;
-        } catch (SBBException e) {
-            return "error " + e;
-        } catch (Exception e) {
-            return "error " + e;
+        List<String> validationErrors = longValidator.validateLong(tripId, "TripId");
+        validationErrors.addAll(longValidator.validateLong(lci, "LastChangeIndex"));
+        validationErrors.addAll(dateTimeValidator.validateDateString(date));
+        if (!validationErrors.isEmpty()) {
+            //TODO: return error
         }
+
+        List<Board> board = boardService.createEmptyBoard(tripId, date, lci);
+        List<BoardTripDTO> boardDTOs = new ArrayList<BoardTripDTO>();
+        for (Board b : board) {
+            boardDTOs.add(boardConverter.convertToBoardTripDTO(b));
+        }
+        return json.writeValueAsString(boardDTOs);
+
     }
 
     @RequestMapping(value = "/select", method = RequestMethod.POST)
     public
     @ResponseBody
-    String getBoard(@RequestParam("tripId") Long tripId) {
-        try {
-            List<Board> board = boardService.getBoardForTrip(tripId);
-            List<BoardTripDTO> boardDTOs = new ArrayList<BoardTripDTO>();
-            for (Board b : board) {
-                boardDTOs.add(boardConverter.convertToBoardTripDTO(b));
-            }
-            return json.writeValueAsString(boardDTOs);
-        } catch (SBBException e) {
-            return "error " + e;
-        } catch (Exception e) {
-            return "error " + e;
+    String getBoard(@RequestParam("tripId") Long tripId, HttpServletResponse response) throws EntityNotFoundException, JsonProcessingException {
+
+        List<String> validationErrors = longValidator.validateLong(tripId, "TripId");
+        if (!validationErrors.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return responseHelper.createErrorResponse(validationErrors);
         }
+
+        List<Board> board = boardService.getBoardForTrip(tripId);
+        List<BoardTripDTO> boardDTOs = new ArrayList<BoardTripDTO>();
+        for (Board b : board) {
+            boardDTOs.add(boardConverter.convertToBoardTripDTO(b));
+        }
+        return json.writeValueAsString(boardDTOs);
+
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String getBoard(@RequestParam("board") String jsonString) {
-        try {
-            BoardTripDTO[] boardTripDTOs = json.readValue(jsonString, BoardTripDTO[].class);
-            String response = boardService.changeBoard(boardTripDTOs);
-            if (response.equals("")) {
-                return "success";
-            } else {
-                return "error " + response;
-            }
-        } catch (Exception e) {
-            return "error " + e;
+    public String editBoard(@RequestParam("board") String jsonString, ModelMap map, HttpServletResponse response)
+            throws EntityNotFoundException, IOException, EmptyListException, TripException {
+
+        BoardTripDTO[] boardTripDTOs = json.readValue(jsonString, BoardTripDTO[].class);
+        List<String> errors = boardService.changeBoard(boardTripDTOs);
+        if (errors.isEmpty()) {
+            map.put("messages", "Update success");
+            return "msg";
+        } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            map.put("messages", errors);
+            return "msg";
         }
+
     }
 
 }

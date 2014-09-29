@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.OptimisticLockException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,38 +30,24 @@ public class PathService {
     }
 
     @Transactional
-    public void addPath(Path path) {
-        path.setLastChange(1);
+    public Path addPath(Path path) {
         pathDAO.create(path);
+        return path;
     }
 
     @Transactional
     public Path editPath(Path path) throws EntityNotFoundException, OutdateException {
         Path newPath = pathDAO.findById(path.getId());
-        if (checkLCI(newPath, path.getLastChange())) {
-            newPath.setTitle(path.getTitle());
-            newPath.setReturnTitle(path.getReturnTitle());
-            pathDAO.update(newPath);
-            return newPath;
-        } else {
-            throw new OutdateException();
-        }
-    }
-
-    private boolean checkLCI(Path path, Integer pathLCI) {
-        System.out.println("path = " + path);
-        System.out.println("pathLCI = " + pathLCI);
-        if (!pathLCI.equals(path.getLastChange())) {
-            return false;
-        } else {
-            path.incrementLastChange();
-            return true;
-        }
+        newPath.setTitle(path.getTitle());
+        newPath.setReturnTitle(path.getReturnTitle());
+        newPath.setVersion(path.getVersion());
+        pathDAO.update(newPath);
+        return pathDAO.findById(path.getId());
     }
 
     @Transactional
-    public void removePath(Long pathId) {
-        pathDAO.delete(pathId);
+    public void removePath(Long pathId, Integer version) {
+        pathDAO.delete(pathId, version);
     }
 
     @Transactional
@@ -69,18 +56,15 @@ public class PathService {
     }
 
     @Transactional
-    public Station addStationToPathSafe(Long pathId, Long stationId, Long stationBeforeInsertId, Integer lci)
+    public Station addStationToPathSafe(Long pathId, Long stationId, Long stationBeforeInsertId, Integer version)
             throws OutdateException, EntityNotFoundException {
 
         Path path = pathDAO.findById(pathId);
+        path.setVersion(version);
         Station station = stationDAO.findById(stationId);
 
-        if (checkLCI(path, lci)) {
-            addStationToPathSafe(path, station, stationBeforeInsertId);
-            return station;
-        } else {
-            throw new OutdateException("Last change index were updated!");
-        }
+        addStationToPathSafe(path, station, stationBeforeInsertId);
+        return station;
 
     }
 
@@ -110,7 +94,7 @@ public class PathService {
                 stations.remove(stations.size() - 1);
             }
             //stations.removeAll(newStations);
-            pathDAO.update(path);
+            //path = pathDAO.update(path);
             path.getStations().addAll(newStations);
         }
         pathDAO.update(path);
@@ -118,22 +102,17 @@ public class PathService {
     }
 
 
-
     /**
      * @param pathId
      * @param stationToRemoveId
      */
     @Transactional
-    public Path removeStationFromPathSafe(Long pathId, Long stationToRemoveId, Integer lci) throws OutdateException, EntityNotFoundException {
+    public Path removeStationFromPathSafe(Long pathId, Long stationToRemoveId, Integer version)
+            throws OutdateException, EntityNotFoundException {
+
         Path path = pathDAO.findById(pathId);
-
-        if (checkLCI(path, lci)) {
-            return removeStationFromPathSafe(path, stationToRemoveId);
-        } else {
-            throw new OutdateException("Last change index were updated!");
-        }
-
-
+        path.setVersion(version);
+        return removeStationFromPathSafe(path, stationToRemoveId);
     }
 
     /**
@@ -157,7 +136,7 @@ public class PathService {
             stations.remove(stations.size() - 1);
         }
 
-        pathDAO.update(path);
+        //path = pathDAO.update(path);
         path.getStations().addAll(newStations);
         pathDAO.update(path);
         return path;
@@ -165,6 +144,9 @@ public class PathService {
 
     public List<Path> getAllPaths() {
         return pathDAO.findAll();
+    }
+    public List<Path> getAllRemovedPaths() {
+        return pathDAO.findAllDeleted();
     }
 
     public List<Station> getStationsOfPath(Long pathId) throws EntityNotFoundException {

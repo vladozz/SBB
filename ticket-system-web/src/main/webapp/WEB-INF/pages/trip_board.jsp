@@ -8,7 +8,7 @@
     <input type="date" class="form-control" id="defaultDate">
 </div>
 <button type="button" class="btn btn-primary" onclick="createBoard()">Create board</button>
-<button type="button" class="btn btn-primary" onclick="updateBoard()">Update board</button>
+<button type="button" class="btn btn-primary" onclick="editBoard()">Update board</button>
 <div id="tripId" style="display: none">${tripId}</div>
 <div id="lci" style="display: none">${lci}</div>
 <div class="panel panel-default">

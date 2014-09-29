@@ -8,7 +8,7 @@ import java.util.List;
 public class ResponseHelper {
     public String createErrorResponse(List<String> errorList) {
 
-        StringBuilder errorResponse = new StringBuilder("error ");
+        StringBuilder errorResponse = new StringBuilder();
         for (String error : errorList) {
             errorResponse.append("<p>").append(error).append(".</p>");
         }

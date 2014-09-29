@@ -1,7 +1,9 @@
 package com.tsystems.javaschool.vm.service;
 
 import com.tsystems.javaschool.vm.dao.TrainDAO;
+import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.Train;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +22,8 @@ public class TrainService {
     }
 
     @Transactional
-    public void removeTrain(Long trainId) {
-        trainDAO.delete(trainId);
+    public void removeTrain(Long trainId, Integer version) {
+        trainDAO.delete(trainId, version);
     }
 
 
@@ -29,8 +31,15 @@ public class TrainService {
         return trainDAO.findAll();
     }
 
-    @Transactional
-    public void editTrain(Train train) {
-        trainDAO.update(train);
+    public List<Train> getAllRemovedTrains() {
+        return trainDAO.findAllDeleted();
     }
+
+    @Transactional
+    public Train editTrain(Train train) throws EntityNotFoundException {
+        trainDAO.update(train);
+        return trainDAO.findById(train.getId());
+    }
+
+
 }

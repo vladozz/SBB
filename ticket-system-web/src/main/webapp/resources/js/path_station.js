@@ -11,7 +11,7 @@ function addStationToPath() {
     var pathId = $('#pathSelect').find('option:selected').attr('value');
     var stationId = $inputStation.find('option:selected').attr('value');
     var stationBeforeInsertId = $('#inputIndex').find('option:selected').attr('value');
-    var lci = $('#lci').text();
+    var version = $('#version').text();
 
     $.ajax({
         type: "post",
@@ -20,7 +20,7 @@ function addStationToPath() {
             pathId: pathId,
             stationId: stationId,
             stationBeforeInsertId: stationBeforeInsertId,
-            lci: lci
+            version: version
         },
 
         success: function (response) {
@@ -51,11 +51,11 @@ function toggleAddForm() {
 }
 
 function removeStationFromPath(pathId, stationId) {
-    var lci = $('#lci').text();
+    var version = $('#version').text();
     $.ajax({
         type: 'post',
         url: '/SBB/path/stations/remove',
-        data: { pathId: pathId, stationId: stationId, lci: lci },
+        data: { pathId: pathId, stationId: stationId, version: version },
         success: function () {
             operSuccess();
             moveOptionDelete(stationId);
@@ -97,18 +97,9 @@ function moveOptionAdd(stationId, stationBeforeInsertId) {
     var stationTitle = option.text();
     option.remove();
     $inputIndex.find("[value='0']").attr('selected', true);
-    var newRow = createRow(stationId, stationTitle);
 
-    var $lci = $('#lci');
-    $lci.text(parseInt($lci.text()) + 1);
-}
-
-function createRow(stationId, stationTitle) {
-//    var pathId = $('#pathId').text();
-    var html = "<tr id=\"" + stationId + "\"><td class=\"id\">" + stationId + "</td><td class=\"title\">" + stationTitle + "</td>" +
-        "<td><button class=\"btn btn-warning\" " +
-        "onclick=\"confirmRemoveStationFromPath(" + stationId + ");\">Remove</button></td></tr>";
-    return html;
+    var $version = $('#version');
+    $version.text(parseInt($version.text()) + 1);
 }
 
 function moveOptionDelete(stationId) {
@@ -134,7 +125,7 @@ function moveOptionDelete(stationId) {
     option.remove();
     $('#' + stationId).remove();
 
-    var $lci = $('#lci');
-    $lci.text(parseInt($lci.text()) + 1);
+    var $version = $('#version');
+    $version.text(parseInt($version.text()) + 1);
 
 }

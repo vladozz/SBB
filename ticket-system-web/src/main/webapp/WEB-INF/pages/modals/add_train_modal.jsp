@@ -1,5 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
+<script type="text/javascript" src="<c:url value='/resources/js/train.js'/>"></script>
+
 <!-- Modal -->
 <div class="modal fade" id="addTrainModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
@@ -53,5 +55,3 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript" src="<c:url value='/resources/js/train.js'/>"></script>

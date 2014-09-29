@@ -8,7 +8,7 @@ public class TripDTO {
     private Boolean forward;
     private Long trainId;
     private String trainNumber;
-    private Integer lastChange;
+    private Integer version;
     private String departureStation;
     private String arriveStation;
 
@@ -17,14 +17,14 @@ public class TripDTO {
 
     }
 
-    public TripDTO(Long id, Boolean forward, Long trainId, String trainNumber, Long pathId, String pathTitle, Integer lastChange) {
+    public TripDTO(Long id, Boolean forward, Long trainId, String trainNumber, Long pathId, String pathTitle, Integer version) {
         this.id = id;
         this.forward = forward;
         this.trainId = trainId;
         this.trainNumber = trainNumber;
         this.pathId = pathId;
         this.pathTitle = pathTitle;
-        this.lastChange = lastChange;
+        this.version = version;
         this.departureStation = "";
         this.arriveStation = "";
     }
@@ -77,12 +77,12 @@ public class TripDTO {
         this.forward = forward;
     }
 
-    public Integer getLastChange() {
-        return lastChange;
+    public Integer getVersion() {
+        return version;
     }
 
-    public void setLastChange(Integer lastChange) {
-        this.lastChange = lastChange;
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public String getDepartureStation() {
@@ -110,7 +110,7 @@ public class TripDTO {
                 ", forward=" + forward +
                 ", trainId=" + trainId +
                 ", trainNumber='" + trainNumber + '\'' +
-                ", lastChange=" + lastChange +
+                ", version=" + version +
                 ", departureStation='" + departureStation + '\'' +
                 ", arriveStation='" + arriveStation + '\'' +
                 '}';

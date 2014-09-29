@@ -22,7 +22,6 @@
                     <th>Return title</th>
                     <th>Begin Station</th>
                     <th>End Station</th>
-                    <th>LCI</th>
                     <th width="10%">Stations</th>
                     <th width="10%">Edit</th>
                     <th width="10%">Delete</th>

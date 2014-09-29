@@ -2,18 +2,18 @@ package com.tsystems.javaschool.vm.web;
 
 
 import com.tsystems.javaschool.vm.domain.Train;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.helper.ResponseHelper;
 import com.tsystems.javaschool.vm.service.TrainService;
 import com.tsystems.javaschool.vm.validator.TrainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.*;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/train")
@@ -28,10 +28,19 @@ public class TrainController {
 
 
     @RequestMapping("/index")
-    public String listTrains(Map<String, Object> map) {
+    public String listTrains(ModelMap map) {
 
         map.put("train", new Train());
         map.put("trainList", trainService.getAllTrains());
+        return "train";
+    }
+
+    @RequestMapping("/removed")
+    public String listRemovedTrains(ModelMap map) {
+
+        map.put("train", new Train());
+        map.put("removed", true);
+        map.put("trainList", trainService.getAllRemovedTrains());
         return "train";
     }
 
@@ -41,43 +50,42 @@ public class TrainController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    @ResponseBody
-    public String addTrain(@ModelAttribute(value = "train") Train train, BindingResult result, HttpServletResponse response) {
+    public String addTrain(@ModelAttribute(value = "train") Train train,
+                           HttpServletResponse response, ModelMap map) {
         List<String> validationErrors = trainValidator.validate(train);
         if (!validationErrors.isEmpty()) {
-            return responseHelper.createErrorResponse(validationErrors);
-        }
-
-        if (result.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
-            return "result not ok";
+            map.put("messages", validationErrors);
+            return "msg";
         }
 
-        trainService.addTrain(train);
-        return train.getId().toString();
+        train = trainService.addTrain(train);
+        map.put("train", train);
+        return "train_row";
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    @ResponseBody
-    public String editTrain(@Valid @ModelAttribute(value = "train") Train train) {
+    public String editTrain(@ModelAttribute(value = "train") Train train,
+                           HttpServletResponse response ,ModelMap map) throws EntityNotFoundException {
+        List<String> validationErrors = trainValidator.validate(train);
+        if (!validationErrors.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+            map.put("messages", validationErrors);
+            return "msg";
+        }
 
-        trainService.editTrain(train);
-        return train.getId().toString();
+
+        train = trainService.editTrain(train);
+        map.put("train", train);
+        return "train_row";
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
-    public String removeTrain(@PathVariable("id") Long trainId) {
-        trainService.removeTrain(trainId);
+    public String removeTrain(@RequestParam("id") Long trainId, @RequestParam("version") Integer version) {
+        trainService.removeTrain(trainId, version);
 
-        return "";
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseBody
-    public String handleRuntimeExceptions(Exception e) {
-        //e.printStackTrace();
-        return e.getCause().toString();
+        return "Remove success";
     }
 
 }

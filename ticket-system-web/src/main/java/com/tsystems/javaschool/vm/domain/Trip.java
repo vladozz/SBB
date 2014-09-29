@@ -17,7 +17,11 @@ public class Trip extends SBBEntity{
     @Column(name = "forward")
     private Boolean forward;
 
+    @OneToMany(mappedBy = "trip")
+    private List<Board> boardList;
+
     public Trip() {
+
     }
 
     public Trip(Path path, Train train, Boolean forward) {
@@ -57,6 +61,14 @@ public class Trip extends SBBEntity{
 
     public void setForward(Boolean forward) {
         this.forward = forward;
+    }
+
+    public List<Board> getBoardList() {
+        return boardList;
+    }
+
+    public void setBoardList(List<Board> boardList) {
+        this.boardList = boardList;
     }
 
     public void incrementLastChange() {

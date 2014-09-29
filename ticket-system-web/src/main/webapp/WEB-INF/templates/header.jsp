@@ -17,23 +17,23 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <sec:authorize access="hasAnyRole('ROLE_GUEST, ROLE_USER')">
+                <sec:authorize access="hasAnyRole('GUEST, USER')">
                     <li><a href="<c:url value="/board" /> ">Board</a></li>
                     <li><a href="<c:url value="/reqtrip" /> ">Choose trip</a></li>
                 </sec:authorize>
-                <sec:authorize access="hasRole('ROLE_MANAGER')">
+                <sec:authorize access="hasRole('MANAGER')">
                     <li><a href="<c:url value="/train" /> ">Trains</a></li>
                     <li><a href="<c:url value="/station" /> ">Stations</a></li>
                     <li><a href="<c:url value="/path" /> ">Paths</a></li>
                     <li><a href="<c:url value="/trip" /> ">Trips</a></li>
                     <%--<li><a href="<c:url value="/passenger" /> ">Passenger</a></li>--%>
                 </sec:authorize>
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                <sec:authorize access="hasRole('ADMIN')">
                     <li><a href="<c:url value="/user" /> ">Users</a></li>
                 </sec:authorize>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <sec:authorize access="hasRole('ROLE_GUEST')">
+                <sec:authorize access="hasRole('GUEST')">
                     <li><a href="<c:url value="/register" /> ">Register</a></li>
                     <li><a href="<c:url value="/login" /> ">Log in</a></li>
                 </sec:authorize>
@@ -45,7 +45,7 @@
                         <ul class="dropdown-menu" role="menu">
                             <li class="disabled"><a><sec:authentication property="principal.username"/></a></li>
                             <li><a href="<c:url value="/settings" /> ">Settings</a></li>
-                            <sec:authorize access="hasRole('ROLE_USER')">
+                            <sec:authorize access="hasRole('USER')">
                                 <li><a href="#">My tickets</a></li>
                             </sec:authorize>
                             <li class="divider"></li>

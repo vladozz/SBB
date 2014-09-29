@@ -14,16 +14,14 @@ function addUser() {
     $.post('/SBB/user/add',
         {login: login, password: password, roleId: role},
         function (response) {
-            response = $.trim(response);
-            if (isError(response)) {
-                return;
-            }
             $inputLogin.val('');
             $inputPassword.val('');
             popupSuccess('User ' + login + ' added successfully');
             $('#listOfUsers').find('tbody').append(response);
         }
-    );
+    ).error(function(jdXHR) {
+            popupjdXHRError(jdXHR);
+        });
 }
 
 function confirmDelete(id, login) {
@@ -43,7 +41,9 @@ function confirmDelete(id, login) {
                             $('#' + id).remove();
                             popupSuccess('Delete success');
                         }
-                    );
+                    ).error(function(jdXHR) {
+                            popupjdXHRError(popupError(jdXHR.status +' ' + jdXHR.statusText +'\n' + jdXHR.responseText));
+                        });
                 }
             },
             {
@@ -59,10 +59,10 @@ function confirmDelete(id, login) {
 function changePassword(userId) {
     /*var $body = $('<form/>').attr('class', 'form-horizontal').append($('#passwordFG').clone().removeAttr('id'));
      $body.find('label[for="inputPassword"]').text('New password');*/
-    var newPswd = generatePass(10);
+    var newPswd = generatePass(5);
     BootstrapDialog.show({
         title: 'Change password',
-        message: 'New password is ' + newPswd + '. Do you confirm changing the password?' ,
+        message: 'New password is ' + newPswd + '. Do you confirm changing the password?',
         buttons: [
             {
                 label: 'Change password',
@@ -74,9 +74,11 @@ function changePassword(userId) {
                             if (isError(response)) {
                                 return;
                             }
-                            popupSuccess('Password changing success');
+                            popupSuccess(response);
                         }
-                    );
+                    ).error(function (jdXHR) {
+                            popupjdXHRError(jdXHR);
+                        });
                 }
             },
             {
@@ -93,17 +95,8 @@ function changePassword(userId) {
 function generatePass(plength) {
     var keylist = "abcdefghijklmnopqrstuvwxyz123456789";
     var temp = '';
-    var f = false;
     for (var i = 0; i < plength; i++) {
-        var c = keylist.charAt(Math.floor(Math.random() * keylist.length));
-        if (!f) {
-            f = true;
-            c = c.toUpperCase();
-        }
-        temp += c;
-    }
-    if (!f) {
-        return generatePass(10);
+        temp += keylist.charAt(Math.floor(Math.random() * keylist.length));
     }
     return temp;
 }

@@ -33,18 +33,8 @@ public class PathController {
 
     @RequestMapping("/index")
     public String listPaths(ModelMap map) {
-        map.put("path", new PathDTO());
-        List<PathDTO> pathDTOs = new ArrayList<PathDTO>();
-        for (Path path : pathService.getAllPaths()) {
-            PathDTO pathDTO = pathConverter.convertToPathDTO(path);
-//            List<Station> pathStationList = pathService.getStationsOfPath(path);
-//            if (!pathStationList.isEmpty()) {
-//                pathDTO.setBeginStation(pathStationList.get(0).getTitle());
-//                pathDTO.setEndStation(pathStationList.get(pathStationList.size() - 1).getTitle());
-//            }
-            pathDTOs.add(pathDTO);
-        }
-        map.put("pathList", pathDTOs);
+        map.put("path", new Path());
+        map.put("pathList", pathService.getAllPaths());
 
         return "path";
     }
@@ -57,8 +47,8 @@ public class PathController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addPath(@ModelAttribute(value = "path") Path path, ModelMap map) {
 
-        pathService.addPath(path);
-        map.put("path", pathConverter.convertToPathDTO(path));
+        path=  pathService.addPath(path);
+        map.put("path", path);
         return "path_row";
     }
 
@@ -66,16 +56,16 @@ public class PathController {
     public String editPath(@ModelAttribute Path path, ModelMap map) throws EntityNotFoundException, OutdateException {
 
         Path newPath = pathService.editPath(path);
-        map.put("path", pathConverter.convertToPathDTO(newPath));
+        map.put("path", newPath);
         return "path_row";
 
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
-    public String removePath(@PathVariable("id") Long pathId) {
-        pathService.removePath(pathId);
+    public String removePath(@RequestParam("id") Long pathId, @RequestParam("version") Integer version) {
+        pathService.removePath(pathId, version);
 
-        return "";
+        return "Remove success";
     }
 }

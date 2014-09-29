@@ -1,30 +1,33 @@
-function confirmDelete(id, title) {
+function confirmDelete(id) {
+    var titles = $('#' + id + ' .title').text() + '/' + $('#' + id + ' .returnTitle').text();
 
     BootstrapDialog.show({
         title: 'Confirm delete operation',
-        message: "Do you confirm removing the path with id " + id + " and title " + title + "?",
+        message: "Do you confirm removing the path with id " + id + " and title " + titles + "?",
         buttons: [
             {
                 label: 'Delete',
                 action: function (dialog) {
+                    var version = $('#' + id + ' .version');
                     $.ajax({
-                        type: 'get',
-                        url: "/SBB/path/delete/" + id,
-                        success: function () {
+                        type: 'post',
+                        url: "/SBB/path/delete",
+                        data: {id: id, version: version},
+                        success: function (response) {
                             $('#' + id).remove();
-                            dialog.setMessage('Delete success');
                             dialog.close();
+                            popupSuccess(response);
                         },
-                        error: function (error) {
-                            dialog.setMessage("Error: " + error);
+                        error: function (jdXHR) {
+                            popupjdXHRError(jdXHR);
                         }
                     });
                 }
             },
             {
                 label: 'Cancel',
-                action: function () {
-                    this.close();
+                action: function (dialog) {
+                    dialog.close();
                 }
             }
         ]
@@ -37,8 +40,6 @@ function addModalPath() {
     $('#myModalLabel').text('Add new path');
     $('#inputId').val('');
     $('#commonId').slideUp('fast');
-    $('#inputLC').val('');
-    $('#commonLC').slideUp('fast');
     $('#inputTitle').val('');
     $('#inputReturnTitle').val('');
     $('#submit').attr('onclick', 'addPath();').text('Add path');
@@ -48,14 +49,11 @@ function editModalPath(id) {
     var $row = $('#' + id);
     var title = $row.find('.title').text();
     var returnTitle = $row.find('.returnTitle').text();
-    var lastChange = $row.find('.lastChange').text();
     $('#myModalLabel').text('Edit path');
     $('#inputId').val(id);
     $('#commonId').slideDown('fast');
     $('#inputTitle').val(title);
     $('#inputReturnTitle').val(returnTitle);
-    $('#inputLC').val(lastChange);
-    $('#commonLC').slideDown('fast');
     $('#submit').attr('onclick', 'editPath();').text('Edit path');
 }
 
@@ -108,16 +106,15 @@ function editPath() {
     var inputId = $("#inputId");
     var inputTitle = $("#inputTitle");
     var inputReturnTitle = $("#inputReturnTitle");
-    var inputLC = $("#inputLC");
     if (validatePathForm(inputTitle)) {
         var id = inputId.val();
         var title = inputTitle.val();
         var returnTitle = inputReturnTitle.val();
-        var lastChange = inputLC.val();
+        var version = $('#' + id + ' .version').text();
         $.ajax({
             type: "post",
             url: "edit",
-            data: {id: id, title: title, returnTitle: returnTitle, lastChange: lastChange},
+            data: {id: id, title: title, returnTitle: returnTitle, version: version},
             success: function (resp) {
                 $('.close').click();
                 $('#close').click();

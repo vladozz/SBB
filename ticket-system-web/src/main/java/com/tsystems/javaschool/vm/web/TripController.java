@@ -1,7 +1,6 @@
 package com.tsystems.javaschool.vm.web;
 
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.javaschool.vm.converter.TripConverter;
@@ -11,6 +10,7 @@ import com.tsystems.javaschool.vm.dto.TripDTO;
 import com.tsystems.javaschool.vm.exception.CascadeException;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.OutdateException;
+import com.tsystems.javaschool.vm.exception.SBBException;
 import com.tsystems.javaschool.vm.service.PassengerService;
 import com.tsystems.javaschool.vm.service.PathService;
 import com.tsystems.javaschool.vm.service.TrainService;
@@ -84,25 +84,21 @@ public class TripController {
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public
     @ResponseBody
-    String editTrip(@RequestParam("trip") String tripJSON) throws EntityNotFoundException, CascadeException, OutdateException, IOException {
+    String editTrip(@RequestParam("trip") String tripJSON)
+            throws EntityNotFoundException, CascadeException, OutdateException, IOException {
 
-            TripDTO tripDTO = json.readValue(tripJSON, TripDTO.class);
-            tripService.editTrip(tripDTO.getId(), tripDTO.getPathId(), tripDTO.getTrainId(), tripDTO.isForward(), tripDTO.getLastChange());
-            return "success";
+        TripDTO tripDTO = json.readValue(tripJSON, TripDTO.class);
+        tripService.editTrip(tripDTO.getId(), tripDTO.getPathId(), tripDTO.getTrainId(), tripDTO.isForward(), tripDTO.getVersion());
+        return "success";
 
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public
     @ResponseBody
-    String removeTrip(@RequestParam("tripId") Long tripId, @RequestParam("lci") Integer lci) {
-        try {
-            tripService.removeTrip(tripId, lci);
-        } catch (OutdateException e) {
-            return "outdate " + e;
-        } catch (Exception e) {
-            return "error " + e;
-        }
+    String removeTrip(@RequestParam("tripId") Long tripId, @RequestParam("version") Integer version) throws SBBException {
+        tripService.removeTrip(tripId, version);
+
         return "success";
     }
 
