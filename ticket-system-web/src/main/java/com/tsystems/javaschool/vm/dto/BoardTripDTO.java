@@ -14,6 +14,7 @@ public class BoardTripDTO implements Serializable {
     private String departureTime;
     private Integer standTime;
 
+
     public BoardTripDTO() {
     }
 

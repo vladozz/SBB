@@ -11,10 +11,7 @@ import com.tsystems.javaschool.vm.exception.CascadeException;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.OutdateException;
 import com.tsystems.javaschool.vm.exception.SBBException;
-import com.tsystems.javaschool.vm.service.PassengerService;
-import com.tsystems.javaschool.vm.service.PathService;
-import com.tsystems.javaschool.vm.service.TrainService;
-import com.tsystems.javaschool.vm.service.TripService;
+import com.tsystems.javaschool.vm.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -33,6 +30,8 @@ public class TripController {
     private PathService pathService;
     @Autowired
     private TripService tripService;
+    @Autowired
+    private BoardService boardService;
     @Autowired
     private PassengerService passengerService;
     @Autowired
@@ -66,7 +65,8 @@ public class TripController {
 
     @RequestMapping(value = "/select", method = RequestMethod.POST)
     @ResponseBody
-    public String selectTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId) throws JsonProcessingException {
+    public String selectTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId, ModelMap map)
+            throws JsonProcessingException {
 
         List<Trip> trips = tripService.getTripsByPathAndTrain(pathId, trainId);
 

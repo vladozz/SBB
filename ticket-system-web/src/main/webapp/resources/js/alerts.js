@@ -39,7 +39,7 @@ function popupError(message) {
 
 function popupjdXHRError(jdXHR) {
     var msg = jdXHR.status + ' ' + jdXHR.statusText;
-    if (jdXHR.status != 426) {
+    if (jdXHR.status != 426 && jdXHR.status != 400) {
         msg += '\n' + jdXHR.responseText;
     }
     popupNoTimeoutError(msg);

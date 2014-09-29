@@ -28,7 +28,11 @@ function getTrips() {
                 return;
             }
             $('.remove').remove();
-            $('#tripTable').append(response);
+            if (response === '') {
+                popupInfo('No trips found');
+            } else {
+                $('#tripTable').append(response);
+            }
         }
     );
 }
@@ -36,6 +40,7 @@ function getTrips() {
 function buyTicketDialog(departureId, arriveId, freePlaces) {
     if (freePlaces == 0) {
         popupError("This trip is out of free places!");
+        return;
     }
     var $passengerForm = $('#passengerForm').clone().removeAttr('id');
     BootstrapDialog.show({
@@ -46,7 +51,6 @@ function buyTicketDialog(departureId, arriveId, freePlaces) {
                 label: 'OK',
                 action: function (dialog) {
                     var passenger = makeData($passengerForm);
-                    alert(passenger.lastName);
                     $.post('/SBB/ticket/buy',
                         {firstName: passenger.firstName, lastName: passenger.lastName, birthDate: passenger.birthDate,
                             departureBoardId: departureId, arriveBoardId: arriveId},
@@ -57,23 +61,13 @@ function buyTicketDialog(departureId, arriveId, freePlaces) {
                             }
                         }
                     );
-                    /*$.ajax({
-                     url: "/SBB/tickets/buy",
-                     success: function () {
-                     $('#' + id).remove();
-                     dialog.setMessage('Delete success');
-                     dialog.close();
-                     },
-                     error: function (error) {
-                     dialog.setMessage(error);
-                     }
-                     });*/
+
                 }
             },
             {
                 label: 'Cancel',
-                action: function () {
-                    this.close();
+                action: function (dialog) {
+                    dialog.close();
                 }
             }
         ]
@@ -95,6 +89,5 @@ function makeData($passengerForm) {
     boardTripDTO.firstName = firstName;
     boardTripDTO.lastName = lastName;
     boardTripDTO.birthDate = birthDate;
-    //alert(firstName + ' ' + lastName + ' ' + birthDate % (1000 * 86400));
     return boardTripDTO;
 }

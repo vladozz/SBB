@@ -8,7 +8,7 @@
     <div class="col-sm-4"><select class="form-control" id="pathSelect" onchange="findTrips();">
         <option value="0" selected>Choose path</option>
         <c:forEach items="${pathList}" var="path">
-            <option value="${path.id}">${path.title}</option>
+            <option value="${path.id}">${path.title} / ${path.returnTitle}</option>
         </c:forEach>
     </select>
 

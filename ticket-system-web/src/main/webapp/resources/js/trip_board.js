@@ -13,7 +13,6 @@ $(document).ready(
 
 function createBoard() {
     var tripId = $('#tripId').text();
-    var lci = $('#lci').text();
 
     var $defaultDate = $('#defaultDate');
     var date = $defaultDate.val();
@@ -22,12 +21,12 @@ function createBoard() {
         $defaultDate.val(date);
     }
     $.post('/SBB/trip/board/create',
-        {tripId: tripId, lci: lci, date: date},
+        {tripId: tripId, date: date},
         function (response) {
             var board = $.parseJSON(response);
             fillBoardTable(board);
         }
-    ).error(function(jdXHR) {
+    ).error(function (jdXHR) {
             popupjdXHRError(jdXHR);
         });
 }
@@ -38,6 +37,7 @@ function fillBoardTable(board) {
     $.each(board, function (index, boardLine) {
         $('#boardTable').append(createRow(boardLine));
     });
+    $('#travelTime').text(countTravelTime());
 }
 function getBoard() {
     var tripId = $('#tripId').text();
@@ -48,7 +48,7 @@ function getBoard() {
             var board = $.parseJSON(response);
             fillBoardTable(board);
         }
-    ).error(function(jdXHR) {
+    ).error(function (jdXHR) {
             popupjdXHRError(jdXHR);
         });
 }
@@ -207,6 +207,7 @@ function validate(boardId, depAr) {
             }
         }
     }
+    $('#travelTime').text(countTravelTime());
     if (true || errorMessage.length == 0) {
         var standTime = depAr == 'arrive' ? nextTime - thisTime : thisTime - prevTime;
         standTime /= 60000;
@@ -219,6 +220,20 @@ function getTime(boardId, depAr) {
     var idPtr = '#' + boardId;
     var ptr = idPtr + ' .' + depAr;
     return cellsToDate($(ptr + 'Date').text(), $(ptr + 'Time').text(), $(idPtr + ' .minuteOffset').text())
+}
+
+function countTravelTime() {
+    if (idArray.length == 0) {
+        return ' -';
+    }
+    var beginTime = getTime(idArray[0], 'departure');
+    var endTime = getTime(idArray[idArray.length - 1], 'arrive');
+    var minutes = (endTime - beginTime) / 60000;
+    var hours = Math.floor(minutes / 60);
+
+    minutes %= 60;
+    return  hours + 'h:' + (minutes < 10 ? '0': '') + minutes + 'm';
+
 }
 
 function editBoard() {
@@ -243,8 +258,8 @@ function editBoard() {
     $.post('/SBB/trip/board/edit',
         {board: board},
         function (response) {
-                popupSuccess(response.trim());
-                getBoard();
+            popupSuccess(response.trim());
+            getBoard();
         }
     ).error(function (jdXHR) {
             popupjdXHRError(jdXHR);

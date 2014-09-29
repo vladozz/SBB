@@ -17,11 +17,10 @@ function findTrips() {
         { pathId: pathId, trainId: trainId},
         function (response) {
             if (isError(response)) {
-                findTrips();
                 return;
             }
-            var trips = $.parseJSON(response);
             $('.remove').remove();
+            var trips = $.parseJSON(response);
             $.each(trips, function (index, trip) {
                 appendRow(trip);
             });
@@ -135,7 +134,7 @@ function editTrip(tripId) {
                     trip.pathId = $('#modalPS').find("option:selected").val();
                     trip.trainId = $('#modalTS').find("option:selected").val();
                     trip.forward = $('#inputForward').is(':checked');
-                    trip.lastChange = $('#' + tripId + ' .lastChange').text();
+                    trip.version = $('#' + tripId + ' .version').text();
 
                     $.ajax({type: 'post',
                             url: '/SBB/trip/edit',

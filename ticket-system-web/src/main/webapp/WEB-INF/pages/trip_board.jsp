@@ -10,9 +10,8 @@
 <button type="button" class="btn btn-primary" onclick="createBoard()">Create board</button>
 <button type="button" class="btn btn-primary" onclick="editBoard()">Update board</button>
 <div id="tripId" style="display: none">${tripId}</div>
-<div id="lci" style="display: none">${lci}</div>
 <div class="panel panel-default">
-    <div class="panel-heading" align="center">Board</div>
+    <div class="panel-heading" align="center">Board for trip ${tripId}. Travel time: <strong id="travelTime">45</strong></div>
     <div class="table-responsive">
         <table class="table table-hover" id="boardTable">
             <tr class="active">

@@ -46,21 +46,10 @@ public class TripService {
         return trip;
     }
 
-    private boolean checkLCI(Trip trip, Integer tripLCI) {
-        if (!tripLCI.equals(trip.getLastChange())) {
-            return false;
-        } else {
-            tripDAO.detach(trip);
-            trip.incrementLastChange();
-            return true;
-        }
-    }
-
 
     @Transactional
     public Trip editTrip(Long tripId, Long pathId, Long trainId, Boolean forward, Integer version)
             throws OutdateException, EntityNotFoundException, CascadeException {
-
         Trip trip = tripDAO.findById(tripId);
 
         Path path = pathDAO.findById(pathId);
@@ -68,7 +57,7 @@ public class TripService {
         List<Board> boardList = boardDAO.getBoardForTrip(trip);
 
         if (!boardList.isEmpty()) {
-            if (!trip.getPath().equals(path) || !trip.isForward().equals(forward)) {
+            if (!trip.getPath().equals(path) || !trip.getForward().equals(forward)) {
                 throw new CascadeException("You can't edit route of trip which has board list");
             }
 
@@ -79,7 +68,6 @@ public class TripService {
                         " than count of tickets");
             }
         }
-
         trip.setPath(path);
         trip.setForward(forward);
         trip.setTrain(train);

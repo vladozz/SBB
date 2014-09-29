@@ -5,10 +5,8 @@
         <tr class="remove">
             <td>${trip.tripId}</td>
             <td>${trip.pathTitle}</td>
-            <td>${trip.departure.date}</td>
-            <td>${trip.departure.time}</td>
-            <td>${trip.arrive.date}</td>
-            <td>${trip.arrive.time}</td>
+            <td>${trip.departure.date} ${trip.departure.time}</td>
+            <td>${trip.arrive.date} ${trip.arrive.time}</td>
             <td>${trip.routeTime}</td>
             <td>${trip.freePlaces}</td>
             <td>
@@ -16,4 +14,11 @@
             </td>
         </tr>
     </c:forEach>
+</c:if>
+
+<c:if test="${empty tripList}">
+        <tr class="remove">
+            <td colspan="3"></td>
+           <td colspan="4">No trips found</td>
+        </tr>
 </c:if>

@@ -44,10 +44,8 @@
                 <tr class="active">
                     <th>Trip ID</th>
                     <th>Path</th>
-                    <th>Departure date</th>
-                    <th>Departure time</th>
-                    <th>Arrive date</th>
-                    <th>Arrive time</th>
+                    <th>Departure</th>
+                    <th>Arrive</th>
                     <th>Route time</th>
                     <th>Free places</th>
                     <th>Buy ticket</th>

@@ -7,10 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class TripConverter {
     public TripDTO convertToTripDTO(Trip trip) {
-        System.out.println("trip = " + trip);
-        TripDTO tripDTO = new TripDTO(trip.getId(), trip.isForward(),
+        TripDTO tripDTO = new TripDTO(trip.getId(), trip.getForward(),
                 trip.getTrain().getId(), trip.getTrain().getNumber(),
-                trip.getPath().getId(), trip.getPath().getTitle(trip.isForward()), trip.getLastChange());
+                trip.getPath().getId(), trip.getPath().getTitle(trip.getForward()), trip.getLastChange());
         return tripDTO;
     }
 }

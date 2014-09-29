@@ -63,18 +63,17 @@ public class TripBoardController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public
     @ResponseBody
-    String createBoard(@RequestParam("tripId") Long tripId, @RequestParam("lci") Integer lci,
-                       @RequestParam("date") String date)
-            throws JsonProcessingException, TripException, EmptyListException, OutdateException, EntityNotFoundException {
+    String createBoard(@RequestParam("tripId") Long tripId,
+                       @RequestParam("date") String date, HttpServletResponse response)
+            throws IOException, TripException, EmptyListException, OutdateException, EntityNotFoundException {
 
         List<String> validationErrors = longValidator.validateLong(tripId, "TripId");
-        validationErrors.addAll(longValidator.validateLong(lci, "LastChangeIndex"));
         validationErrors.addAll(dateTimeValidator.validateDateString(date));
         if (!validationErrors.isEmpty()) {
-            //TODO: return error
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, responseHelper.createErrorResponse(validationErrors));
         }
 
-        List<Board> board = boardService.createEmptyBoard(tripId, date, lci);
+        List<Board> board = boardService.createEmptyBoard(tripId, date);
         List<BoardTripDTO> boardDTOs = new ArrayList<BoardTripDTO>();
         for (Board b : board) {
             boardDTOs.add(boardConverter.convertToBoardTripDTO(b));

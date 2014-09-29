@@ -32,11 +32,9 @@ public class BoardService {
     }
 
     @Transactional
-    public List<Board> createEmptyBoard(Long tripId, String date, Integer lci) throws OutdateException, TripException, EmptyListException, EntityNotFoundException {
+    public List<Board> createEmptyBoard(Long tripId, String date) throws OutdateException, TripException, EmptyListException, EntityNotFoundException {
         Trip trip = tripDAO.findById(tripId);
-        if (!checkLCI(trip, lci)) {
-            throw new OutdateException("LCI in request: " + lci + "; LCI in database: " + trip.getLastChange());
-        }
+
         if (!boardDAO.getBoardForTrip(trip).isEmpty()) {
             throw new TripException("Trip already has board!");
         }
@@ -54,7 +52,7 @@ public class BoardService {
             Board boardLine = new Board(trip, station, timestamp, timestamp);
             board.add(boardLine);
         }
-        if (!trip.isForward()) {
+        if (!trip.getForward()) {
             Collections.reverse(board);
         }
         for (Board boardLine : board) {
@@ -94,9 +92,7 @@ public class BoardService {
                 boardDAO.update(b);
             }
         }
-//        for (Board b : boardList) {
-//            boardDAO.refresh(b);
-//        }
+
         return errorList;
     }
 
@@ -104,7 +100,8 @@ public class BoardService {
         if (boardTripDTOs.length == 0) {
             throw new EmptyListException("DTO array is empty");
         }
-        List<Board> boards = getBoardForTrip(boardTripDTOs[0].getTripId());
+        Long tripId = boardDAO.findById(boardTripDTOs[0].getBoardId()).getTrip().getId();
+        List<Board> boards = getBoardForTrip(tripId);
         if (boards.size() != boardTripDTOs.length) {
             throw new TripException("DTO array size and board list size are different");
         }
@@ -123,7 +120,7 @@ public class BoardService {
 
     private Board prepareBoard(BoardTripDTO boardTripDTO) throws EntityNotFoundException {
         Board board = boardDAO.findById(boardTripDTO.getBoardId());
-        boardDAO.detach(board);
+
         TimeZone timeZone = board.getStation().getTimeZone();
         board.setArriveTime(new Timestamp(
                 dateHelper.parseBSDateTime(boardTripDTO.getArriveDate(), boardTripDTO.getArriveTime(), timeZone).getMillis()));
@@ -144,15 +141,6 @@ public class BoardService {
     public List<Board> getBoardForTrip(Long tripId) throws EntityNotFoundException {
         Trip trip = tripDAO.findById(tripId);
         return boardDAO.getBoardForTrip(trip);
-    }
-
-    private boolean checkLCI(Trip trip, Integer tripLCI) {
-        if (!tripLCI.equals(trip.getLastChange())) {
-            return false;
-        } else {
-            trip.incrementLastChange();
-            return true;
-        }
     }
 
 
