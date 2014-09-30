@@ -19,7 +19,7 @@ function addUser() {
             popupSuccess('User ' + login + ' added successfully');
             $('#listOfUsers').find('tbody').append(response);
         }
-    ).error(function(jdXHR) {
+    ).error(function (jdXHR) {
             popupjdXHRError(jdXHR);
         });
 }
@@ -41,8 +41,8 @@ function confirmDelete(id, login) {
                             $('#' + id).remove();
                             popupSuccess('Delete success');
                         }
-                    ).error(function(jdXHR) {
-                            popupjdXHRError(popupError(jdXHR.status +' ' + jdXHR.statusText +'\n' + jdXHR.responseText));
+                    ).error(function (jdXHR) {
+                            popupjdXHRError(popupError(jdXHR.status + ' ' + jdXHR.statusText + '\n' + jdXHR.responseText));
                         });
                 }
             },
@@ -62,18 +62,15 @@ function changePassword(userId) {
     var newPswd = generatePass(5);
     BootstrapDialog.show({
         title: 'Change password',
-        message: 'New password is ' + newPswd + '. Do you confirm changing the password?',
+        message: 'New password is <strong>' + newPswd + '</strong>. Do you confirm changing the password?',
         buttons: [
             {
                 label: 'Change password',
                 action: function (dialog) {
                     dialog.close();
                     $.post('/SBB/user/edit',
-                        {userId: userId, password: newPswd},
+                        {userId: userId, password: newPswd, version: $('#' + userId + ' .version').text()},
                         function (response) {
-                            if (isError(response)) {
-                                return;
-                            }
                             popupSuccess(response);
                         }
                     ).error(function (jdXHR) {

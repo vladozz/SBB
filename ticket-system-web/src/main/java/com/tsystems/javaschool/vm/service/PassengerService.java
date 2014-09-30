@@ -43,7 +43,6 @@ public class PassengerService {
         int begin = stations.indexOf(departure.getStation());
         int end = stations.indexOf(arrive.getStation());
         int max = 0;
-        //int[] fillness = new int[end - begin];
         for (int i = begin; i < end; i++) {
             int c = 0;
             for (Ticket t : tickets) {
@@ -52,7 +51,6 @@ public class PassengerService {
                     c++;
                 }
             }
-            //fillness[i - begin] = c;
             if (c > max) {
                 max = c;
             }
@@ -109,7 +107,6 @@ public class PassengerService {
     public Ticket buyTicket(Passenger passenger, Board departure, Board arrive)
             throws PassengerException {
 
-        //throws PassengerException if false
         canBuyTicket(passenger, departure, arrive);
 
         Ticket ticket = new Ticket(passenger, departure, arrive);

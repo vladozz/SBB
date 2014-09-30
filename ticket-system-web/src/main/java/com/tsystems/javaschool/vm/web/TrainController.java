@@ -2,6 +2,7 @@ package com.tsystems.javaschool.vm.web;
 
 
 import com.tsystems.javaschool.vm.domain.Train;
+import com.tsystems.javaschool.vm.exception.CascadeException;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.helper.ResponseHelper;
 import com.tsystems.javaschool.vm.service.TrainService;
@@ -65,7 +66,7 @@ public class TrainController {
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public String editTrain(@ModelAttribute(value = "train") Train train,
-                           HttpServletResponse response ,ModelMap map) throws EntityNotFoundException {
+                           HttpServletResponse response ,ModelMap map) throws EntityNotFoundException, CascadeException {
         List<String> validationErrors = trainValidator.validate(train);
         if (!validationErrors.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);

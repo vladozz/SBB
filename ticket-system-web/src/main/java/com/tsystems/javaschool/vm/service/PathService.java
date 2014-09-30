@@ -115,7 +115,6 @@ public class PathService {
             stations.remove(stations.size() - 1);
         }
 
-        //path = pathDAO.update(path);
         path.getStations().addAll(newStations);
         pathDAO.update(path);
         return path;

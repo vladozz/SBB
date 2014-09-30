@@ -1,7 +1,7 @@
 package com.tsystems.javaschool.vm.domain;
 
 
-public class PairBoard implements Comparable<PairBoard>{
+public class PairBoard implements Comparable{
     Board departure;
     Board arrive;
 
@@ -35,7 +35,8 @@ public class PairBoard implements Comparable<PairBoard>{
     }
 
     @Override
-    public int compareTo(PairBoard o) {
-        return departure.getDepartureTime().compareTo(o.departure.getDepartureTime());
+    public int compareTo(Object o) {
+        PairBoard that = ((PairBoard) o);
+        return departure.getDepartureTime().compareTo(that.departure.getDepartureTime());
     }
 }

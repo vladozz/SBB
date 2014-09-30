@@ -83,7 +83,7 @@
                 <label for="inputEmail" class="col-sm-3 control-label">Email</label>
 
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="inputEmail">
+                    <input type="text" class="form-control" id="inputEmail" placeholder="Email">
                 </div>
             </div>
 

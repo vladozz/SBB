@@ -1,7 +1,6 @@
 package com.tsystems.javaschool.vm.web;
 
 
-import com.tsystems.javaschool.vm.converter.PathConverter;
 import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.OutdateException;

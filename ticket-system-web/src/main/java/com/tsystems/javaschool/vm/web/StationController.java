@@ -63,7 +63,6 @@ public class StationController {
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public String editStation(@ModelAttribute(value = "station") Station station,
                               HttpServletResponse response, ModelMap map) throws EntityNotFoundException {
-        System.out.println("station = " + station);
         List<String> validationErrors = stationValidator.validate(station);
         if (!validationErrors.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);

@@ -72,8 +72,8 @@ public class Station extends SBBEntity {
     }
 
     @Override
-    public int compareTo(SBBEntity sbbEntity) {
-        Station that = ((Station) sbbEntity);
+    public int compareTo(Object o) {
+        Station that = ((Station) o);
         return this.title.compareToIgnoreCase(that.title);
     }
 }

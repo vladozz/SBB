@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
-public abstract class SBBEntity implements Comparable<SBBEntity> {
+public abstract class SBBEntity implements Comparable {
     @Id
     @GeneratedValue(generator = "table", strategy=GenerationType.TABLE)
     @TableGenerator(name = "table", allocationSize = 10)
@@ -66,7 +66,8 @@ public abstract class SBBEntity implements Comparable<SBBEntity> {
     }
 
     @Override
-    public int compareTo(SBBEntity that) {
+    public int compareTo(Object o) {
+        SBBEntity that = ((SBBEntity) o);
         return this.id.compareTo(that.id);
     }
 }

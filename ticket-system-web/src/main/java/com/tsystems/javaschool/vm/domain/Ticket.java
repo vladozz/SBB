@@ -65,8 +65,8 @@ public class Ticket extends SBBEntity  {
     }
 
     @Override
-    public int compareTo(SBBEntity thatSBBEntity) {
-        Ticket that = ((Ticket) thatSBBEntity);
+    public int compareTo(Object o) {
+        Ticket that = ((Ticket) o);
 
         int result = this.departure.getDepartureTime().compareTo(that.departure.getDepartureTime());
         if (result == 0) {

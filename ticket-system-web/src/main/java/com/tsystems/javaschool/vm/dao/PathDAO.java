@@ -14,26 +14,6 @@ public class PathDAO extends CommonDAO<Path> {
         super(Path.class);
     }
 
-    public Path findByTitle(String title) throws EntityNotFoundException {
-        String queryString = "SELECT p FROM Path p WHERE LOWER(p.title) = :title";
-        Query query = entityManager.createQuery(queryString);
-        query.setParameter("title", title.toLowerCase());
-        List<Path> path = query.getResultList();
-        if (path.isEmpty()) {
-            throw new EntityNotFoundException("Path", title);
-        } else {
-            return path.get(0);
-        }
-    }
-
-/*    public List<Station> getStationsOfPath(Long pathId) {
-        String queryString = "SELECT s FROM Path p WHERE LOWER(p.title) = :title order by ";
-        Query query = entityManager.createQuery(queryString);
-        query.setParameter("title", title.toLowerCase());
-        List<Path> path = query.getResultList();
-    }*/
-
-
 }
 
 

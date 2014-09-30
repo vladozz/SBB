@@ -60,11 +60,14 @@ public class AdminController {
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public String editUserPassword(@RequestParam(value = "userId") Long userId,
-                                   @RequestParam(value = "password") String password, ModelMap map,
-                                   HttpServletResponse response) throws IOException, EntityNotFoundException {
+                                   @RequestParam(value = "password") String password,
+                                   @RequestParam(value = "version") Integer version,
+                                   ModelMap map, HttpServletResponse response)
+            throws IOException, EntityNotFoundException {
 
         List<String> validationErrors = longValidator.validateLong(userId, "UserId");
         validationErrors.addAll(userValidator.validatePassword(password));
+        validationErrors.addAll(longValidator.validateLong(version, "version"));
         if (!validationErrors.isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             map.put("messages", validationErrors);
@@ -76,7 +79,7 @@ public class AdminController {
             return "msg";
         }
 
-        userService.changeUserPassword(userId, password);
+        userService.changeUserPassword(userId, password, version);
         map.put("messages", "Password changed successfully");
         return "msg";
     }

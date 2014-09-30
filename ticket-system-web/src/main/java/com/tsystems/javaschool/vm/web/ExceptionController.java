@@ -24,15 +24,12 @@ public class ExceptionController {
     @ExceptionHandler(value =  {OutdateException.class, OptimisticLockException.class})
     public void OutdateHandler(Exception e, HttpServletResponse response) throws IOException {
         LOG.info(prepareMessage(e));
-        e.printStackTrace();
-//        response.sendError(426, "Your page is irrelevant! Reload the page and repeat the operation.");
     }
 
     @ExceptionHandler(value = SBBException.class)
     public ModelAndView SBBHandler(SBBException e, HttpServletResponse response) throws IOException {
         LOG.info(prepareMessage(e));
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        e.printStackTrace();
         ModelAndView modelAndView = new ModelAndView("msg");
         modelAndView.addObject("status", "error");
         modelAndView.addObject("messages", e.getMessage());
@@ -59,6 +56,7 @@ public class ExceptionController {
 
     public String prepareMessage(Throwable e) {
         StringWriter errors = new StringWriter();
+        e.printStackTrace();
         e.printStackTrace(new PrintWriter(errors));
         return "Username: " + SecurityContextHolder.getContext().getAuthentication().getName() + "\n" + errors.toString();
     }

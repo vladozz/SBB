@@ -1,7 +1,9 @@
 package com.tsystems.javaschool.vm.service;
 
 import com.tsystems.javaschool.vm.dao.TrainDAO;
+import com.tsystems.javaschool.vm.dao.TripDAO;
 import com.tsystems.javaschool.vm.domain.Train;
+import com.tsystems.javaschool.vm.exception.CascadeException;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,9 @@ import java.util.List;
 @Service
 public class TrainService {
     @Autowired
-    TrainDAO trainDAO;
+    private TrainDAO trainDAO;
+    @Autowired
+    private TripDAO tripDAO;
 
     @Transactional
     public Train addTrain(Train train) {
@@ -35,7 +39,10 @@ public class TrainService {
     }
 
     @Transactional
-    public Train editTrain(Train train) throws EntityNotFoundException {
+    public Train editTrain(Train train) throws EntityNotFoundException, CascadeException {
+        if (!tripDAO.filterTripsByTrain(train.getId()).isEmpty()) {
+            throw new CascadeException("You cannot edit train which have trips");
+        }
         trainDAO.update(train);
         return trainDAO.findById(train.getId());
     }

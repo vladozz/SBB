@@ -3,6 +3,7 @@
     <td class="id">${user.id}</td>
     <td class="login">${user.login}</td>
     <td class="role">${user.role.title}</td>
+    <td class="version hidden">${user.version}</td>
     <td>
         <button type="button" class="btn btn-warning" onclick="changePassword(${user.id})">Change password</button>
     </td>

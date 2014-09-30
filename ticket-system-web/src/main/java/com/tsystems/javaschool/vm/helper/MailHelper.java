@@ -46,6 +46,6 @@ public class MailHelper {
         Transport.send(message);
     }
 
-    final String username = "sbb.javaschool@gmail.com";
-    final String password = "javaschool123";
+    private static final String username = "sbb.javaschool@gmail.com";
+    private static final String password = "javaschool123";
 }

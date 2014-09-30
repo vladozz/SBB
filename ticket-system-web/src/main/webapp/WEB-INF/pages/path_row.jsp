@@ -23,7 +23,7 @@
         </button>
     </td>
     <td>
-        <a onclick="confirmDelete(${path.id}, '${path.title}/${path.returnTitle}');">
+        <a onclick="confirmDelete(${path.id});">
             <button type="button" class="btn btn-danger">Delete</button>
         </a>
     </td>

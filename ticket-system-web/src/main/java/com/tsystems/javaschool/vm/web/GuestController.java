@@ -17,6 +17,7 @@ import com.tsystems.javaschool.vm.helper.ResponseHelper;
 import com.tsystems.javaschool.vm.service.PassengerBoardService;
 import com.tsystems.javaschool.vm.service.PassengerService;
 import com.tsystems.javaschool.vm.service.StationService;
+import com.tsystems.javaschool.vm.service.UserService;
 import com.tsystems.javaschool.vm.validator.BuyTicketDTOValidator;
 import com.tsystems.javaschool.vm.validator.UserValidator;
 import org.apache.log4j.Logger;
@@ -40,6 +41,8 @@ public class GuestController {
     private PassengerBoardService passengerBoardService;
     @Autowired
     private PassengerService passengerService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private BoardConverter boardConverter;
@@ -140,6 +143,7 @@ public class GuestController {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, responseHelper.createErrorResponse(validationErrors));
             return "";
         }
+
 
         Ticket ticket = passengerService.buyTicket(buyTicketRequestDTO);
         if (emailRequired) {

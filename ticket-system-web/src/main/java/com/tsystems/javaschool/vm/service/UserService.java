@@ -53,7 +53,7 @@ public class UserService {
     }
 
     @Transactional
-    public void changeUserPassword(Long userId, String password) throws EntityNotFoundException {
+    public void changeUserPassword(Long userId, String password, Integer version) throws EntityNotFoundException {
         User user = userDAO.findById(userId);
         String passwordHash = userHelper.sha256(password);
         user.setPassword(passwordHash);
@@ -76,6 +76,10 @@ public class UserService {
     @Transactional
     public void removeUser(Long userId) {
         userDAO.delete(userId, 0);
+    }
+
+    public boolean ifExists(String email) {
+        return userDAO.ifExists(email);
     }
 
     public List<User> getAllUsers() {

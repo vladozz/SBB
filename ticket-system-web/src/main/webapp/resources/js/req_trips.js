@@ -18,6 +18,10 @@ function getTrips() {
     var timeEnd = readTimeInput($('#timeEnd'), "23:59");
     var stationBegin = $('#stationBegin').find('option:selected').val();
     var stationEnd = $('#stationEnd').find('option:selected').val();
+    if (stationBegin == stationEnd) {
+        popupError('You choose different departure and arrive stations ');
+        return;
+    }
 
     $.post('/SBB/reqtrip/get',
         {departureStationId: stationBegin, departureDate: dateBegin, departureTime: "00:00",

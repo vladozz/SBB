@@ -10,8 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TicketConverter {
-
-    private static final String datetimeFormat = "E yyyy-MM-dd HH:mm";
+    private static final String datetimeFormat = "yyyy-MM-dd HH:mm";
 
     public String convertToString(Ticket ticket) {
 
@@ -35,7 +34,7 @@ public class TicketConverter {
                 DateTimeZone.forTimeZone(arrive.getStation().getTimeZone()));
         body.append("\nArrive time: ").append(arriveDateTime.toString(datetimeFormat));
         int travelTimeMinutes = Minutes.minutesBetween(departureDateTime, arriveDateTime).getMinutes();
-        String travelTime = travelTimeMinutes / 60 + " hours " + travelTimeMinutes % 60 + "minutes";
+        String travelTime = travelTimeMinutes / 60 + " hours " + travelTimeMinutes % 60 + " minutes";
         body.append("\nTravel time: ").append(travelTime);
         body.append("\nBuy ticket date: ").append(new DateTime().toString(datetimeFormat));
 

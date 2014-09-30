@@ -29,7 +29,6 @@ public abstract class CommonDAO<E extends SBBEntity>{
         if (entity == null) {
             throw new EntityNotFoundException(entityClass.getCanonicalName() + " not found; id: " + id);
         }
-//        detach(entity);
         return entity;
     }
 

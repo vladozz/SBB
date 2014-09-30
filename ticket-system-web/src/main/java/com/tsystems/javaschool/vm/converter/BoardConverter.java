@@ -17,8 +17,8 @@ import java.util.TimeZone;
 @Component
 public class BoardConverter {
 
-    private final String dateFormat = "yyyy-MM-dd";
-    private final String timeFormat = "HH:mm";
+    private static final String dateFormat = "yyyy-MM-dd";
+    private static final String timeFormat = "HH:mm";
 
     public BoardTripDTO convertToBoardTripDTO(Board board) {
         BoardTripDTO boardTripDTO = new BoardTripDTO();

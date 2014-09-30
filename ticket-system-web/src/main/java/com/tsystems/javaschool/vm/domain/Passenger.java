@@ -65,8 +65,8 @@ public class Passenger extends SBBEntity {
     }
 
     @Override
-    public int compareTo(SBBEntity sbbEntity) {
-        Passenger that = ((Passenger) sbbEntity);
+    public int compareTo(Object o) {
+        Passenger that = ((Passenger) o);
 
         int result = this.lastName.compareToIgnoreCase(that.lastName);
         if (result == 0) {
