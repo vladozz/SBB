@@ -3,7 +3,8 @@ package com.tsystems.javaschool.vm.service;
 import com.tsystems.javaschool.vm.dao.*;
 import com.tsystems.javaschool.vm.domain.*;
 import com.tsystems.javaschool.vm.dto.BuyTicketDTO;
-import com.tsystems.javaschool.vm.exception.*;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
+import com.tsystems.javaschool.vm.exception.PassengerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,6 @@ import java.util.*;
 
 @Service
 public class PassengerService {
-    //private static final Logger LOGGER = Logger.getLogger(PassengerService.class);
 
     @Autowired
     private TicketDAO ticketDAO;
@@ -35,13 +35,6 @@ public class PassengerService {
         return passenger;
     }
 
-    /**
-     * Метод, возвращащий кол-во доступных для покупки мест на рейс между желаемыми станциями отправления и прибытия
-     *
-     * @param departure
-     * @param arrive
-     * @return кол-во доступных для покупки мест
-     */
     public int countFreePlaces(Board departure, Board arrive) {
         Trip trip = departure.getTrip();
         List<Station> stations = stationDAO.getFromBoardByTrip(trip);
@@ -53,7 +46,6 @@ public class PassengerService {
         //int[] fillness = new int[end - begin];
         for (int i = begin; i < end; i++) {
             int c = 0;
-            //todo: optimize
             for (Ticket t : tickets) {
                 if (stations.indexOf(t.getDeparture().getStation()) <= i &&
                         stations.indexOf(t.getArrive().getStation()) >= i + 1) {
@@ -68,23 +60,6 @@ public class PassengerService {
         return trip.getTrain().getPlacesQty() - max;
     }
 
-//    public int countFreePlacesOpt(Board departure, Board arrive) {
-//
-//        Trip trip = departure.getTrip();
-//        List<Board> fullBoard = trip.getBoardList();
-//        Map<Long, Integer> indexMap = new HashMap<Long, Integer>();
-//        for (int i = 0; i < fullBoard.size(); i++) {
-//            indexMap.put(fullBoard.get(i).getId(), i);
-//        }
-//
-//        int c = 0;
-//        int max = 0;
-//        for (int i = 0; i < fullBoard.size() - 1; i++) {
-//            c += fullBoard.get(i).getDepartures().size() - fullBoard.get(i + 1).getArrives().size();
-//            max = Math.max(max, c);
-//        }
-//        return trip.getTrain().getPlacesQty() - max;
-//    }
 
     public boolean isPassengerOnTrip(Passenger passenger, Trip trip) {
         return !ticketDAO.getTicketsOfTripByPassenger(trip, passenger.getId()).isEmpty();

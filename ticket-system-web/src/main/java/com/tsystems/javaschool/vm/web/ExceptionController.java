@@ -3,7 +3,6 @@ package com.tsystems.javaschool.vm.web;
 import com.tsystems.javaschool.vm.exception.OutdateException;
 import com.tsystems.javaschool.vm.exception.SBBException;
 import org.apache.log4j.Logger;
-import org.hibernate.StaleObjectStateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ControllerAdvice;

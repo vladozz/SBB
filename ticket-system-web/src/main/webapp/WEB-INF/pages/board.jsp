@@ -40,8 +40,5 @@
 </div>
 
 
-<script type="text/javascript" src="<c:url value="/resources/js/board.js"/> ">
-
-
-</script>
+<script type="text/javascript" src="<c:url value="/resources/js/board.js"/> "></script>
 

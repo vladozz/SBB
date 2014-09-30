@@ -1,12 +1,10 @@
 package com.tsystems.javaschool.vm.domain;
 
 
-import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.TimeZone;
 
 @Entity
 @Table(name="passenger")

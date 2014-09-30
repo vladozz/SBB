@@ -6,7 +6,7 @@ import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.domain.PairBoard;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.dto.DefTripDTO;
-import com.tsystems.javaschool.vm.exception.*;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.helper.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

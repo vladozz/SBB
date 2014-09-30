@@ -1,14 +1,16 @@
 package com.tsystems.javaschool.vm.web;
 
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.javaschool.vm.converter.BoardConverter;
 import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
-import com.tsystems.javaschool.vm.exception.*;
+import com.tsystems.javaschool.vm.exception.EmptyListException;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
+import com.tsystems.javaschool.vm.exception.OutdateException;
+import com.tsystems.javaschool.vm.exception.TripException;
 import com.tsystems.javaschool.vm.helper.ResponseHelper;
 import com.tsystems.javaschool.vm.service.BoardService;
 import com.tsystems.javaschool.vm.service.PassengerService;

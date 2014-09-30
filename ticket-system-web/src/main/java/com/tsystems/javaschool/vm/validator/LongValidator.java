@@ -1,6 +1,5 @@
 package com.tsystems.javaschool.vm.validator;
 
-import com.tsystems.javaschool.vm.domain.Station;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

@@ -1,13 +1,6 @@
 package com.tsystems.javaschool.vm.exception;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.sql.Wrapper;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Set;
 
 /**
  * Created by Vlad on 02.09.2014.

@@ -6,20 +6,16 @@ import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.OutdateException;
-import com.tsystems.javaschool.vm.exception.PathException;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.OptimisticLockException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Service
 public class PathService {
-    private static final Logger logger = Logger.getLogger(PathService.class);
     @Autowired
     private PathDAO pathDAO;
     @Autowired
@@ -68,13 +64,6 @@ public class PathService {
 
     }
 
-    /**
-     * Метод, добавляющий станцию в маршрут (в середину или в конец)
-     *
-     * @param path                  маршрут
-     * @param station               станция
-     * @param stationBeforeInsertId
-     */
     private Path addStationToPathSafe(Path path, Station station, Long stationBeforeInsertId) {
         List<Station> stations = path.getStations();
         if (stationBeforeInsertId == 0) {
@@ -93,19 +82,13 @@ public class PathService {
             while (!stations.isEmpty()) {
                 stations.remove(stations.size() - 1);
             }
-            //stations.removeAll(newStations);
-            //path = pathDAO.update(path);
+
             path.getStations().addAll(newStations);
         }
         pathDAO.update(path);
         return path;
     }
 
-
-    /**
-     * @param pathId
-     * @param stationToRemoveId
-     */
     @Transactional
     public Path removeStationFromPathSafe(Long pathId, Long stationToRemoveId, Integer version)
             throws OutdateException, EntityNotFoundException {
@@ -115,10 +98,6 @@ public class PathService {
         return removeStationFromPathSafe(path, stationToRemoveId);
     }
 
-    /**
-     * @param path
-     * @param stationToRemoveId
-     */
     private Path removeStationFromPathSafe(Path path, Long stationToRemoveId) {
         List<Station> stations = path.getStations();
 

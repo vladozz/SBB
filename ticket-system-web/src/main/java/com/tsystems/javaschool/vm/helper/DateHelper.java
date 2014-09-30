@@ -1,5 +1,6 @@
 package com.tsystems.javaschool.vm.helper;
 
+import com.tsystems.javaschool.vm.domain.Board;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,8 @@ import java.util.TimeZone;
 
 @Component
 public class DateHelper {
+    private static final String dateFormat = "yyyy-MM-dd";
+
     public DateTime parseBSDate(String dateString, TimeZone timeZone) {
         List<Integer> date = new ArrayList<Integer>(3);
         for (String s : dateString.split("-")) {
@@ -28,5 +31,17 @@ public class DateHelper {
         }
         return new DateTime(datetime.get(0), datetime.get(1), datetime.get(2),
                 datetime.get(3), datetime.get(4), DateTimeZone.forTimeZone(timeZone));
+    }
+
+    public String departureDateToString(Board departure) {
+        DateTime boardLineDateTime = new DateTime(departure.getDepartureTime(),
+                DateTimeZone.forTimeZone(departure.getStation().getTimeZone()));
+        return boardLineDateTime.toString(dateFormat);
+    }
+
+    public String arriveDateToString(Board arrive) {
+        DateTime boardLineDateTime = new DateTime(arrive.getArriveTime(),
+                DateTimeZone.forTimeZone(arrive.getStation().getTimeZone()));
+        return boardLineDateTime.toString(dateFormat);
     }
 }

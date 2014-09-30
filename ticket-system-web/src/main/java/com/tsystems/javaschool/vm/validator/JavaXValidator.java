@@ -1,15 +1,11 @@
 package com.tsystems.javaschool.vm.validator;
 
 import com.tsystems.javaschool.vm.domain.SBBEntity;
-import com.tsystems.javaschool.vm.domain.Train;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Entity;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.List;
 import java.util.Set;
 

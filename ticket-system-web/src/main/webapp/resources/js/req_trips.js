@@ -53,12 +53,15 @@ function buyTicketDialog(departureId, arriveId, freePlaces) {
                     var passenger = makeData($passengerForm);
                     $.post('/SBB/ticket/buy',
                         {firstName: passenger.firstName, lastName: passenger.lastName, birthDate: passenger.birthDate,
-                            departureBoardId: departureId, arriveBoardId: arriveId},
+                            departureBoardId: departureId, arriveBoardId: arriveId, email: passenger.email},
                         function(response) {
                             if (!isError(response)) {
-                                dialog.close();
-                                popupSuccess(response);
+                                dialog.setMessage(response);
+                                popupSuccess('You\'ve successfully bought ticket!');
                             }
+                        }
+                    ).error(function(jdXHR) {
+                            popupjdXHRError(jdXHR);
                         }
                     );
 
@@ -79,15 +82,27 @@ function makeData($passengerForm) {
     var firstName = $passengerForm.find('#inputFN').val();
     var lastName = $passengerForm.find('#inputLN').val();
     var dateInput = $passengerForm.find('#inputDate');
+    var inputEmail = $passengerForm.find('#inputEmail');
+    var email = inputEmail.val();
+
     var birthDate = dateInput.val();
     if (birthDate === '') {
-        alert('Invalid date of birth');
+        popupError('Invalid date of birth');
         dateInput.focus();
         return;
     }
+
+    if (email.length > 0 && !emailRegex.test(email)) {
+        popupError("Invalid email");
+        inputEmail.val('');
+        inputEmail.focus();
+        return;
+    }
+
     birthDate = cellsToDate(birthDate);
     boardTripDTO.firstName = firstName;
     boardTripDTO.lastName = lastName;
     boardTripDTO.birthDate = birthDate;
+    boardTripDTO.email = email;
     return boardTripDTO;
 }

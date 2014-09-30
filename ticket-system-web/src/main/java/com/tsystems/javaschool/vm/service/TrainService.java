@@ -1,7 +1,6 @@
 package com.tsystems.javaschool.vm.service;
 
 import com.tsystems.javaschool.vm.dao.TrainDAO;
-import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.Train;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -79,12 +79,14 @@
                     <input type="date" class="form-control" id="inputDate">
                 </div>
             </div>
-<%--            <div class="form-group">
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default">Close</button>
-                    <button type="submit" class="btn btn-primary">Add passenger</button>
+            <div class="form-group">
+                <label for="inputEmail" class="col-sm-3 control-label">Email</label>
+
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="inputEmail">
                 </div>
-            </div>--%>
+            </div>
+
         </form>
     </div>
 </div>

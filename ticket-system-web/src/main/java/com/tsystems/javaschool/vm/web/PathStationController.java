@@ -5,7 +5,6 @@ import com.tsystems.javaschool.vm.domain.Path;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
 import com.tsystems.javaschool.vm.exception.OutdateException;
-import com.tsystems.javaschool.vm.exception.PathException;
 import com.tsystems.javaschool.vm.service.PathService;
 import com.tsystems.javaschool.vm.service.StationService;
 import org.springframework.beans.factory.annotation.Autowired;

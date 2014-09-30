@@ -7,7 +7,10 @@ import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.domain.Station;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.BoardTripDTO;
-import com.tsystems.javaschool.vm.exception.*;
+import com.tsystems.javaschool.vm.exception.EmptyListException;
+import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
+import com.tsystems.javaschool.vm.exception.OutdateException;
+import com.tsystems.javaschool.vm.exception.TripException;
 import com.tsystems.javaschool.vm.helper.DateHelper;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +123,7 @@ public class BoardService {
 
     private Board prepareBoard(BoardTripDTO boardTripDTO) throws EntityNotFoundException {
         Board board = boardDAO.findById(boardTripDTO.getBoardId());
-
+        boardDAO.detach(board);
         TimeZone timeZone = board.getStation().getTimeZone();
         board.setArriveTime(new Timestamp(
                 dateHelper.parseBSDateTime(boardTripDTO.getArriveDate(), boardTripDTO.getArriveTime(), timeZone).getMillis()));

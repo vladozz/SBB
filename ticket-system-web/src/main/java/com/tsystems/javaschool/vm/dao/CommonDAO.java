@@ -29,25 +29,14 @@ public abstract class CommonDAO<E extends SBBEntity>{
         if (entity == null) {
             throw new EntityNotFoundException(entityClass.getCanonicalName() + " not found; id: " + id);
         }
-        detach(entity);
+//        detach(entity);
         return entity;
     }
 
-    public E getProxy(Long id) throws EntityNotFoundException {
-        E entity = entityManager.getReference(entityClass, id);
-        if (entity == null) {
-            throw new EntityNotFoundException(entityClass.getCanonicalName() + " not found; id: " + id);
-        }
-        detach(entity);
-        return entity;
-    }
-
-
-    public E update(E entity)  {
+    public void update(E entity)  {
         if (entity.getId() > 0) {
             entityManager.merge(entity);
         }
-        return entity;
     }
 
     public void detach(E entity) {

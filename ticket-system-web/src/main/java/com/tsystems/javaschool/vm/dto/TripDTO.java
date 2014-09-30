@@ -9,8 +9,8 @@ public class TripDTO {
     private Long trainId;
     private String trainNumber;
     private Integer version;
-    private String departureStation;
-    private String arriveStation;
+    private String departureDate;
+    private String arriveDate;
 
     public TripDTO() {
 
@@ -25,8 +25,8 @@ public class TripDTO {
         this.pathId = pathId;
         this.pathTitle = pathTitle;
         this.version = version;
-        this.departureStation = "";
-        this.arriveStation = "";
+        this.departureDate = "";
+        this.arriveDate = "";
     }
 
     public Long getId() {
@@ -85,20 +85,20 @@ public class TripDTO {
         this.version = version;
     }
 
-    public String getDepartureStation() {
-        return departureStation;
+    public String getDepartureDate() {
+        return departureDate;
     }
 
-    public void setDepartureStation(String departureStation) {
-        this.departureStation = departureStation;
+    public void setDepartureDate(String departureDate) {
+        this.departureDate = departureDate;
     }
 
-    public String getArriveStation() {
-        return arriveStation;
+    public String getArriveDate() {
+        return arriveDate;
     }
 
-    public void setArriveStation(String arriveStation) {
-        this.arriveStation = arriveStation;
+    public void setArriveDate(String arriveDate) {
+        this.arriveDate = arriveDate;
     }
 
     @Override
@@ -111,8 +111,8 @@ public class TripDTO {
                 ", trainId=" + trainId +
                 ", trainNumber='" + trainNumber + '\'' +
                 ", version=" + version +
-                ", departureStation='" + departureStation + '\'' +
-                ", arriveStation='" + arriveStation + '\'' +
+                ", departureDate='" + departureDate + '\'' +
+                ", arriveDate='" + arriveDate + '\'' +
                 '}';
     }
 }

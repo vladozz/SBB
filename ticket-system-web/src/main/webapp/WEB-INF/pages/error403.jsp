@@ -11,6 +11,6 @@
     <title>HTTP Status 403 - Access is denied</title>
 </head>
 <body>
-HTTP Status 403 - Access is denied
+<h2>HTTP Status 403 - Access is denied</h2>
 </body>
 </html>

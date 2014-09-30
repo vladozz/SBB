@@ -1,21 +1,9 @@
 package com.tsystems.javaschool.vm.web;
 
-import com.tsystems.javaschool.vm.domain.User;
-import com.tsystems.javaschool.vm.exception.EntityNotFoundException;
-import com.tsystems.javaschool.vm.exception.LoginAlreadyExistException;
-import com.tsystems.javaschool.vm.helper.ResponseHelper;
-import com.tsystems.javaschool.vm.service.UserService;
-import com.tsystems.javaschool.vm.validator.LongValidator;
-import com.tsystems.javaschool.vm.validator.UserValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping(value = "/error")

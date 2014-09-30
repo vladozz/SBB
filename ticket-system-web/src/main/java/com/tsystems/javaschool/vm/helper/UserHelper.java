@@ -28,9 +28,4 @@ public class UserHelper {
         }
     }
 
-    //TODO: change 3 to 10
-    public String generatePassword() {
-        return sha256(Double.toString(Math.random())).substring(0,3);
-    }
-
 }

@@ -4,6 +4,7 @@ package com.tsystems.javaschool.vm.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.javaschool.vm.converter.TripConverter;
+import com.tsystems.javaschool.vm.domain.Board;
 import com.tsystems.javaschool.vm.domain.Ticket;
 import com.tsystems.javaschool.vm.domain.Trip;
 import com.tsystems.javaschool.vm.dto.TripDTO;
@@ -66,15 +67,16 @@ public class TripController {
     @RequestMapping(value = "/select", method = RequestMethod.POST)
     @ResponseBody
     public String selectTrip(@RequestParam("pathId") Long pathId, @RequestParam("trainId") Long trainId, ModelMap map)
-            throws JsonProcessingException {
+            throws JsonProcessingException, EntityNotFoundException {
 
         List<Trip> trips = tripService.getTripsByPathAndTrain(pathId, trainId);
 
         List<TripDTO> tripDTOs = new ArrayList<TripDTO>();
         for (Trip trip : trips) {
-            TripDTO tripDTO = tripConverter.convertToTripDTO(trip);
+            List<Board> boards = boardService.getBoardForTrip(trip.getId());
+            TripDTO tripDTO = tripConverter.convertToTripDTO(trip, boards);
+
             tripDTOs.add(tripDTO);
-            System.out.println(tripDTO);
         }
 
         return json.writeValueAsString(tripDTOs);

@@ -1,4 +1,4 @@
-<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
     Add new passenger
 </button>
 
